@@ -1,4 +1,10 @@
 #pragma once
+#include <cstdio>
 #include <iostream>
 
-void menu(void);
+class Menu {
+public:
+	void menu(void);
+};
+
+extern Menu menu;
