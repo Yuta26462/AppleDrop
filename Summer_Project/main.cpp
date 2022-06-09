@@ -1,6 +1,6 @@
 #include "main.h"
 
-Menu menu;
+Menu menu2;
 
 int main(void) {
 
@@ -17,7 +17,7 @@ int main(void) {
 		switch (key)
 		{
 		case MENU:
-			menu.menu();
+			menu2.menu();
 			break;
 		case END:
 			std::cout << "Exit";
@@ -26,7 +26,7 @@ int main(void) {
 
 
 		default:
-			std::cout << "MENU =1\nOPTION = 2\nEND = 3" << '\n' << std::flush;
+			std::cout << "MENU =1\nOPTION = 2\nEND = 3" << '\n' ;
 			std::cin >> key;
 			break;
 		}

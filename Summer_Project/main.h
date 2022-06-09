@@ -7,4 +7,4 @@ public:
 	void menu(void);
 };
 
-extern Menu menu;
+extern Menu menu2;
