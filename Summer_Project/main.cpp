@@ -1,5 +1,7 @@
 #include "main.h"
 
+Menu menu2;
+
 int main(void) {
 
 	enum GAME_MODE { STARRT = 0,MENU,OPTION,END };
@@ -9,13 +11,13 @@ int main(void) {
 
 	while (key != END)
 	{
-		std::cout << "MENU =1\nOPTION = 2\nEND = 3" << '\n';
+		std::cout << "MENU =1\nOPTION = 2\nEND = 3" << '\n' << std::flush;
 		std::cin >> key;
 
 		switch (key)
 		{
 		case MENU:
-			menu();
+			menu2.menu();
 			break;
 		case END:
 			std::cout << "Exit";
@@ -24,7 +26,7 @@ int main(void) {
 
 
 		default:
-			std::cout << "MENU =1\nOPTION = 2\nEND = 3" << '\n';
+			std::cout << "MENU =1\nOPTION = 2\nEND = 3" << '\n' ;
 			std::cin >> key;
 			break;
 		}
@@ -33,6 +35,6 @@ int main(void) {
 	return 0;
 }
 
-void menu(void) {
-	std::cout << "Menu";
+void Menu::menu(void) {
+	std::cout << "Menu" << std::endl;
 }	
