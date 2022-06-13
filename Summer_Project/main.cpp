@@ -1,13 +1,14 @@
 #include "main.h"
 
-Menu menu2;
+Menu menu;
+
+int key = 0;
 
 int main(void) {
 
-	enum GAME_MODE { STARRT = 0,MENU,OPTION,END };
-	std::cout << "Beta!" << '\n';
+	enum GAME_MODE { STARRT = 0, MENU, OPTION, END };
 
-	int key = 0;
+	std::cout << "Beta!" << '\n';
 
 	while (key != END)
 	{
@@ -17,7 +18,7 @@ int main(void) {
 		switch (key)
 		{
 		case MENU:
-			menu2.menu();
+			menu.menu();
 			break;
 		case END:
 			std::cout << "Exit";
@@ -38,3 +39,20 @@ int main(void) {
 void Menu::menu(void) {
 	std::cout << "Menu" << std::endl;
 }	
+
+void Menu::GameModeChange(int num) {
+	try {
+		if (0 <= num && 3 >= num) {
+			switch (num) {
+			case 1:
+				break;
+			}
+		}if (num == key) {
+			throw - 1;
+		}
+	}
+	catch (int err) {
+			std::cout << err << std::endl;
+		}
+
+}
