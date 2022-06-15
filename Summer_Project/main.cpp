@@ -2,6 +2,8 @@
 
 Menu menu;
 
+int backgroundimage,pauseimage;
+int catimage, appleimages;
 int key = 0;
 
 int main(void) {
@@ -37,6 +39,7 @@ int main(void) {
 }
 
 void Menu::menu(void) {
+
 	std::cout << "Menu" << std::endl;
 }	
 
@@ -55,4 +58,9 @@ void Menu::GameModeChange(int num) {
 			std::cout << err << std::endl;
 		}
 
+}
+
+int Menu::LoadImages(void) {
+	if ((backgroundimage = LoadGraph("images/background.jpg")) == -1) return -1;
+	if ((pauseimage = LoadGraph("images/pause.jpg")) == -1) return -1;
 }
