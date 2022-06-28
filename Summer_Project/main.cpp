@@ -218,6 +218,8 @@ void DrawGameOver(void) {
 
 }
 
+
+
 int LoadImages() {
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
 	if ((g_Menu = LoadGraph("images/menu.bmp")) == -1)return-1;
@@ -570,6 +572,26 @@ int CreateEnemy() {
 
 }
 
+int CreateBike() {
+
+	for (int i = 0; i < ENEMY_MAX; i++) {
+		if (g_enemy2[i].flg == FALSE) {
+			g_enemy2[i] = g_enemy00;
+			g_enemy2[i].type = GetRand(2);
+			g_enemy2[i].img = g_Bike[g_enemy2[i].type];
+			g_enemy2[i].x = GetRand(4) * 105 + 40;
+			g_enemy2[i].speed = g_enemy2[i].type * 2;
+
+			//	¬Œ÷
+			return TRUE;
+		}
+	}
+
+	//	Ž¸”s
+	return FALSE;
+
+}
+
 int HitBoxPlayer(PLAYER* p, ENEMY* e) {
 
 	//	x,y ‚Í’†SÀ•W‚Æ‚·‚é
@@ -589,6 +611,7 @@ int HitBoxPlayer(PLAYER* p, ENEMY* e) {
 	}
 	return FALSE;
 }
+
 
 void ItemControl() {
 	for (int i = 0; i < ITEM_MAX; i++) {
