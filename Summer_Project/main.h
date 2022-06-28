@@ -1,7 +1,8 @@
 #pragma once
-#include <cstdio>
-#include <iostream>
-#include <DxLib.h>
+#include "DxLib.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+#define RANKING_DATA 5
 
 class Menu {
 public:
