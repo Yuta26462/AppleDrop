@@ -12,23 +12,28 @@ void DrawScoreArea(void);
 
 void DrawScoreArea(void)
 {
-	if (g_GameState != 6)
-	{
-		g_Mileage += g_player.speed;
-	}
-
 	//ステージ画像表示
 	//描画可能エリアを設定
 	SetDrawArea(0, 0, 500, 480);
-
-	DrawGraph(0, g_Mileage % 480 - 480, g_StageImage, FALSE);
-	DrawGraph(0, g_Mileage % 480, g_StageImage, FALSE);
 
 	//エリアを残す
 	SetDrawArea(0, 0, 640, 480);
 
 	//スコア等表示領域
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
+
+	//スコア等をを表示
+	SetFontSize(16);
+	DrawFormatString(510, 20, 0x000000, "ハイスコア");
+	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
+	DrawFormatString(510, 80, 0x000000, "採った数");
+	DrawRotaGraph(523, 120, 0.3f, 0, g_Teki[0], TRUE, FALSE);
+	DrawRotaGraph(573, 120, 0.3f, 0, g_Teki[1], TRUE, FALSE);
+	DrawRotaGraph(623, 120, 0.3f, 0, g_Teki[2], TRUE, FALSE);
+
+	DrawFormatString(510, 140, 0xFFFFFF, "%03d", g_EnemyCount1);
+	DrawFormatString(560, 140, 0xFFFFFF, "%03d", g_EnemyCount2);
+	DrawFormatString(610, 140, 0xFFFFFF, "%03d", g_EnemyCount3);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdshow)
