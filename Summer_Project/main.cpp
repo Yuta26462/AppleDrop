@@ -8,6 +8,29 @@ int key = 0;
 
 int Oldkey, Nowkey, KeyFlg;
 
+void DrawScoreArea(void);
+
+void DrawScoreArea(void)
+{
+	if (g_GameState != 6)
+	{
+		g_Mileage += g_player.speed;
+	}
+
+	//ステージ画像表示
+	//描画可能エリアを設定
+	SetDrawArea(0, 0, 500, 480);
+
+	DrawGraph(0, g_Mileage % 480 - 480, g_StageImage, FALSE);
+	DrawGraph(0, g_Mileage % 480, g_StageImage, FALSE);
+
+	//エリアを残す
+	SetDrawArea(0, 0, 640, 480);
+
+	//スコア等表示領域
+	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdshow)
 {
 	SetMainWindowText("");
