@@ -144,13 +144,24 @@ void DrawHelp(void) {
 }
 
 void DrawEnd(void) {
+	//エンド画像表示
 	DrawGraph(0, 0, g_EndImage, FALSE);
 
-	SetFontSize(24);
-	DrawString(360, 480 - 24, "Thank you for Playing", 0xffffff, 0);
+	//エンディング表示
+	if (++g_WaitTime < 600) g_PosY = 300 - g_WaitTime / 2;
 
-	//	タイムの加算処理&終了（3秒後）
-	if (++g_WaitTime > 180)g_GameState = 99;
+	SetFontSize(24);
+	DrawString(100, 170 + g_PosY, "タイトル　　　りんごの森", 0xFFFFFF);
+	DrawString(100, 200 + g_PosY, "バージョン　　1.0", 0xFFFFFF);
+	DrawString(100, 230 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF);
+	DrawString(100, 260 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF);
+	DrawString(100, 290 + g_PosY, "　　　　　　　しょうご,しき", 0xFFFFFF);
+	DrawString(100, 310 + g_PosY, "素材利用", 0xFFFFFF);
+	DrawString(100, 340 + g_PosY, "　BGM　　　 　DOVA-SYNDROME", 0xFFFFFF);
+	DrawString(100, 365 + g_PosY, "　SE　　　　　効果音工房", 0xFFFFFF);
+
+	//タイムの加算処理＆終了
+	if (++g_WaitTime > 900) g_GameState = 99;
 }
 
 void GameMain(void) {
