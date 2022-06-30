@@ -199,6 +199,7 @@ void GameMain(void) {
 	/*BikeControl();
 
 	ItemControl();*/
+	DrawGraph(0, 0, g_StageImage, FALSE);
 	apple[0].AppleControl();
 
 	PlayerControl();
