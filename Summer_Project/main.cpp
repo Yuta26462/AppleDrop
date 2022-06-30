@@ -450,14 +450,14 @@ void PlayerControl() {
 		if (g_player.count >= 80)		g_player.flg = TRUE;
 	}
 
-	//	敵を避けた数を表示
-	SetFontSize(16);
-	DrawFormatString(510, 20, 0x000000, "ハイスコア");
-	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
-	DrawFormatString(510, 80, 0x000000, "採った数");
-	DrawRotaGraph(523, 120, 0.3f, 0, apple_img[0], TRUE, FALSE);
-	DrawRotaGraph(573, 120, 0.3f, 0, apple_img[1], TRUE, FALSE);
-	DrawRotaGraph(623, 120, 0.3f, 0, apple_img[2], TRUE, FALSE);
+	////	敵を避けた数を表示
+	//SetFontSize(16);
+	//DrawFormatString(510, 20, 0x000000, "ハイスコア");
+	//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
+	//DrawFormatString(510, 80, 0x000000, "採った数");
+	//DrawRotaGraph(523, 120, 0.3f, 0, apple_img[0], TRUE, FALSE);
+	//DrawRotaGraph(573, 120, 0.3f, 0, apple_img[1], TRUE, FALSE);
+	//DrawRotaGraph(623, 120, 0.3f, 0, apple_img[2], TRUE, FALSE);
 	//DrawRotaGraph(623, 180, 0.3f, 0, apple_img[3], TRUE, FALSE);	//チャレンジ5
 
 	//DrawFormatString(510, 140, 0xFFFFFF, "%03d", g_EnemyCount1);

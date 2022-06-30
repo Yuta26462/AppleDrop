@@ -33,14 +33,14 @@ void Apple::AppleControl() {
 
 
 			//“–‚½‚è”»’è
-			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE && g_player.baricnt <= 0)
+			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE)
 			{
-				g_player.flg = FALSE;
+				/*g_player.flg = FALSE;
 				g_player.speed = PLAYER_SPEED;
 				g_player.count = 0;
-				g_player.hp -= 100;
+				g_player.hp -= 100;*/
 				apple[i].flg = false;
-				if (g_player.hp <= 0) g_GameState = 6;
+				/*if (g_player.hp <= 0) g_GameState = 6;*/
 			}
 		}
 	}
