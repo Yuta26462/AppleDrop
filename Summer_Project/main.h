@@ -40,6 +40,7 @@ int spflag;		//チャレンジ4用フラグ
 int g_Bike[1];		//チャレンジ5	バイク画像変数
 int bikec = 0;
 
+int g_PosY, gPosX;
 
 void GameInit(void);
 void GameMain(void);
