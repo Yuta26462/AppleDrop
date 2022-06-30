@@ -405,8 +405,8 @@ void PlayerControl() {
 
 	//	上下左右移動
 	if (g_player.flg == TRUE) {
-		if (g_NowKey & PAD_INPUT_UP)	g_player.y -= g_player.speed;
-		if (g_NowKey & PAD_INPUT_DOWN)	g_player.y += g_player.speed;
+		/*if (g_NowKey & PAD_INPUT_UP)	g_player.y -= g_player.speed;
+		if (g_NowKey & PAD_INPUT_DOWN)	g_player.y += g_player.speed;*/
 		if (g_NowKey & PAD_INPUT_LEFT)	g_player.x -= g_player.speed;
 		if (g_NowKey & PAD_INPUT_RIGHT)	g_player.x += g_player.speed;
 
@@ -416,25 +416,25 @@ void PlayerControl() {
 	if (g_player.x < 32)		g_player.x = 32;
 
 	if (g_player.x > SCREEN_WIDTH - 180)		g_player.x = SCREEN_WIDTH - 180;
-	if (g_player.y < 60)		g_player.y = 60;
-	if (g_player.y > SCREEN_HEIGHT - 60)			g_player.y = SCREEN_HEIGHT - 60;
+	/*if (g_player.y < 60)		g_player.y = 60;
+	if (g_player.y > SCREEN_HEIGHT - 60)			g_player.y = SCREEN_HEIGHT - 60;*/
 
 	//	プレイヤーの表示
 	if (g_player.flg == TRUE) {
 		if (g_NowKey & PAD_INPUT_LEFT) {
-			DrawRotaGraph(g_player.x, g_player.y, 1.0f, -M_PI / 18, g_Car, TRUE, FALSE);
+			DrawRotaGraph(g_player.x, g_player.y, 0.3f, -M_PI / 18, g_Car, TRUE, FALSE);
 		}
 		else if (g_NowKey & PAD_INPUT_RIGHT) {
-			DrawRotaGraph(g_player.x, g_player.y, 1.0f, -M_PI / 18, g_Car, TRUE, FALSE);
+			DrawRotaGraph(g_player.x, g_player.y, 0.3, -M_PI / 18, g_Car, TRUE, FALSE);
 		}
 		else
 		{
-			DrawRotaGraph(g_player.x, g_player.y, 1.0f, 0, g_Car, TRUE, FALSE);
+			DrawRotaGraph(g_player.x, g_player.y, 0.3, 0, g_Car, TRUE, FALSE);
 		}
 
 		//バリア
 
-		if (g_KeyFlg & PAD_INPUT_C && g_player.bari > 0 && g_player.baricnt <= 0) {
+		/*if (g_KeyFlg & PAD_INPUT_C && g_player.bari > 0 && g_player.baricnt <= 0) {
 			g_player.bari--;
 			g_player.baricnt = 1000;
 		}
@@ -442,11 +442,11 @@ void PlayerControl() {
 			g_player.baricnt -= g_player.speed;
 			DrawRotaGraph(g_player.x, g_player.y, 1.0f, 0, g_Barrier, TRUE, FALSE);
 		}
-		else { g_player.baricnt = 0; }
+		else { g_player.baricnt = 0; }*/
 
 	}
 	else {
-		DrawRotaGraph(g_player.x, g_player.y, 1.0f, M_PI / 8 * (++g_player.count / 5), g_Car, TRUE, FALSE);
+		DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), g_Car, TRUE, FALSE);
 		if (g_player.count >= 80)		g_player.flg = TRUE;
 	}
 
