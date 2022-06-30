@@ -2,7 +2,11 @@
 
 Apple apple[APPLE_MAX];
 int g_OldKey, g_NowKey, g_KeyFlg;
-int apple_img[3];
+//int apple_img[4];
+int Red_img;
+int Green_img;
+int Gold_img;
+int Black_img;
 int g_GameState = 0;
 int g_Score = 0;
 int g_RankingImage;
@@ -233,10 +237,14 @@ void DrawGameOver(void) {
 	DrawString(220, 170, "ゲームオーバー", 0xcc0000);
 	SetFontSize(16);
 	DrawString(180, 200, "走行距離     ", 0x000000);
-	DrawRotaGraph(230, 230, 0.3f, M_PI / 2, apple_img[0], TRUE, FALSE);
+	DrawRotaGraph(230, 230, 0.3f, M_PI / 2, Red_img, TRUE, FALSE);
+	DrawRotaGraph(230, 250, 0.3f, M_PI / 2, Green_img, TRUE, FALSE);
+	DrawRotaGraph(230, 270, 0.3f, M_PI / 2, Gold_img, TRUE, FALSE);
+	DrawRotaGraph(230, 290, 0.3f, M_PI / 2, Black_img, TRUE, FALSE);
+	/*DrawRotaGraph(230, 230, 0.3f, M_PI / 2, apple_img[0], TRUE, FALSE);
 	DrawRotaGraph(230, 250, 0.3f, M_PI / 2, apple_img[1], TRUE, FALSE);
 	DrawRotaGraph(230, 270, 0.3f, M_PI / 2, apple_img[2], TRUE, FALSE);
-	//DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);
+	DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);*/
 
 
 
@@ -261,9 +269,13 @@ int LoadImages() {
 	/*if ((g_Item[0] = LoadGraph("images/greenapple.png")) == -1)return-1;
 	if ((g_Item[1] = LoadGraph("images/apple.png")) == -1)return-1;*/
 	if ((g_EndImage = LoadGraph("images/background.png")) == -1)return-1;
-	if (LoadDivGraph("images/car.bmp", 3, 3, 1, 63, 120, apple_img) == -1)return -1;	//敵
+	//if (LoadDivGraph("images/car.bmp", 3, 3, 1, 63, 120, apple_img) == -1)return -1;	//リンゴ
+	if ((Red_img = LoadGraph("images/apple.png")) == -1)return -1;
+	if ((Green_img = LoadGraph("images/greenapple.png")) == -1)return -1;
+	if ((Gold_img = LoadGraph("images/yellowapple.png")) == -1) return -1;
+	if ((Black_img = LoadGraph("images/purpleapple.png")) == -1)return -1;
 	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
-	if ((g_Car = LoadGraph("images/purpleapple.png")) == -1)return-1;
+	if ((g_Car = LoadGraph("images/cat.png")) == -1)return-1;
 	if ((g_Barrier = LoadGraph("images/barrier.png")) == -1)return-1;
 	/*if (LoadDivGraph("images/bike.bmp", 1, 1, 1, 32, 72, g_Bike) == -1)return -1;*/
 	//if ((g_Bike = LoadGraph("images/05/bike.bmp")) == -1)return-1;
@@ -397,11 +409,11 @@ void PlayerControl() {
 	//	ゲームオーバー処理へ
 	if (g_player.fuel <= 0)		g_GameState = 6;
 
-	//	Zキーで加速
-	if (g_KeyFlg & PAD_INPUT_A && g_player.speed < 10)g_player.speed += 1;
+	////	Zキーで加速
+	//if (g_KeyFlg & PAD_INPUT_A && g_player.speed < 10)g_player.speed += 1;
 
-	//	Xキーで減速
-	if (g_KeyFlg & PAD_INPUT_B && g_player.speed > 1)g_player.speed -= 1;
+	////	Xキーで減速
+	//if (g_KeyFlg & PAD_INPUT_B && g_player.speed > 1)g_player.speed -= 1;
 
 	//	上下左右移動
 	if (g_player.flg == TRUE) {
@@ -415,7 +427,7 @@ void PlayerControl() {
 	//	画面をはみ出さないようにする
 	if (g_player.x < 32)		g_player.x = 32;
 
-	if (g_player.x > SCREEN_WIDTH - 180)		g_player.x = SCREEN_WIDTH - 180;
+	if (g_player.x > SCREEN_WIDTH - 32)		g_player.x = SCREEN_WIDTH - 32;
 	/*if (g_player.y < 60)		g_player.y = 60;
 	if (g_player.y > SCREEN_HEIGHT - 60)			g_player.y = SCREEN_HEIGHT - 60;*/
 

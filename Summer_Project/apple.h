@@ -41,7 +41,8 @@ public:
 };
 
 int GetAppleType();
-int GetAppleSpeed(int AppleSpeed);
+int GetAppleSpeed(int AppleType);
+int GetAppleImage(int AppleType);
 
 extern Apple apple[APPLE_MAX];
 extern bool apple_flg;
