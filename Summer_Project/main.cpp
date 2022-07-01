@@ -276,7 +276,7 @@ int LoadImages() {
 	if ((Black_img = LoadGraph("images/purpleapple.png")) == -1)return -1;*/
 	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
 	if ((g_Car = LoadGraph("images/cat.png")) == -1)return-1;
-	if ((g_Barrier = LoadGraph("images/barrier.png")) == -1)return-1;
+	//if ((g_Barrier = LoadGraph("images/barrier.png")) == -1)return-1;
 	/*if (LoadDivGraph("images/bike.bmp", 1, 1, 1, 32, 72, g_Bike) == -1)return -1;*/
 	//if ((g_Bike = LoadGraph("images/05/bike.bmp")) == -1)return-1;
 	return 0;
