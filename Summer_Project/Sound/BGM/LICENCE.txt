@@ -1,0 +1,4 @@
+ほゎ.wav タイトル
+ミニマルなマーチ.wav　ゲームメイン
+Walking_Ameba.wav　ランキング
+Small_Happy.wav　エンド
