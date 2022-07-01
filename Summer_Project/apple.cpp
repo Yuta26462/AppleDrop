@@ -10,7 +10,7 @@ void Apple::AppleControl() {
 		if (apple[i].flg == true)
 		{
 			//“G‚Ì•\Ž¦
-			DrawRotaGraph(apple[i].x, apple[i].y, 0.2f, 0, apple[i].img, TRUE, FALSE);
+			DrawRotaGraph(apple[i].x, apple[i].y, 1.0f, 0, apple[i].img, TRUE, FALSE);
 
 			if (g_player.flg == FALSE)continue;
 
@@ -57,7 +57,7 @@ int Apple::CreateApple() {
 		if (apple[i].flg == false) {
 			apple[i].flg = true;
 			apple[i].type = GetAppleType();
-			apple[i].img = GetAppleImage(apple[i].type);//apple_img[apple[i].type];
+			apple[i].img = apple_img[apple[i].type];/*GetAppleImage(apple[i].type);*///
 			apple[i].x = GetRand(6) * 90 + 40;
 			apple[i].y = -50;
 			apple[i].w = 60;
@@ -93,21 +93,21 @@ int GetAppleType() {
 	}
 }
 
-int GetAppleImage(int AppleType) {
-	switch (AppleType)
-	{
-	case RED_APPLE:
-		return Red_img;
-	case GREEN_APPLE:
-		return Green_img;
-	case GOLD_APPLE:
-		return Gold_img;
-	case BLACK_APPLE:
-		return Black_img;
-	default:
-		break;
-	}
-}
+//int GetAppleImage(int AppleType) {
+//	switch (AppleType)
+//	{
+//	case RED_APPLE:
+//		return Red_img;
+//	case GREEN_APPLE:
+//		return Green_img;
+//	case GOLD_APPLE:
+//		return Gold_img;
+//	case BLACK_APPLE:
+//		return Black_img;
+//	default:
+//		break;
+//	}
+//}
 
 int GetAppleSpeed(int AppleType) {
 	switch (AppleType) {
