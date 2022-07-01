@@ -58,7 +58,7 @@ int Apple::CreateApple() {
 			apple[i].flg = true;
 			apple[i].type = GetAppleType();
 			apple[i].img = apple_img[apple[i].type];/*GetAppleImage(apple[i].type);*///
-			apple[i].x = GetRand(6) * 90 + 40;
+			apple[i].x = GetRand(6) * 70 + 30;
 			apple[i].y = -50;
 			apple[i].w = 60;
 			apple[i].h = 60;
@@ -85,9 +85,9 @@ int GetAppleType() {
 	else if (apple_type == 8) {
 		return GOLD_APPLE;
 	}
-	/*else if (apple_type == 9) {
+	else if (apple_type == 9) {
 		return BLACK_APPLE;
-	}*/
+	}
 	else {
 		return NULL;
 	}
@@ -120,9 +120,9 @@ int GetAppleSpeed(int AppleType) {
 	case GOLD_APPLE:
 		return 10;
 		break;
-	/*case BLACK_APPLE:
+	case BLACK_APPLE:
 		return 1;
-		break;*/
+		break;
 	default:
 		break;
 	}
