@@ -10,6 +10,7 @@ int apple_img[4];
 int g_GameState = 0;
 int g_Score = 0;
 int g_RankingImage;
+bool StartFlg = false;
 struct PLAYER g_player;
 struct RankingData g_Ranking[RANKING_DATA];
 
@@ -92,6 +93,7 @@ void DrawGameTitle(void) {
 
 void GameInit(void) {
 	g_Score = 0;
+	StartFlg = true;
 	//spflag = 0;		//チャレンジ5用
 	//bikec = 0;		//チャレンジ5用
 
@@ -467,7 +469,7 @@ void PlayerControl() {
 	//	敵を避けた数を表示
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
-	DrawFormatString(510, 20, 0x000000, "ハイスコア");
+	DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
 	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
 	DrawFormatString(510, 80, 0x000000, "採った数");
 	//DrawRotaGraph(523, 120, 0.3f, 0, apple_img[0], TRUE, FALSE);

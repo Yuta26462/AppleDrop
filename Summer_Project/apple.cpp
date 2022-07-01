@@ -3,6 +3,7 @@
 bool apple_flg;
 int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
 int timer = 0;
+int apple_count = 0;
 
 void Apple::AppleControl() {
 	for (int i = 0; i < APPLE_MAX; i++)
@@ -18,7 +19,10 @@ void Apple::AppleControl() {
 			apple[i].y += apple[i].speed + g_player.speed - PLAYER_SPEED + 1;
 
 			//画面をはみ出したら消去
-			if (apple[i].y > SCREEN_HEIGHT + apple[i].h)	apple[i].flg = false;
+			if (apple[i].y > SCREEN_HEIGHT + apple[i].h) {
+				apple[i].flg = false;
+				apple_count--;
+			}
 
 			////敵機を追い越したらカウントする
 			//if (g_enemy[i].y > g_player.y && g_enemy[i].point == 1)
@@ -40,24 +44,37 @@ void Apple::AppleControl() {
 				g_player.count = 0;
 				g_player.hp -= 100;*/
 				apple[i].flg = false;
+				apple_count--;
+				g_Score += apple[i].score;
 				/*if (g_player.hp <= 0) g_GameState = 6;*/
 			}
 		}
 	}
 
+	
+
 	//走行距離ごとに敵出現パターンを制御する
-	if (++timer % 25== 0)
+	if (++timer % 25 == 0 && (APPLE_MAX - apple_count) / 2 > apple_count)
 	{
-		CreateApple();
+		if (StartFlg == true) {
+				apple_count++;
+				CreateApple(APPLE_START);
+				StartFlg = false;
+		}
+		else {
+			apple_count++;
+			CreateApple(APPLE_MAX);
+		}
+		
 	}
 }
 
-int Apple::CreateApple() {
-	for (int i = 0; i < ENEMY_MAX; i++) {
+int Apple::CreateApple(int maxapple) {
+	for (int i = 0; i < maxapple; i++) {
 		if (apple[i].flg == false) {
 			apple[i].flg = true;
 			apple[i].type = GetAppleType();
-			apple[i].img = apple_img[apple[i].type];/*GetAppleImage(apple[i].type);*///
+			apple[i].img = apple_img[apple[i].type];
 			apple[i].x = GetRand(6) * 70 + 30;
 			apple[i].y = -50;
 			apple[i].w = 60;
@@ -68,7 +85,6 @@ int Apple::CreateApple() {
 			return TRUE;
 		}
 	}
-
 	//	失敗
 	return FALSE;
 }
@@ -93,21 +109,6 @@ int GetAppleType() {
 	}
 }
 
-//int GetAppleImage(int AppleType) {
-//	switch (AppleType)
-//	{
-//	case RED_APPLE:
-//		return Red_img;
-//	case GREEN_APPLE:
-//		return Green_img;
-//	case GOLD_APPLE:
-//		return Gold_img;
-//	case BLACK_APPLE:
-//		return Black_img;
-//	default:
-//		break;
-//	}
-//}
 
 int GetAppleSpeed(int AppleType) {
 	switch (AppleType) {
