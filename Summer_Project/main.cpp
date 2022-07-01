@@ -260,6 +260,7 @@ void DrawGameOver(void) {
 
 int LoadImages() {
 	if (LoadDivGraph("images/apple.png", 5, 4, 1, 50, 50, apple_img) == -1) return -1;
+	if (LoadDivGraph("images/player.png", 6, 12, 1, 32, 32, apple_img) == -1) return -1;
 
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
 	if ((g_Menu = LoadGraph("images/menu.bmp")) == -1)return-1;
@@ -408,7 +409,7 @@ void PlayerControl() {
 	//	âÊñ ÇÇÕÇ›èoÇ≥Ç»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
 	if (g_player.x < 32)		g_player.x = 32;
 
-	if (g_player.x > SCREEN_WIDTH - 32)		g_player.x = SCREEN_WIDTH - 32;
+	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
 	/*if (g_player.y < 60)		g_player.y = 60;
 	if (g_player.y > SCREEN_HEIGHT - 60)			g_player.y = SCREEN_HEIGHT - 60;*/
 
