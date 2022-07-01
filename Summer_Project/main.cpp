@@ -106,13 +106,13 @@ void GameInit(void) {
 	g_player.y = PLAYER_POS_Y;
 	g_player.w = PLAYER_WIDTH;
 	g_player.h = PLAYER_HEIGHT;
-	g_player.angle = 0.0;
+	//g_player.angle = 0.0;
 	g_player.count = 0;
 	g_player.speed = PLAYER_SPEED;
-	g_player.hp = PLAYER_HP;
-	g_player.fuel = PLAYER_FUEL;
-	g_player.bari = PLAYER_BARRIER;
-	g_player.bariup = PLAYER_BARRIERUP;
+	//g_player.hp = PLAYER_HP;
+	//g_player.fuel = PLAYER_FUEL;
+	//g_player.bari = PLAYER_BARRIER;
+	//g_player.bariup = PLAYER_BARRIERUP;
 
 
 	g_GameState = 5;
@@ -385,10 +385,10 @@ int ReadRanking(void)
 
 void PlayerControl() {
 
-	//	燃料の消費
-	g_player.fuel -= g_player.speed;
-	//	ゲームオーバー処理へ
-	if (g_player.fuel <= 0)		g_GameState = 6;
+	////	燃料の消費
+	//g_player.fuel -= g_player.speed;
+	////	ゲームオーバー処理へ
+	//if (g_player.fuel <= 0)		g_GameState = 6;
 
 	////	Zキーで加速
 	//if (g_KeyFlg & PAD_INPUT_A && g_player.speed < 10)g_player.speed += 1;
