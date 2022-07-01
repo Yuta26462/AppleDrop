@@ -23,11 +23,11 @@ extern int g_GameState;
 extern int g_Score;
 extern int g_RankingImage;
 
-//extern int apple_img[4];	//ƒLƒƒƒ‰‰æ‘œ•Ï”
-extern int Red_img;
-extern int Green_img;
-extern int Gold_img;
-extern int Black_img;
+extern int apple_img[4];	//ƒLƒƒƒ‰‰æ‘œ•Ï”
+//extern int Red_img;
+//extern int Green_img;
+//extern int Gold_img;
+//extern int Black_img;
 
 //int g_Item[2];
 
