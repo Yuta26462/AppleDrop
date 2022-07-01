@@ -3,10 +3,7 @@
 Apple apple[APPLE_MAX];
 int g_OldKey, g_NowKey, g_KeyFlg;
 int apple_img[4];
-//int Red_img;
-//int Green_img;
-//int Gold_img;
-//int Black_img;
+int players_img[6];
 int g_GameState = 0;
 int g_Score = 0;
 int g_RankingImage;
@@ -19,7 +16,6 @@ int g_PosY, gPosX;
 int g_WaitTime = 0;
 int g_EndImage;
 int g_StageImage;
-int g_Car, g_Barrier;
 
 int LoadImages();
 
@@ -277,7 +273,7 @@ int LoadImages() {
 	if ((Gold_img = LoadGraph("images/yellowapple.png")) == -1) return -1;
 	if ((Black_img = LoadGraph("images/purpleapple.png")) == -1)return -1;*/
 	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
-	if ((g_Car = LoadGraph("images/cat.png")) == -1)return-1;
+	if (LoadDivGraph("images/player.png", 6, 3, 2, 32, 32, players_img) == -1)return -1;	//リンゴ
 	//if ((g_Barrier = LoadGraph("images/barrier.png")) == -1)return-1;
 	/*if (LoadDivGraph("images/bike.bmp", 1, 1, 1, 32, 72, g_Bike) == -1)return -1;*/
 	//if ((g_Bike = LoadGraph("images/05/bike.bmp")) == -1)return-1;
@@ -387,23 +383,6 @@ int ReadRanking(void)
 	return 0;
 }
 
-//void BackScrool()
-//{
-//	//g_Mileage += 5;
-//	//if (!spflag) { g_Mileage += g_player.speed; }
-//	if (g_GameState != 6)g_Mileage += g_player.speed;
-//
-//	//ステージ描画表示
-//
-//	SetDrawArea(0, 0, 500, 480);
-//	DrawGraph(0, g_Mileage % 480 - 480, g_StageImage, FALSE);
-//	DrawGraph(0, g_Mileage % 480, g_StageImage, FALSE);
-//
-//	SetDrawArea(0, 0, 640, 480);
-//
-//	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
-//}
-
 void PlayerControl() {
 
 	//	燃料の消費
@@ -436,14 +415,14 @@ void PlayerControl() {
 	//	プレイヤーの表示
 	if (g_player.flg == TRUE) {
 		if (g_NowKey & PAD_INPUT_LEFT) {
-			DrawRotaGraph(g_player.x, g_player.y, 0.3f, -M_PI / 18, g_Car, TRUE, FALSE);
+			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE);
 		}
 		else if (g_NowKey & PAD_INPUT_RIGHT) {
-			DrawRotaGraph(g_player.x, g_player.y, 0.3, -M_PI / 18, g_Car, TRUE, FALSE);
+			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE);
 		}
 		else
 		{
-			DrawRotaGraph(g_player.x, g_player.y, 0.3, 0, g_Car, TRUE, FALSE);
+			DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[0], TRUE, FALSE);
 		}
 
 		//バリア
@@ -460,7 +439,7 @@ void PlayerControl() {
 
 	}
 	else {
-		DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), g_Car, TRUE, FALSE);
+		DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
 		if (g_player.count >= 80)		g_player.flg = TRUE;
 	}
 
@@ -481,137 +460,6 @@ void PlayerControl() {
 	//DrawFormatString(610, 200, 0xFFFFFF, "%03d", g_EnemyCount4);	//チャレンジ5
 }
 
-//void EnemyControl() {
-//	for (int i = 0; i < ENEMY_MAX; i++) {
-//		if (g_enemy[i].flg == TRUE) {
-//
-//			//	敵の表示
-//			DrawRotaGraph(g_enemy[i].x, g_enemy[i].y, 1.0f, 0, g_enemy[i].img, TRUE, FALSE);
-//			if (g_player.flg == FALSE)continue;
-//
-//			//	真っ直ぐ下に移動
-//			g_enemy[i].y += g_enemy[i].speed + g_player.speed - PLAYER_SPEED + 1;
-//
-//			//	画面をはみ出しだしたら消去
-//			if (g_enemy[i].y > SCREEN_HEIGHT + g_enemy[i].h)g_enemy[i].flg = FALSE;
-//
-//			//	敵機を追い越したらカウントする
-//			if (g_enemy[i].y > g_player.y && g_enemy[i].point == 1) {
-//				g_enemy[i].point = 0;
-//				if (g_enemy[i].type == 0)g_EnemyCount1++;
-//				if (g_enemy[i].type == 1)g_EnemyCount2++;
-//				if (g_enemy[i].type == 2)g_EnemyCount3++;
-//			}
-//
-//			/*if (g_enemy2[i].y > g_player.y && g_enemy2[i].point == 1) {
-//				g_enemy2[i].point = 0;
-//				if (g_enemy2[i].type == 0)g_EnemyCount1++;
-//			}*/
-//
-//			//	当たり判定
-//			if (HitBoxPlayer(&g_player, &g_enemy[i]) == TRUE && g_player.baricnt <= 0) {
-//				g_player.flg = FALSE;
-//				g_player.speed = PLAYER_SPEED;
-//				g_player.count = 0;
-//				g_player.hp -= 100;
-//				g_enemy[i].flg = FALSE;
-//				if (g_player.hp <= 0)		g_GameState = 6;
-//			}
-//		}
-//	}
-//
-//	//	歩行距離ごとに敵出現パターンを制御する
-//	if (g_Mileage / 10 % 50 == 0) {
-//		CreateEnemy();
-//	}
-//}
-
-//void BikeControl() {
-//	bikec++;	//チャレンジ5
-//	for (int i = 0; i < ENEMY_MAX; i++) {
-//		if (g_enemy2[i].flg == TRUE) {
-//
-//			//	敵の表示
-//			DrawRotaGraph(g_enemy2[i].x, g_enemy2[i].y, 1.0f, 0, g_enemy2[i].img, TRUE, FALSE);
-//			if (g_player.flg == FALSE)continue;
-//
-//			//	真っ直ぐ下に移動
-//			//DrawFormatString(540, 400, 0xFFFFFF, "count:%d" , bikec); //カウントチェック用
-//			int bikec2 = bikec / 1000 % 2 == 1;
-//			if (bikec < 300)g_enemy2[i].x += g_enemy2[i].speed + g_player.speed - PLAYER_SPEED + 1;		//	チャレンジ5
-//			else if (bikec < 600)g_enemy2[i].x -= g_enemy2[i].speed + g_player.speed - PLAYER_SPEED + 1;		//	チャレンジ5
-//			else bikec = 0;
-//
-//			g_enemy2[i].y += g_enemy2[i].speed + g_player.speed - PLAYER_SPEED + 1;
-//
-//			//	画面をはみ出しだしたら消去
-//			if (g_enemy2[i].y > SCREEN_HEIGHT + g_enemy2[i].h)g_enemy2[i].flg = FALSE;
-//			if (g_enemy2[i].x + 215 > SCREEN_WIDTH + g_enemy2[i].w)g_enemy2[i].flg = FALSE;		//チャレンジ5;
-//
-//			//	敵機を追い越したらカウントする
-//			if (g_enemy2[i].y > g_player.y && g_enemy2[i].point == 1) {
-//				g_enemy2[i].point = 0;
-//				if (g_enemy2[i].type == 0)g_EnemyCount4++;
-//			}
-//
-//
-//			//	当たり判定
-//			if (HitBoxPlayer(&g_player, &g_enemy2[i]) == TRUE && g_player.baricnt <= 0) {
-//				g_player.flg = FALSE;
-//				g_player.speed = PLAYER_SPEED;
-//				g_player.count = 0;
-//				g_player.hp -= 50;
-//				g_enemy2[i].flg = FALSE;
-//				if (g_player.hp <= 0)		g_GameState = 6;
-//			}
-//		}
-//	}
-//
-//	//	歩行距離ごとに敵出現パターンを制御する
-//	if (g_Mileage / 10 % 50 == 0) {
-//		CreateBike();
-//	}
-//}
-
-//int CreateEnemy() {
-//
-//	for (int i = 0; i < ENEMY_MAX; i++) {
-//		if (g_enemy[i].flg == FALSE) {
-//			g_enemy[i] = g_enemy00;
-//			g_enemy[i].type = GetRand(2);
-//			g_enemy[i].img = g_Teki[g_enemy[i].type];
-//			g_enemy[i].x = GetRand(4) * 105 + 40;
-//			g_enemy[i].speed = g_enemy[i].type * 2;
-//
-//			//	成功
-//			return TRUE;
-//		}
-//	}
-//
-//	//	失敗
-//	return FALSE;
-//
-//}
-
-//int CreateBike() {
-//
-//	for (int i = 0; i < ENEMY_MAX; i++) {
-//		if (g_enemy2[i].flg == FALSE) {
-//			g_enemy2[i] = g_enemy00;
-//			g_enemy2[i].type = GetRand(2);
-//			g_enemy2[i].img = g_Bike[g_enemy2[i].type];
-//			g_enemy2[i].x = GetRand(4) * 105 + 40;
-//			g_enemy2[i].speed = g_enemy2[i].type * 2;
-//
-//			//	成功
-//			return TRUE;
-//		}
-//	}
-//
-//	//	失敗
-//	return FALSE;
-//
-//}
 
 int HitBoxPlayer(PLAYER* p, Apple* e) {
 
@@ -632,54 +480,3 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 	}
 	return FALSE;
 }
-
-
-//void ItemControl() {
-//	for (int i = 0; i < ITEM_MAX; i++) {
-//		if (g_item[i].flg == TRUE) {
-//			//	アイテムの表示
-//			DrawRotaGraph(g_item[i].x, g_item[i].y, 1.0f, 0, g_item[i].img, TRUE);
-//
-//			if (g_player.flg == FALSE)continue;
-//
-//			//	真っすぐ下に移動
-//			g_item[i].y += g_item[i].speed + g_player.speed - PLAYER_SPEED;
-//
-//			//	画面をはみ出したら消去
-//			if (g_item[i].y > SCREEN_HEIGHT)g_item[i].flg = FALSE;
-//
-//			if (HitBoxPlayer(&g_player, &g_item[i]) == TRUE) {
-//				g_item[i].flg = FALSE;
-//				if (g_item[i].type == 0)g_player.fuel += g_item[i].point;
-//				if (g_item->type == 1) {
-//					g_player.hp += g_item[i].point;
-//					if (g_player.hp > PLAYER_HP)g_player.hp = PLAYER_HP;
-//				}
-//			}
-//		}
-//	}
-//
-//	//	走行距離ごとに敵出現パターンを制御する
-//	if (g_Mileage / 10 % 500 == 0)CreateItem();
-//}
-
-//int CreateItem() {
-//
-//	for (int i = 0; i < ITEM_MAX; i++) {
-//		if (g_item[i].flg == FALSE) {
-//			g_item[i] = g_item00;
-//			g_item[i].type = GetRand(1);
-//			g_item[i].img = g_Item[g_item[i].type];
-//			g_item[i].x = GetRand(4) * 105 + 40;
-//			g_item[i].speed = 1 + g_item[i].type * 3;
-//			if (g_item[i].type == 0)	g_item[i].point = 500;
-//			if (g_item[i].type == 1)	g_item[i].point = 50;
-//
-//			//	成功
-//			return TRUE;
-//		}
-//	}
-//
-//	// 失敗
-//	return FALSE;
-//}
