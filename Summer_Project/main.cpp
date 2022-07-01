@@ -263,6 +263,8 @@ void DrawGameOver(void) {
 
 
 int LoadImages() {
+	if (LoadDivGraph("images/apple.png", 5, 4, 1, 50, 50, apple_img) == -1) return -1;
+
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
 	if ((g_Menu = LoadGraph("images/menu.bmp")) == -1)return-1;
 	if ((g_Cone = LoadGraph("images/cone.bmp")) == -1)return-1;
