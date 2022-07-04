@@ -425,13 +425,20 @@ void PlayerControl() {
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
 	//DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
-	DrawFormatString(510, 20, 0x000000, "écÇËéûä‘:%d", timer/60);
-	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
-	DrawFormatString(510, 80, 0x000000, "çÃÇ¡ÇΩêî");
-	DrawRotaGraph(510, 120, 0.3f, 0, apple_img[0], TRUE, FALSE);
-	DrawRotaGraph(510, 140, 0.3f, 0, apple_img[1], TRUE, FALSE);
-	DrawRotaGraph(510, 160, 0.3f, 0, apple_img[2], TRUE, FALSE);
-	DrawRotaGraph(510, 180, 0.3f, 0, apple_img[3], TRUE, FALSE);
+	DrawFormatString(540, 20, 0x000000, "écÇËéûä‘");
+	DrawFormatString(560, 60, 0x000000, "%d", timer/60);
+	//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
+	DrawFormatString(540, 160, 0x000000, "çÃÇ¡ÇΩêî");
+	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
+	DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
+	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
+	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
+
+	DrawFormatString(600, 215, 0xFFFFFF, "5", apple_img[0]);
+	DrawFormatString(600, 275, 0xFFFFFF, "5", apple_img[1]);
+	DrawFormatString(600, 335, 0xFFFFFF, "5", apple_img[2]);
+	DrawFormatString(600, 395, 0xFFFFFF, "5", apple_img[3]);
+
 
 }
 
