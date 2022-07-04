@@ -32,7 +32,7 @@ private:
 public:
 	void AppleControl();			//ƒŠƒ“ƒS—‰ºˆ—ŠÖ”
 	int CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
-	
+	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 
 	bool* GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
 	int GetAppleX();				//ƒŠƒ“ƒSxÀ•Wæ“¾ŠÖ”
@@ -44,6 +44,6 @@ public:
 int GetAppleType();
 int GetAppleSpeed(int AppleType);
 
-extern Apple apple[APPLE_MAX];
-extern bool apple_flg;
+
+
 

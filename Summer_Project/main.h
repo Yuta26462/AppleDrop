@@ -25,6 +25,10 @@ extern int timer;
 extern int g_Score;
 extern int g_RankingImage;
 
+extern Apple apple[APPLE_MAX];
+extern Apple AppleFunc;
+extern bool apple_flg;
+extern int apple_count[4];
 extern int apple_img[4];	//ƒLƒƒƒ‰‰æ‘œ•Ï”
 
 //int g_Item[2];

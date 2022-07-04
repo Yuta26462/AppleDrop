@@ -1,8 +1,9 @@
 #include "main.h"
 
-bool apple_flg;
+
 int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
-int apple_count = 0;
+int apple_quantity = 0;			//描画されているリンゴの個数
+int apple_count[4];
 
 void Apple::AppleControl() {
 	for (int i = 0; i < APPLE_MAX; i++)
@@ -15,20 +16,21 @@ void Apple::AppleControl() {
 			if (g_player.flg == FALSE)continue;
 
 			//まっすぐ下に移動
-			apple[i].y += apple[i].speed + g_player.speed - PLAYER_SPEED + 1;
+			apple[i].y += apple[i].speed;
 
 			//画面をはみ出したら消去
 			if (apple[i].y > SCREEN_HEIGHT + apple[i].h) {
 				apple[i].flg = false;
-				apple_count--;
+				apple_quantity--;
 			}
 
 			//当たり判定
 			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE)
 			{
 				apple[i].flg = false;
-				apple_count--;
+				apple_quantity--;
 				g_Score += apple[i].score;
+				apple_count[apple[i].type]++;
 			}
 		}
 	}
@@ -36,15 +38,15 @@ void Apple::AppleControl() {
 	
 
 	//走行距離ごとに敵出現パターンを制御する
-	if (timer % 25 == 0 && (APPLE_MAX - apple_count) / 2 > apple_count)
+	if (timer % 25 == 0 && (APPLE_MAX - apple_quantity) / 2 > apple_quantity)
 	{
 		if (StartFlg == true) {
-				apple_count++;
+				apple_quantity++;
 				CreateApple(APPLE_START);
 				StartFlg = false;
 		}
 		else {
-			apple_count++;
+			apple_quantity++;
 			CreateApple(APPLE_MAX);
 		}
 		
@@ -71,6 +73,16 @@ int Apple::CreateApple(int maxapple) {
 	return FALSE;
 }
 
+void Apple::AppleInit() {
+	apple_quantity = 0;
+
+	for (int i = 0; i < APPLE_MAX; i++) {
+		if (apple[i].flg == true) {
+			apple[i].flg = false;
+			
+		}
+	}
+}
 
 int GetAppleType() {
 	int apple_type = 0;
