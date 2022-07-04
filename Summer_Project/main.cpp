@@ -28,6 +28,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetMainWindowText("Drive&Avoid");
 	ChangeWindowMode(TRUE);
 
+	double dNextTime = GetNowCount();
+
 	if (DxLib_Init() == -1)return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
 	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
@@ -68,6 +70,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 		ScreenFlip();
+
+		dNextTime += 16.66;
+		if (dNextTime > GetNowCount()) {
+			WaitTimer((int)dNextTime - GetNowCount());
+		}
+
 	}
 	DxLib_End();
 
