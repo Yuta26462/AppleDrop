@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define TIMELIMIT 1800 + 60
+#define TIMELIMIT 300 + 60
 
 Apple apple[APPLE_MAX];
 Apple AppleFunc;
@@ -9,7 +9,7 @@ int apple_img[4];
 int players_img[6];
 int g_GameState = 0;
 int g_Score = 0;
-int timer = 1800;
+int timer;
 int g_RankingImage;
 bool StartFlg = false;
 struct PLAYER g_player;
@@ -105,7 +105,7 @@ void DrawGameTitle(void) {
 void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
-	timer = 600;
+	timer = TIMELIMIT;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}

@@ -16,7 +16,7 @@ void Apple::AppleControl() {
 			if (g_player.flg == FALSE)continue;
 
 			//‚Ü‚Á‚·‚®‰º‚ÉˆÚ“®
-			apple[i].y += apple[i].speed + g_player.speed - PLAYER_SPEED + 1;
+			apple[i].y += apple[i].speed;
 
 			//‰æ–Ê‚ð‚Í‚Ýo‚µ‚½‚çÁ‹Ž
 			if (apple[i].y > SCREEN_HEIGHT + apple[i].h) {
