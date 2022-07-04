@@ -24,29 +24,12 @@ void Apple::AppleControl() {
 				apple_count--;
 			}
 
-			////“G‹@‚ð’Ç‚¢‰z‚µ‚½‚çƒJƒEƒ“ƒg‚·‚é
-			//if (g_enemy[i].y > g_player.y && g_enemy[i].point == 1)
-			//{
-			//	g_enemy[i].point = 0;
-			//	if (g_enemy[i].type == 0)g_EnemyCount1++;
-			//	if (g_enemy[i].type == 1)g_EnemyCount2++;
-			//	if (g_enemy[i].type == 2)g_EnemyCount3++;
-
-			//}
-
-
-
 			//“–‚½‚è”»’è
 			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE)
 			{
-				/*g_player.flg = FALSE;
-				g_player.speed = PLAYER_SPEED;
-				g_player.count = 0;
-				g_player.hp -= 100;*/
 				apple[i].flg = false;
 				apple_count--;
 				g_Score += apple[i].score;
-				/*if (g_player.hp <= 0) g_GameState = 6;*/
 			}
 		}
 	}

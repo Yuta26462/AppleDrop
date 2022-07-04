@@ -270,15 +270,8 @@ int LoadImages() {
 	if ((g_Item[1] = LoadGraph("images/apple.png")) == -1)return-1;*/
 	if ((g_EndImage = LoadGraph("images/background.png")) == -1)return-1;
 	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//リンゴ
-	/*if ((Red_img = LoadGraph("images/apple.png")) == -1)return -1;
-	if ((Green_img = LoadGraph("images/greenapple.png")) == -1)return -1;
-	if ((Gold_img = LoadGraph("images/yellowapple.png")) == -1) return -1;
-	if ((Black_img = LoadGraph("images/purpleapple.png")) == -1)return -1;*/
 	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
 	if (LoadDivGraph("images/player.png", 6, 3, 2, 32, 32, players_img) == -1)return -1;	//リンゴ
-	//if ((g_Barrier = LoadGraph("images/barrier.png")) == -1)return-1;
-	/*if (LoadDivGraph("images/bike.bmp", 1, 1, 1, 32, 72, g_Bike) == -1)return -1;*/
-	//if ((g_Bike = LoadGraph("images/05/bike.bmp")) == -1)return-1;
 	return 0;
 }
 
@@ -387,21 +380,8 @@ int ReadRanking(void)
 
 void PlayerControl() {
 
-	////	燃料の消費
-	//g_player.fuel -= g_player.speed;
-	////	ゲームオーバー処理へ
-	//if (g_player.fuel <= 0)		g_GameState = 6;
-
-	////	Zキーで加速
-	//if (g_KeyFlg & PAD_INPUT_A && g_player.speed < 10)g_player.speed += 1;
-
-	////	Xキーで減速
-	//if (g_KeyFlg & PAD_INPUT_B && g_player.speed > 1)g_player.speed -= 1;
-
 	//	上下左右移動
 	if (g_player.flg == TRUE) {
-		/*if (g_NowKey & PAD_INPUT_UP)	g_player.y -= g_player.speed;
-		if (g_NowKey & PAD_INPUT_DOWN)	g_player.y += g_player.speed;*/
 		if (g_NowKey & PAD_INPUT_LEFT)	g_player.x -= g_player.speed;
 		if (g_NowKey & PAD_INPUT_RIGHT)	g_player.x += g_player.speed;
 
@@ -411,8 +391,6 @@ void PlayerControl() {
 	if (g_player.x < 32)		g_player.x = 32;
 
 	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
-	/*if (g_player.y < 60)		g_player.y = 60;
-	if (g_player.y > SCREEN_HEIGHT - 60)			g_player.y = SCREEN_HEIGHT - 60;*/
 
 	//	プレイヤーの表示
 	if (g_player.flg == TRUE) {
@@ -427,18 +405,6 @@ void PlayerControl() {
 			DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[0], TRUE, FALSE);
 		}
 
-		//バリア
-
-		/*if (g_KeyFlg & PAD_INPUT_C && g_player.bari > 0 && g_player.baricnt <= 0) {
-			g_player.bari--;
-			g_player.baricnt = 1000;
-		}
-		if (g_player.baricnt > 0) {
-			g_player.baricnt -= g_player.speed;
-			DrawRotaGraph(g_player.x, g_player.y, 1.0f, 0, g_Barrier, TRUE, FALSE);
-		}
-		else { g_player.baricnt = 0; }*/
-
 	}
 	else {
 		DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
@@ -451,15 +417,6 @@ void PlayerControl() {
 	DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
 	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
 	DrawFormatString(510, 80, 0x000000, "採った数");
-	//DrawRotaGraph(523, 120, 0.3f, 0, apple_img[0], TRUE, FALSE);
-	//DrawRotaGraph(573, 120, 0.3f, 0, apple_img[1], TRUE, FALSE);
-	//DrawRotaGraph(623, 120, 0.3f, 0, apple_img[2], TRUE, FALSE);
-	//DrawRotaGraph(623, 180, 0.3f, 0, apple_img[3], TRUE, FALSE);	//チャレンジ5
-
-	//DrawFormatString(510, 140, 0xFFFFFF, "%03d", g_EnemyCount1);
-	//DrawFormatString(560, 140, 0xFFFFFF, "%03d", g_EnemyCount2);
-	//DrawFormatString(610, 140, 0xFFFFFF, "%03d", g_EnemyCount3);
-	//DrawFormatString(610, 200, 0xFFFFFF, "%03d", g_EnemyCount4);	//チャレンジ5
 }
 
 
