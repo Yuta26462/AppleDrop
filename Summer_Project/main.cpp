@@ -159,14 +159,14 @@ void DrawHelp(void) {
 
 	DrawString(20, 160, "これは障害物を避けながら", 0xffffff, 0);
 	DrawString(20, 180, "走り続けるゲームです", 0xffffff, 0);
-	DrawString(20, 200, "燃料が尽きるか障害物に", 0xffffff, 0);
-	DrawString(20, 220, "数回当たるとゲームオーバーです", 0xffffff, 0);
-	DrawString(20, 250, "アイテム一覧", 0xffffff, 0);
-	/*DrawGraph(20, 260, g_Item[0], TRUE);*/
-	DrawString(20, 315, "取ると燃料が回復するよ。", 0xffffff, 0);
-	/*DrawGraph(20, 335, g_Item[1], TRUE);*/
-	DrawString(20, 385, "ダメージを受けている時に取ると耐久回復", 0xffffff, 0);
-	DrawString(20, 405, "耐久が減っていなかったら燃料が少し回復するよ。", 0xffffff, 0);
+	//DrawString(20, 200, "燃料が尽きるか障害物に", 0xffffff, 0);
+	//DrawString(20, 220, "数回当たるとゲームオーバーです", 0xffffff, 0);
+	//DrawString(20, 250, "アイテム一覧", 0xffffff, 0);
+	//DrawGraph(20, 260, g_Item[0], TRUE);
+	//DrawString(20, 315, "取ると燃料が回復するよ。", 0xffffff, 0);
+	//DrawGraph(20, 335, g_Item[1], TRUE);
+	//DrawString(20, 385, "ダメージを受けている時に取ると耐久回復", 0xffffff, 0);
+	//DrawString(20, 405, "耐久が減っていなかったら燃料が少し回復するよ。", 0xffffff, 0);
 	DrawString(20, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
 }
 
@@ -179,7 +179,7 @@ void DrawEnd(void) {
 	if (++g_WaitTime < 600) g_PosY = 300 - g_WaitTime / 2;
 
 	SetFontSize(24);
-	DrawString(100, 170 + g_PosY, "タイトル　　　りんごの森", 0xFFFFFF,0);
+	DrawString(100, 170 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF,0);
 	DrawString(100, 200 + g_PosY, "バージョン　　1.0", 0xFFFFFF,0);
 	DrawString(100, 230 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF,0);
 	DrawString(100, 260 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF,0);
@@ -249,18 +249,18 @@ void DrawGameOver(void) {
 	DrawRotaGraph(230, 250, 0.3f, M_PI / 2, apple_img[1], TRUE, FALSE);
 	DrawRotaGraph(230, 270, 0.3f, M_PI / 2, apple_img[2], TRUE, FALSE);
 	DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);
-	/*DrawRotaGraph(230, 230, 0.3f, M_PI / 2, apple_img[0], TRUE, FALSE);
-	DrawRotaGraph(230, 250, 0.3f, M_PI / 2, apple_img[1], TRUE, FALSE);
-	DrawRotaGraph(230, 270, 0.3f, M_PI / 2, apple_img[2], TRUE, FALSE);
-	DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);*/
+	//DrawRotaGraph(230, 230, 0.3f, M_PI / 2, apple_img[0], TRUE, FALSE);
+	//DrawRotaGraph(230, 250, 0.3f, M_PI / 2, apple_img[1], TRUE, FALSE);
+	//DrawRotaGraph(230, 270, 0.3f, M_PI / 2, apple_img[2], TRUE, FALSE);
+	//DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);
 
 
 
-	/*DrawFormatString(260, 200, 0xFFFFFF, " %6d x  10 = %6d", g_Mileage / 10, g_Mileage / 10 * 10);
-	DrawFormatString(260, 285, 0xFFFFFF, " %6d x 300 = %6d", g_EnemyCount4, g_EnemyCount4 * 300);
-	DrawFormatString(260, 222, 0xFFFFFF, " %6d x  50 = %6d", g_EnemyCount3, g_EnemyCount3 * 50);
-	DrawFormatString(260, 243, 0xFFFFFF, "%6d x  100 = %6d", g_EnemyCount2, g_EnemyCount2 * 100);
-	DrawFormatString(260, 264, 0xFFFFFF, "%6d x  200 = %6d", g_EnemyCount1, g_EnemyCount1 * 200);*/
+	//DrawFormatString(260, 200, 0xFFFFFF, " %6d x  10 = %6d", g_Mileage / 10, g_Mileage / 10 * 10);
+	//DrawFormatString(260, 285, 0xFFFFFF, " %6d x 300 = %6d", g_EnemyCount4, g_EnemyCount4 * 300);
+	//DrawFormatString(260, 222, 0xFFFFFF, " %6d x  50 = %6d", g_EnemyCount3, g_EnemyCount3 * 50);
+	//DrawFormatString(260, 243, 0xFFFFFF, "%6d x  100 = %6d", g_EnemyCount2, g_EnemyCount2 * 100);
+	//DrawFormatString(260, 264, 0xFFFFFF, "%6d x  200 = %6d", g_EnemyCount1, g_EnemyCount1 * 200);
 
 	DrawString(280, 310, "スコア ", 0x000000);
 	DrawFormatString(310, 310, 0xFFFFFF, "         = %6d", g_Score);
@@ -276,8 +276,8 @@ int LoadImages() {
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
 	if ((g_Menu = LoadGraph("images/menu.bmp")) == -1)return-1;
 	if ((g_Cone = LoadGraph("images/cone.bmp")) == -1)return-1;
-	/*if ((g_Item[0] = LoadGraph("images/greenapple.png")) == -1)return-1;
-	if ((g_Item[1] = LoadGraph("images/apple.png")) == -1)return-1;*/
+	//if ((g_Item[0] = LoadGraph("images/greenapple.png")) == -1)return-1;
+	//if ((g_Item[1] = LoadGraph("images/apple.png")) == -1)return-1;
 	if ((g_EndImage = LoadGraph("images/background.png")) == -1)return-1;
 	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//リンゴ
 	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
@@ -424,10 +424,15 @@ void PlayerControl() {
 	//	敵を避けた数を表示
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
-	DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
-	DrawFormatString(510, 140, 0x000000, "残り時間:%d", timer/60);
+	//DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
+	DrawFormatString(510, 20, 0x000000, "残り時間:%d", timer/60);
 	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
 	DrawFormatString(510, 80, 0x000000, "採った数");
+	DrawRotaGraph(510, 120, 0.3f, 0, apple_img[0], TRUE, FALSE);
+	DrawRotaGraph(510, 140, 0.3f, 0, apple_img[1], TRUE, FALSE);
+	DrawRotaGraph(510, 160, 0.3f, 0, apple_img[2], TRUE, FALSE);
+	DrawRotaGraph(510, 180, 0.3f, 0, apple_img[3], TRUE, FALSE);
+
 }
 
 
