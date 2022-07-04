@@ -1,11 +1,14 @@
 #include "main.h"
 
+#define TIMELIMIT 1800 + 60
+
 Apple apple[APPLE_MAX];
 int g_OldKey, g_NowKey, g_KeyFlg;
 int apple_img[4];
 int players_img[6];
 int g_GameState = 0;
 int g_Score = 0;
+int timer = 1800;
 int g_RankingImage;
 bool StartFlg = false;
 struct PLAYER g_player;
@@ -90,6 +93,8 @@ void DrawGameTitle(void) {
 void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
+	timer = TIMELIMIT;
+	
 	//spflag = 0;		//チャレンジ5用
 	//bikec = 0;		//チャレンジ5用
 
@@ -201,6 +206,11 @@ void GameMain(void) {
 	/*BikeControl();
 
 	ItemControl();*/
+
+	if (timer-- == 0) {
+		g_GameState = 6;
+	}
+
 	DrawGraph(0, 0, g_StageImage, FALSE);
 	apple[0].AppleControl();
 
@@ -415,6 +425,7 @@ void PlayerControl() {
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
 	DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
+	DrawFormatString(510, 140, 0x000000, "残り時間:%d", timer/60);
 	DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
 	DrawFormatString(510, 80, 0x000000, "採った数");
 }

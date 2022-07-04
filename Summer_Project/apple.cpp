@@ -2,7 +2,6 @@
 
 bool apple_flg;
 int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
-int timer = 0;
 int apple_count = 0;
 
 void Apple::AppleControl() {
@@ -37,7 +36,7 @@ void Apple::AppleControl() {
 	
 
 	//走行距離ごとに敵出現パターンを制御する
-	if (++timer % 25 == 0 && (APPLE_MAX - apple_count) / 2 > apple_count)
+	if (timer % 25 == 0 && (APPLE_MAX - apple_count) / 2 > apple_count)
 	{
 		if (StartFlg == true) {
 				apple_count++;
@@ -71,6 +70,7 @@ int Apple::CreateApple(int maxapple) {
 	//	失敗
 	return FALSE;
 }
+
 
 int GetAppleType() {
 	int apple_type = 0;

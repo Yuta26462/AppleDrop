@@ -19,6 +19,7 @@ extern Menu menu;
 extern int g_OldKey, g_NowKey, g_KeyFlg;
 extern int g_GameState;
 extern bool StartFlg;
+extern int timer;
 
 
 extern int g_Score;

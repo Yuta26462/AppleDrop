@@ -1,16 +1,16 @@
 #pragma once
 
-#define APPLE_MAX 10
-#define APPLE_START 4
-#define RED_SCORE 150
-#define GREEN_SCORE 300
-#define GOLD_SCORE 500
-#define BLACK_SCORE -1000
+#define APPLE_MAX 10			//リンゴの最大描画数
+#define APPLE_START 4			//リンゴの初期描画数
+#define RED_SCORE 150			//赤リンゴのスコア
+#define GREEN_SCORE 300			//緑リンゴのスコア
+#define GOLD_SCORE 500			//金リンゴのスコア
+#define BLACK_SCORE -1000		//黒リンゴのスコア
 
-#define RED_SPEED 2
-#define GREEN_SPEED 5
-#define GOLD_SPEED 10
-#define BLACK_SPEED 1
+#define RED_SPEED 2				//赤リンゴの落下速度
+#define GREEN_SPEED 5			//緑リンゴの落下速度
+#define GOLD_SPEED 10			//金リンゴの落下速度
+#define BLACK_SPEED 1			//黒リンゴの落下速度
 
 
 enum APPLES
@@ -30,16 +30,15 @@ private:
 	int speed;
 	int score;
 public:
-	void AppleControl();
-	int CreateApple(int maxapple);
-	
+	void AppleControl();			//リンゴ落下処理関数
+	int CreateApple(int maxapple);	//リンゴ作成関数
 	
 
-	bool* GetAppleFlg();
-	int GetAppleX();
-	int GetAppleY();
-	int GetAppleW();
-	int GetAppleH();
+	bool* GetAppleFlg();			//リンゴflg取得関数
+	int GetAppleX();				//リンゴx座標取得関数
+	int GetAppleY();				//リンゴy座標取得関数
+	int GetAppleW();				//リンゴ幅取得関数
+	int GetAppleH();				//リンゴ高さ取得関数
 };
 
 int GetAppleType();
