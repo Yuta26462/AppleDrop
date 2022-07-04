@@ -3,6 +3,7 @@
 #define TIMELIMIT 1800 + 60
 
 Apple apple[APPLE_MAX];
+Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
 int apple_img[4];
 int players_img[6];
@@ -20,6 +21,9 @@ int g_PosY, gPosX;
 int g_WaitTime = 0;
 int g_EndImage;
 int g_StageImage;
+bool apple_flg;
+int apple_x;
+int apple_y;
 
 int LoadImages();
 
@@ -101,7 +105,12 @@ void DrawGameTitle(void) {
 void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
-	timer = TIMELIMIT;
+	timer = 600;
+	for (int i = 0; i < 4; i++) {
+		apple_count[i] = 0;
+	}
+
+	AppleFunc.AppleInit();
 	
 	//spflag = 0;		//チャレンジ5用
 	//bikec = 0;		//チャレンジ5用
@@ -128,14 +137,18 @@ void GameInit(void) {
 	//g_player.fuel = PLAYER_FUEL;
 	//g_player.bari = PLAYER_BARRIER;
 	//g_player.bariup = PLAYER_BARRIERUP;
-
+	//apple[0].AppleInit();
 
 	g_GameState = 5;
 
-	for (int i = 0; i < ENEMY_MAX; i++) {
-		apple_flg = apple[i].GetAppleFlg();
-		apple_flg = false;
-	}
+	//for (int i = 0; i < ENEMY_MAX; i++) {
+	//	apple_flg = apple[i].GetAppleFlg();
+	//	apple_flg = false;
+	//	//apple_x = apple[i].GetAppleX();
+	//	
+
+	//	
+	//}
 	//for (int i = 0; i < ENEMY_MAX; i++) {	//チャレンジ5
 	//	g_enemy2[i].flg = FALSE;
 	//}
@@ -220,7 +233,7 @@ void GameMain(void) {
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	apple[0].AppleControl();
+	AppleFunc.AppleControl();
 
 	PlayerControl();
 }
@@ -442,10 +455,10 @@ void PlayerControl() {
 	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
 	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
 
-	DrawFormatString(600, 215, 0xFFFFFF, "5", apple_img[0]);
-	DrawFormatString(600, 275, 0xFFFFFF, "5", apple_img[1]);
-	DrawFormatString(600, 335, 0xFFFFFF, "5", apple_img[2]);
-	DrawFormatString(600, 395, 0xFFFFFF, "5", apple_img[3]);
+	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
+	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
+	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
+	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 
 
 }
