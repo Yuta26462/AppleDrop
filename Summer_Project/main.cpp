@@ -2,8 +2,11 @@
 
 #define TIMELIMIT 1800 + 60
 
+LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
+
 Apple apple[APPLE_MAX];
 int g_OldKey, g_NowKey, g_KeyFlg;
+int MenuFont;
 int apple_img[4];
 int players_img[6];
 int g_GameState = 0;
@@ -15,7 +18,7 @@ struct PLAYER g_player;
 struct RankingData g_Ranking[RANKING_DATA];
 
 int g_TitleImage;
-int g_Menu, g_Cone;
+int g_Cone;
 int g_PosY, gPosX;
 int g_WaitTime = 0;
 int g_EndImage;
@@ -25,10 +28,20 @@ int LoadImages();
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
-	SetMainWindowText("Drive&Avoid");
+	SetMainWindowText("りんごおとし");
 	ChangeWindowMode(TRUE);
 
 	double dNextTime = GetNowCount();
+
+	// フォント読み込み
+	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
+	}
+	else {
+		// フォント読込エラー処理
+		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
+	}
+	ChangeFont("JK丸ゴシック Medium", DX_CHARSET_DEFAULT);
+	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 30, 2, DX_CHARSET_DEFAULT);
 
 	if (DxLib_Init() == -1)return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -93,7 +106,13 @@ void DrawGameTitle(void) {
 	if (g_KeyFlg & PAD_INPUT_A)g_GameState = MenuNo + 1;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
-	DrawGraph(120, 200, g_Menu, TRUE);
+	
+	
+	DrawFormatStringToHandle(90, 220, 0x9c3e26, MenuFont ,"すたーと" );
+	DrawFormatStringToHandle(90, 240, 0x9c3e26, MenuFont , "らんきんぐ");
+	DrawFormatStringToHandle(90, 260, 0x9c3e26, MenuFont ,"へるぷ");
+	DrawFormatStringToHandle(90, 280, 0x9c3e26, MenuFont , "えんど");
+
 	DrawRotaGraph(90, 220 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
 
 }
@@ -198,6 +217,8 @@ void DrawEnd(void) {
 
 	//タイムの加算処理＆終了
 	if (++g_WaitTime > 900) g_GameState = 99;
+
+	DeleteFontToHandle(MenuFont);
 }
 
 void GameMain(void) {
@@ -223,6 +244,8 @@ void GameMain(void) {
 	apple[0].AppleControl();
 
 	PlayerControl();
+
+	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
 }
 
 void DrawGameOver(void) {
@@ -282,7 +305,6 @@ int LoadImages() {
 	if (LoadDivGraph("images/apple.png", 5, 4, 1, 50, 50, apple_img) == -1) return -1;
 
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
-	if ((g_Menu = LoadGraph("images/menu.bmp")) == -1)return-1;
 	if ((g_Cone = LoadGraph("images/cone.bmp")) == -1)return-1;
 	//if ((g_Item[0] = LoadGraph("images/greenapple.png")) == -1)return-1;
 	//if ((g_Item[1] = LoadGraph("images/apple.png")) == -1)return-1;
