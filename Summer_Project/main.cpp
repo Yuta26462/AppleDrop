@@ -113,11 +113,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 
-	//タイトルBGMをスタート
-	if (CheckSoundMem(TitleBGM) == 0)
-	{
-		PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
-	}
+	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
+	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 
 	if (g_KeyFlg & PAD_INPUT_DOWN)
 	{
@@ -127,10 +124,8 @@ void DrawGameTitle(void) {
 
 	// Zキーでメニュー選択
 	if (g_KeyFlg & PAD_INPUT_A)
-	{
+	{		
 		g_GameState = MenuNo + 1;
-		//タイトルBGMをストップ
-		StopSoundMem(TitleBGM);
 	}
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
@@ -202,18 +197,14 @@ void GameInit(void) {
 }
 
 void DrawRanking(void) {
-	//ランキングBGMをスタート
-	if (CheckSoundMem(TitleBGM) == 0)
-	{
-		PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
-	}
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
 	//	スペースキーでメニューに戻る
 	if (g_KeyFlg & PAD_INPUT_M)
 	{
 		g_GameState = 0;
-		//ランキングBGMをストップ
-		StopSoundMem(RankingBGM);
 	}
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
@@ -248,6 +239,10 @@ void DrawHelp(void) {
 
 void DrawEnd(void) {
 	int g_PosY = 0;
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(EndBGM) == 0)PlaySoundMem(EndBGM, DX_PLAYTYPE_BACK);
+
 	//エンド画像表示
 	DrawGraph(0, 0, g_EndImage, FALSE);
 
@@ -285,16 +280,11 @@ void GameMain(void) {
 
 	ItemControl();*/
 
-	//ゲームメインBGMをスタート
-	if (CheckSoundMem(GameMainBGM) == 0)
-	{
-		PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-	}
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 
 	if (timer-- == 0) {
 		g_GameState = 6;
-		//ゲームメインBGMをストップ
-		StopSoundMem(GameMainBGM);
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
