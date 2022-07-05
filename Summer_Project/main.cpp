@@ -125,10 +125,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 
-		//タイトルBGMをスタート
-	if (CheckSoundMem(TitleBGM) == 0)
+	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
+	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
+
+	if (g_KeyFlg & PAD_INPUT_DOWN)
 	{
-		PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
+		if (++MenuNo > 3)MenuNo = 0;
 	}
 
 	//	キーボード操作用
@@ -183,6 +185,10 @@ void GameInit(void) {
 }
 
 void DrawRanking(void) {
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
+
 	//	スペースキーでメニューに戻る
 	if (g_KeyFlg & PAD_INPUT_2)g_GameState = 0;
 
@@ -210,6 +216,10 @@ void DrawHelp(void) {
 
 void DrawEnd(void) {
 	int g_PosY = 0;
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(EndBGM) == 0)PlaySoundMem(EndBGM, DX_PLAYTYPE_BACK);
+
 	//エンド画像表示
 	DrawGraph(0, 0, g_EndImage, FALSE);
 	//エンディング表示
@@ -232,6 +242,9 @@ void DrawEnd(void) {
 }
 
 void GameMain(void) {
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 
 	if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
@@ -283,9 +296,9 @@ void InputRanking(void)
 	DrawBox(160, 305, 300, 335, 0x000055, TRUE);
 	if (KeyInputSingleCharString(170, 310, 10, g_Ranking[RANKING_DATA - 1].name, FALSE) == 1) {
 		g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
-		SortRanking();		// ランキング並べ替え
-		SaveRanking();		// ランキングデータの保存
-		g_GameState = 2;		// ゲームモードの変更
+		SortRanking();		//ランキング並べ替え
+		SaveRanking();		//ランキングデータの保存
+		g_GameState = 2;	//ゲームモードの変更
 	}
 
 }
@@ -457,5 +470,4 @@ int LoadSounds(void)
 	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
 	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
 	if ((SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
-
 }
