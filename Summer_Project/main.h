@@ -18,11 +18,17 @@ extern Menu menu;
 
 extern int g_OldKey, g_NowKey, g_KeyFlg;
 extern int g_GameState;
+extern bool StartFlg;
+extern int timer;
 
 
 extern int g_Score;
 extern int g_RankingImage;
 
+extern Apple apple[APPLE_MAX];
+extern Apple AppleFunc;
+extern bool apple_flg;
+extern int apple_count[4];
 extern int apple_img[4];	//ÉLÉÉÉââÊëúïœêî
 
 //int g_Item[2];
@@ -71,7 +77,7 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 const int PLAYER_POS_X = SCREEN_WIDTH / 2;
-const int PLAYER_POS_Y = SCREEN_HEIGHT - 100;
+const int PLAYER_POS_Y = SCREEN_HEIGHT - 50;
 const int PLAYER_WIDTH = 63;
 const int PLAYER_HEIGHT = 120;
 const int PLAYER_SPEED = 5;

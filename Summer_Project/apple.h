@@ -1,15 +1,17 @@
 #pragma once
 
-#define APPLE_MAX 10
-#define RED_SCORE 150
-#define GREEN_SCORE 300
-#define GOLD_SCORE 500
-#define BLACK_SCORE 1000
+#define APPLE_MAX 10			//ƒŠƒ“ƒS‚ÌÅ‘å•`‰æ”
+#define APPLE_START 4			//ƒŠƒ“ƒS‚Ì‰Šú•`‰æ”
+#define RED_SCORE 150			//ÔƒŠƒ“ƒS‚ÌƒXƒRƒA
+#define GREEN_SCORE 300			//—ÎƒŠƒ“ƒS‚ÌƒXƒRƒA
+#define GOLD_SCORE 500			//‹àƒŠƒ“ƒS‚ÌƒXƒRƒA
+#define BLACK_SCORE -1000		//•ƒŠƒ“ƒS‚ÌƒXƒRƒA
 
-#define RED_SPEED 2
-#define GREEN_SPEED 5
-#define GOLD_SPEED 10
-#define BLACK_SPEED 1
+#define RED_SPEED 2				//ÔƒŠƒ“ƒS‚Ì—‰º‘¬“x
+#define GREEN_SPEED 5			//—ÎƒŠƒ“ƒS‚Ì—‰º‘¬“x
+#define GOLD_SPEED 10			//‹àƒŠƒ“ƒS‚Ì—‰º‘¬“x
+#define BLACK_SPEED 1			//•ƒŠƒ“ƒS‚Ì—‰º‘¬“x
+
 
 enum APPLES
 {
@@ -28,22 +30,20 @@ private:
 	int speed;
 	int score;
 public:
-	void AppleControl();
-	int CreateApple();
-	
-	
+	void AppleControl();			//ƒŠƒ“ƒS—‰ºˆ—ŠÖ”
+	int CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
+	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 
-	bool* GetAppleFlg();
-	int GetAppleX();
-	int GetAppleY();
-	int GetAppleW();
-	int GetAppleH();
+	bool* GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
+	int GetAppleX();				//ƒŠƒ“ƒSxÀ•Wæ“¾ŠÖ”
+	int GetAppleY();				//ƒŠƒ“ƒSyÀ•Wæ“¾ŠÖ”
+	int GetAppleW();				//ƒŠƒ“ƒS•æ“¾ŠÖ”
+	int GetAppleH();				//ƒŠƒ“ƒS‚‚³æ“¾ŠÖ”
 };
 
 int GetAppleType();
 int GetAppleSpeed(int AppleType);
-int GetAppleImage(int AppleType);
 
-extern Apple apple[APPLE_MAX];
-extern bool apple_flg;
+
+
 

@@ -1,8 +1,9 @@
 #include "main.h"
 
-bool apple_flg;
+
 int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
-int timer = 0;
+int apple_quantity = 0;			//描画されているリンゴの個数
+int apple_count[4];
 
 void Apple::AppleControl() {
 	for (int i = 0; i < APPLE_MAX; i++)
@@ -15,49 +16,49 @@ void Apple::AppleControl() {
 			if (g_player.flg == FALSE)continue;
 
 			//まっすぐ下に移動
-			apple[i].y += apple[i].speed + g_player.speed - PLAYER_SPEED + 1;
+			apple[i].y += apple[i].speed;
 
 			//画面をはみ出したら消去
-			if (apple[i].y > SCREEN_HEIGHT + apple[i].h)	apple[i].flg = false;
-
-			////敵機を追い越したらカウントする
-			//if (g_enemy[i].y > g_player.y && g_enemy[i].point == 1)
-			//{
-			//	g_enemy[i].point = 0;
-			//	if (g_enemy[i].type == 0)g_EnemyCount1++;
-			//	if (g_enemy[i].type == 1)g_EnemyCount2++;
-			//	if (g_enemy[i].type == 2)g_EnemyCount3++;
-
-			//}
-
-
+			if (apple[i].y > SCREEN_HEIGHT + apple[i].h) {
+				apple[i].flg = false;
+				apple_quantity--;
+			}
 
 			//当たり判定
 			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE)
 			{
-				/*g_player.flg = FALSE;
-				g_player.speed = PLAYER_SPEED;
-				g_player.count = 0;
-				g_player.hp -= 100;*/
 				apple[i].flg = false;
-				/*if (g_player.hp <= 0) g_GameState = 6;*/
+				apple_quantity--;
+				g_Score += apple[i].score;
+				apple_count[apple[i].type]++;
 			}
 		}
 	}
 
+	
+
 	//走行距離ごとに敵出現パターンを制御する
-	if (++timer % 25== 0)
+	if (timer % 25 == 0 && (APPLE_MAX - apple_quantity) / 2 > apple_quantity)
 	{
-		CreateApple();
+		if (StartFlg == true) {
+				apple_quantity++;
+				CreateApple(APPLE_START);
+				StartFlg = false;
+		}
+		else {
+			apple_quantity++;
+			CreateApple(APPLE_MAX);
+		}
+		
 	}
 }
 
-int Apple::CreateApple() {
-	for (int i = 0; i < ENEMY_MAX; i++) {
+int Apple::CreateApple(int maxapple) {
+	for (int i = 0; i < maxapple; i++) {
 		if (apple[i].flg == false) {
 			apple[i].flg = true;
 			apple[i].type = GetAppleType();
-			apple[i].img = apple_img[apple[i].type];/*GetAppleImage(apple[i].type);*///
+			apple[i].img = apple_img[apple[i].type];
 			apple[i].x = GetRand(6) * 70 + 30;
 			apple[i].y = -50;
 			apple[i].w = 60;
@@ -68,9 +69,19 @@ int Apple::CreateApple() {
 			return TRUE;
 		}
 	}
-
 	//	失敗
 	return FALSE;
+}
+
+void Apple::AppleInit() {
+	apple_quantity = 0;
+
+	for (int i = 0; i < APPLE_MAX; i++) {
+		if (apple[i].flg == true) {
+			apple[i].flg = false;
+			
+		}
+	}
 }
 
 int GetAppleType() {
@@ -93,21 +104,6 @@ int GetAppleType() {
 	}
 }
 
-//int GetAppleImage(int AppleType) {
-//	switch (AppleType)
-//	{
-//	case RED_APPLE:
-//		return Red_img;
-//	case GREEN_APPLE:
-//		return Green_img;
-//	case GOLD_APPLE:
-//		return Gold_img;
-//	case BLACK_APPLE:
-//		return Black_img;
-//	default:
-//		break;
-//	}
-//}
 
 int GetAppleSpeed(int AppleType) {
 	switch (AppleType) {
