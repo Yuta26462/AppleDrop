@@ -29,6 +29,14 @@ int apple_x;
 int apple_y;
 
 int LoadImages();
+int LoadSounds();
+
+//サウンド用変数
+int TitleBGM;
+int GameMainBGM;
+int RankingBGM;
+int EndBGM;
+int SE;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -50,6 +58,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
 	if (LoadImages() == -1)return -1;
+	if (LoadSounds() == -1)return -1;
 
 	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_CHARSET_DEFAULT);
 
@@ -103,6 +112,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
+
+		//タイトルBGMをスタート
+	if (CheckSoundMem(TitleBGM) == 0)
+	{
+		PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
+	}
 
 	if (g_KeyFlg & PAD_INPUT_DOWN)if (++MenuNo > 3)MenuNo = 0;
 	if (g_KeyFlg & PAD_INPUT_UP)if (--MenuNo < 0)MenuNo = 3;
@@ -506,4 +521,15 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 		return TRUE;
 	}
 	return FALSE;
+}
+
+int LoadSounds(void)
+{
+	//タイトルBGM
+	if ((TitleBGM = LoadSoundMem("Sound/BGM/ほゎ.wav")) == -1) return -1;
+	if ((GameMainBGM = LoadSoundMem("Sound/BGM/ミニマルなマーチ.wav")) == -1) return -1;
+	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
+	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
+	if ((SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
+
 }
