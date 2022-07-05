@@ -45,12 +45,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
 	}
 	ChangeFont("JK丸ゴシック Medium", DX_CHARSET_DEFAULT);
-	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 30, 2, DX_CHARSET_DEFAULT);
 
 	if (DxLib_Init() == -1)return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
 	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
 	if (LoadImages() == -1)return -1;
+
+	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_CHARSET_DEFAULT);
 
 	while (ProcessMessage() == 0 && g_GameState != 99 && !(g_KeyFlg & PAD_INPUT_START)) {
 
@@ -112,12 +113,13 @@ void DrawGameTitle(void) {
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
 	
-	DrawFormatStringToHandle(90, 220, 0x9c3e26, MenuFont ,"すたーと" );
-	DrawFormatStringToHandle(90, 240, 0x9c3e26, MenuFont , "らんきんぐ");
-	DrawFormatStringToHandle(90, 260, 0x9c3e26, MenuFont ,"へるぷ");
-	DrawFormatStringToHandle(90, 280, 0x9c3e26, MenuFont , "えんど");
+	
+	DrawFormatStringToHandle(420, 280, 0x9c3e26, MenuFont ,"すたーと" );
+	DrawFormatStringToHandle(420, 320, 0x9c3e26, MenuFont , "らんきんぐ");
+	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont ,"へるぷ");
+	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont , "えんど");
 
-	DrawRotaGraph(90, 220 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
+	DrawRotaGraph(400, 300 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
 
 }
 
