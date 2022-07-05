@@ -112,17 +112,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 
-		//タイトルBGMをスタート
+	//タイトルBGMをスタート
 	if (CheckSoundMem(TitleBGM) == 0)
 	{
 		PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 	}
 
-	if (g_KeyFlg & PAD_INPUT_DOWN)if (++MenuNo > 3)MenuNo = 0;
+	if (g_KeyFlg & PAD_INPUT_DOWN)
+	{
+		if (++MenuNo > 3)MenuNo = 0;
+	}
 	if (g_KeyFlg & PAD_INPUT_UP)if (--MenuNo < 0)MenuNo = 3;
 
 	// Zキーでメニュー選択
-	if (g_KeyFlg & PAD_INPUT_A)g_GameState = MenuNo + 1;
+	if (g_KeyFlg & PAD_INPUT_A)
+	{
+		g_GameState = MenuNo + 1;
+		//タイトルBGMをストップ
+		StopSoundMem(TitleBGM);
+	}
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
@@ -192,8 +200,19 @@ void GameInit(void) {
 }
 
 void DrawRanking(void) {
+	//ランキングBGMをスタート
+	if (CheckSoundMem(TitleBGM) == 0)
+	{
+		PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
+	}
+
 	//	スペースキーでメニューに戻る
-	if (g_KeyFlg & PAD_INPUT_M)g_GameState = 0;
+	if (g_KeyFlg & PAD_INPUT_M)
+	{
+		g_GameState = 0;
+		//ランキングBGMをストップ
+		StopSoundMem(RankingBGM);
+	}
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
@@ -264,8 +283,16 @@ void GameMain(void) {
 
 	ItemControl();*/
 
+	//ゲームメインBGMをスタート
+	if (CheckSoundMem(GameMainBGM) == 0)
+	{
+		PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+	}
+
 	if (timer-- == 0) {
 		g_GameState = 6;
+		//ゲームメインBGMをストップ
+		StopSoundMem(GameMainBGM);
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
@@ -360,9 +387,9 @@ void InputRanking(void)
 	DrawBox(160, 305, 300, 335, 0x000055, TRUE);
 	if (KeyInputSingleCharString(170, 310, 10, g_Ranking[RANKING_DATA - 1].name, FALSE) == 1) {
 		g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
-		SortRanking();		// ランキング並べ替え
-		SaveRanking();		// ランキングデータの保存
-		g_GameState = 2;		// ゲームモードの変更
+		SortRanking();		//ランキング並べ替え
+		SaveRanking();		//ランキングデータの保存
+		g_GameState = 2;	//ゲームモードの変更
 	}
 
 }
@@ -529,5 +556,4 @@ int LoadSounds(void)
 	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
 	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
 	if ((SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
-
 }
