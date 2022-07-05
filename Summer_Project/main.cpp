@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define TIMELIMIT 300 + 60
+#define TIMELIMIT 1800 + 60
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
@@ -118,9 +118,14 @@ void DrawGameTitle(void) {
 
 	if (g_KeyFlg & PAD_INPUT_DOWN)
 	{
+		PlaySoundMem(SE, DX_PLAYTYPE_BACK);
 		if (++MenuNo > 3)MenuNo = 0;
 	}
-	if (g_KeyFlg & PAD_INPUT_UP)if (--MenuNo < 0)MenuNo = 3;
+	if (g_KeyFlg & PAD_INPUT_UP)
+	{
+		PlaySoundMem(SE, DX_PLAYTYPE_BACK);
+		if (--MenuNo < 0)MenuNo = 3;
+	}
 
 	// Zキーでメニュー選択
 	if (g_KeyFlg & PAD_INPUT_A)
@@ -281,7 +286,7 @@ void GameMain(void) {
 	ItemControl();*/
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+	if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 
 	if (timer-- == 0) {
 		g_GameState = 6;
