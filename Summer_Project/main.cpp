@@ -271,7 +271,12 @@ void GameMain(void) {
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	AppleFunc.AppleControl();
+	DrawFormatString(280, 250, 0x000000, "%d", Pflg);
+	if (Pflg == true) {
+		DrawString(300, 250, "PAUSE", 0x000000);
+	}
+
+	AppleFunc.AppleControl(Pflg);
 
 	PlayerControl();
 
