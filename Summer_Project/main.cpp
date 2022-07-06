@@ -31,6 +31,7 @@ int g_StageImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
+bool Pflg;
 
 int LoadImages();
 int LoadSounds();
@@ -160,6 +161,7 @@ void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	timer = TIMELIMIT;
+	Pflg = false;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
@@ -239,18 +241,61 @@ void GameMain(void) {
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-
-	if (timer-- == 0) {
+	
+	if (Pflg == false) {
+		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 				g_GameState = 0;
 			}
 			else {
 				g_GameState = 6;
 			}
+		}
+	}
+	if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+
+	if (timer-- == 0) {
+		g_GameState = 6;
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	AppleFunc.AppleControl();
+	DrawFormatString(280, 250, 0x000000, "%d", Pflg);
+	if (Pflg == true) {
+		DrawString(300, 250, "PAUSE", 0x000000);
+	}
+
+	AppleFunc.AppleControl(Pflg);
+
+	PlayerControl();
+
+	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
+}
+
+void DrawGameOver(void) {
+
+
+	//BackScrool();
+
+	//spflag = 1;
+
+	/*g_Score = (g_Mileage / 10 * 10) + g_EnemyCount4 * 300 + g_EnemyCount3 * 50 + g_EnemyCount2 * 100 + g_EnemyCount1 * 200;*/
+
+	if (g_KeyFlg & PAD_INPUT_M) {
+		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
+			g_GameState = 0;
+		}
+		else {
+			g_GameState = 7;
+		}
+	}
+
+	DrawGraph(0, 0, g_StageImage, FALSE);
+	AppleFunc.AppleControl(Pflg);
+
+	DrawFormatString(300, 200, 0x000000, "Pflg:%d", Pflg);
+	if (Pflg == true) {
+		DrawString(320, 200, "POUSE", 0x000000);
+	}
 
 	PlayerControl();
 
@@ -380,6 +425,15 @@ int ReadRanking(void)
 }
 
 void PlayerControl() {
+
+	if (g_KeyFlg & PAD_INPUT_M) {
+		if (Pflg == false) {
+			Pflg = true;
+		}
+		else {
+			Pflg = false;
+		}
+	}
 
 	//	上下左右移動
 	if (g_player.flg == TRUE) {
