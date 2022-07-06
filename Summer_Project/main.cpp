@@ -4,6 +4,8 @@
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
+enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END=99};
+
 Apple apple[APPLE_MAX];
 Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
@@ -67,7 +69,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_CHARSET_DEFAULT);
 
-	while (ProcessMessage() == 0 && g_GameState != 99) {
+	while (ProcessMessage() == 0 && g_GameState != END) {
 
 		g_OldKey = g_NowKey;
 		g_NowKey = GetJoypadInputState(DX_INPUT_PAD1);
@@ -181,7 +183,7 @@ void GameInit(void) {
 	g_player.count = 0;
 	g_player.speed = PLAYER_SPEED;
 
-	g_GameState = 5;
+	g_GameState = GAME_MAIN;
 }
 
 void DrawRanking(void) {
@@ -190,7 +192,7 @@ void DrawRanking(void) {
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
 	//	スペースキーでメニューに戻る
-	if (g_KeyFlg & 32)g_GameState = 0;
+	if (g_KeyFlg & 32)g_GameState = DRAW_GAMETITLE;
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
@@ -203,7 +205,8 @@ void DrawRanking(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & 32)	g_GameState = 0;
+	if (g_KeyFlg & 32)	g_GameState = DRAW_GAMETITLE;
+	if (g_KeyFlg & 16)	g_GameState = GAME_MAIN;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
@@ -211,6 +214,7 @@ void DrawHelp(void) {
 
 	DrawString(20, 160, "これは障害物を避けながら", 0xffffff, 0);
 	DrawString(20, 180, "走り続けるゲームです", 0xffffff, 0);
+	DrawString(20, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
 	DrawString(20, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
 }
 
@@ -236,7 +240,7 @@ void DrawEnd(void) {
 	DrawString(100, 365 + g_PosY, "　SE　　　　　効果音工房", 0xFFFFFF,0);
 
 	//タイムの加算処理＆終了
-	if (++g_WaitTime > 900) g_GameState = 99;
+	if (++g_WaitTime > 900) g_GameState = END;
 
 	DeleteFontToHandle(MenuFont);
 }
@@ -249,10 +253,10 @@ void GameMain(void) {
 	if (Paseflg == false) {
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
-				g_GameState = 2;
+				g_GameState = DRAW_RANKING;
 			}
 			else {
-				g_GameState = 6;
+				g_GameState = INPUT_RANKING;
 			}
 		}
 	}
@@ -268,7 +272,7 @@ void GameMain(void) {
 
 	PlayerControl();
 
-	if (g_KeyFlg & 2048)g_GameState = 0;//ポーズ画面へ
+	if (g_KeyFlg & 2048)g_GameState = DRAW_GAMETITLE;//ポーズ画面へ
 
 	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
 	DrawFormatString(200, 100, 0x000000, "JoyPad:%d", GetJoypadInputState(DX_INPUT_PAD1));
@@ -311,7 +315,7 @@ void InputRanking(void)
 	//	SaveRanking();		//ランキングデータの保存
 	//	g_GameState = 2;	//ゲームモードの変更
 	//}
-	if(g_KeyFlg & 16)g_GameState = 2;
+	if(g_KeyFlg & 16)g_GameState = DRAW_RANKING;
 
 }
 
