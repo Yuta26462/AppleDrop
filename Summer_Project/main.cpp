@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define TIMELIMIT 300 + 60
+#define TIMELIMIT 3000 + 60
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
@@ -23,13 +23,14 @@ int g_Cone;
 int g_PosY;
 int JoyPadX, JoyPadY;
 int SelectY;
-double PadTimer;
+int PadTimer;
 int g_WaitTime = 0;
 int g_EndImage;
 int g_StageImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
+bool Pflg;
 
 int LoadImages();
 int LoadSounds();
@@ -166,6 +167,7 @@ void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	timer = TIMELIMIT;
+	Pflg = false;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
@@ -245,18 +247,25 @@ void GameMain(void) {
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-
-	if (timer-- == 0) {
+	
+	if (Pflg == false) {
+		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 				g_GameState = 0;
 			}
 			else {
 				g_GameState = 6;
 			}
+		}
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	AppleFunc.AppleControl();
+	AppleFunc.AppleControl(Pflg);
+
+	DrawFormatString(300, 200, 0x000000, "Pflg:%d", Pflg);
+	if (Pflg == true) {
+		DrawString(320, 200, "POUSE", 0x000000);
+	}
 
 	PlayerControl();
 
@@ -384,17 +393,25 @@ int ReadRanking(void)
 
 void PlayerControl() {
 
+	if (g_KeyFlg & PAD_INPUT_M) {
+		if (Pflg == false) {
+			Pflg = true;
+		}
+		else {
+			Pflg = false;
+		}
+	}
+
 	//	è„â∫ç∂âEà⁄ìÆ
-	if (g_player.flg == TRUE) {
-		g_player.speed = 0;
+	if (g_player.flg == TRUE && Pflg == false) {
 		
 		if (JoyPadX < -300 || JoyPadX > 300)PadTimer++;
-		if (PadTimer < 60) {
+		if (PadTimer < 30) {
 			if (g_player.speed < 6) { g_player.speed++; PadTimer = 0; }
 		}
 		if (JoyPadX < -300)	g_player.x -= g_player.speed;
 		if (JoyPadX > 300)	g_player.x += g_player.speed;
-	}
+	}DrawFormatString(100, 230, 0x000000, "%d", PadTimer);
 
 	//	âÊñ ÇÇÕÇ›èoÇ≥Ç»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
 	if (g_player.x < 32)		g_player.x = 32;
@@ -406,7 +423,7 @@ void PlayerControl() {
 		if (JoyPadX < -300) {
 			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE);
 		}
-		else if (JoyPadX > 300) {
+		if (JoyPadX > 300) {
 			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE);
 		}
 		else
