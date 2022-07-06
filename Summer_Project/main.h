@@ -24,6 +24,7 @@ extern int timer;
 
 extern int g_Score;
 extern int g_RankingImage;
+extern int invincibletime;			//–³“G”»’èŽžŠÔ
 
 extern Apple apple[APPLE_MAX];
 extern Apple AppleFunc;
@@ -95,11 +96,7 @@ struct PLAYER {
 	double angle;
 	int count;
 	int speed;
-	int hp;
-	int fuel;
-	int bari;
-	int baricnt;
-	int bariup;
+	bool Poisonflg;
 };
 extern struct PLAYER g_player;
 

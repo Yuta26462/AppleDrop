@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define TIMELIMIT 1800 + 60
+#define TIMELIMIT 3600 + 60
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
@@ -15,6 +15,7 @@ int players_img[6];
 int g_GameState = 0;
 int g_Score = 0;
 int timer;
+int invincibletime;
 int g_RankingImage;
 bool StartFlg = false;
 struct PLAYER g_player;
@@ -168,6 +169,7 @@ void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	timer = TIMELIMIT;
+	invincibletime = 0;
 	Pauseflg = false;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
@@ -183,6 +185,7 @@ void GameInit(void) {
 	g_player.h = PLAYER_HEIGHT;
 	g_player.count = 0;
 	g_player.speed = PLAYER_SPEED;
+	g_player.Poisonflg = false;
 
 	g_GameState = GAME_MAIN;
 }
@@ -476,6 +479,21 @@ void PlayerControl(bool pauseflg) {
 
 	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
 
+	if (g_player.Poisonflg && !pauseflg) {
+		if (invincibletime++ % 18 == 0) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+		}
+		else {
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+	}
+	if (invincibletime == 120) {
+		g_player.Poisonflg = false;
+		invincibletime = 0;
+	}
+	
+
+
 	//	プレイヤーの表示
 	if (pauseflg) {
 		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
@@ -510,9 +528,10 @@ void PlayerControl(bool pauseflg) {
 	//	敵を避けた数を表示
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
-	//DrawFormatString(510, 20, 0x000000, "SCORE:%d",g_Score);
 	DrawFormatString(540, 20, 0x000000, "残り時間");
 	DrawFormatString(560, 60, 0x000000, "%d", timer/60);
+	DrawFormatString(540, 100, 0x000000, "SCORE");
+	DrawFormatString(560, 120, 0x000000, "%d", g_Score);
 	//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
 	DrawFormatString(540, 160, 0x000000, "採った数");
 	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);

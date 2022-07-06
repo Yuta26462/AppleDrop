@@ -5,6 +5,8 @@ int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
 int apple_quantity = 0;			//•`‰æ‚³‚ê‚Ä‚¢‚éƒŠƒ“ƒS‚ÌŒÂ”
 int apple_count[4];
 
+
+
 void Apple::AppleControl(bool pauseflg) {
 	for (int i = 0; i < APPLE_MAX; i++)
 	{
@@ -27,12 +29,15 @@ void Apple::AppleControl(bool pauseflg) {
 			}
 
 			//“–‚½‚è”»’è
-			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE)
+			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE && !g_player.Poisonflg)
 			{
 				apple[i].flg = false;
 				apple_quantity--;
 				g_Score += apple[i].score;
 				apple_count[apple[i].type]++;
+				if (apple[i].type == BLACK_APPLE) {
+					g_player.Poisonflg = true;
+				}
 			}
 		}
 	}
