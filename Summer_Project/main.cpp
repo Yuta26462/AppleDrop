@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define TIMELIMIT 300 + 60
+#define TIMELIMIT 3000 + 60
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
@@ -22,8 +22,9 @@ int g_TitleImage;
 int g_Cone;
 int g_PosY;
 int JoyPadX, JoyPadY;
+int player_angle = 1;
 int SelectY;
-double PadTimer;
+int PadTimer,PadSpeedTimer;
 int g_WaitTime = 0;
 int g_EndImage;
 int g_StageImage;
@@ -74,12 +75,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		GetJoypadAnalogInput(&JoyPadX,&JoyPadY,DX_INPUT_PAD1);
 		SelectY = 0;
 		
-		//if (PadTimer > 300) {
-		//	++PadTimer;
+		if (++PadTimer > 10) {
+			PadTimer = 0;
 			if (JoyPadY > 800)SelectY = 1;
 			if (JoyPadY < -800)SelectY = -1;
-		//}
-		//else { PadTimer = 0; }
+		}
 		SetJoypadDeadZone(DX_INPUT_PAD1,0.8f);
 		
 
@@ -128,17 +128,11 @@ void DrawGameTitle(void) {
 	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 
-	if (g_KeyFlg & PAD_INPUT_DOWN)
-	{
-		if (++MenuNo > 3)MenuNo = 0;
-	}
-
 	//	キーボード操作用
 	/*if (g_KeyFlg & PAD_INPUT_DOWN)if (++MenuNo > 3)MenuNo = 0;
 	if (g_KeyFlg & PAD_INPUT_UP)if (--MenuNo < 0)MenuNo = 3;*/
 	if (SelectY == 1)if (++MenuNo > 3)MenuNo = 0;
 	if (SelectY == -1)if (--MenuNo < 0)MenuNo = 3;
-	if (SelectY == 1 || SelectY == -1)StartJoypadVibration(DX_INPUT_PAD1, 100, 2); if (++g_WaitTime < 60)StopJoypadVibration(DX_INPUT_PAD1); g_WaitTime = 0;
 	// Zキーでメニュー選択
 	if (g_KeyFlg & PAD_INPUT_1)g_GameState = MenuNo + 1;
 
@@ -158,8 +152,8 @@ void DrawGameTitle(void) {
 	DrawString(200, 0, string, 0x000000);
 
 	wsprintf(string, "Y = %d", JoyPadY);
-	DrawString(200, 100, string, 0x000000);
-
+	DrawString(200, 30, string, 0x000000);
+	DrawFormatString(200, 60, 0x000000, "%d", PadTimer);
 }
 
 void GameInit(void) {
@@ -259,6 +253,9 @@ void GameMain(void) {
 	AppleFunc.AppleControl();
 
 	PlayerControl();
+
+	if (g_KeyFlg & 2048)g_GameState = 0;//ポーズ画面へ
+	DrawFormatString(220, 260, 0x000000, "%d", GetJoypadInputState(DX_INPUT_PAD1));
 
 	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
 }
@@ -386,14 +383,24 @@ void PlayerControl() {
 
 	//	上下左右移動
 	if (g_player.flg == TRUE) {
-		g_player.speed = 0;
-		
-		if (JoyPadX < -300 || JoyPadX > 300)PadTimer++;
-		if (PadTimer < 60) {
-			if (g_player.speed < 6) { g_player.speed++; PadTimer = 0; }
+		int i = 0;
+		if (JoyPadX < -300 || JoyPadX > 300)PadSpeedTimer++;
+		if (PadSpeedTimer < 10 - i) {
+			if (g_player.speed < 6) {}
 		}
-		if (JoyPadX < -300)	g_player.x -= g_player.speed;
-		if (JoyPadX > 300)	g_player.x += g_player.speed;
+		else {
+			PadSpeedTimer = 0; ++g_player.speed; i += 4;
+		}
+		if (JoyPadX < -300) g_player.x -= g_player.speed;
+		if (JoyPadX > 300){
+			g_player.x += g_player.speed;
+		}
+		if (JoyPadX < 100 && JoyPadX > -100) {  --g_player.speed; }
+		if (g_player.speed < -6) {
+			if (player_angle == -1)g_player.x++;
+			if (player_angle == 1)g_player.x--;
+		}
+		if (JoyPadX == 0)g_player.speed = 0;
 	}
 
 	//	画面をはみ出さないようにする
@@ -403,15 +410,21 @@ void PlayerControl() {
 
 	//	プレイヤーの表示
 	if (g_player.flg == TRUE) {
-		if (JoyPadX < -300) {
-			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE);
+		
+		if (JoyPadX < -300 || player_angle == -1) {
+			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
 		}
-		else if (JoyPadX > 300) {
-			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE);
+		if (JoyPadX > 300 || player_angle == 1) {
+			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
 		}
-		else
+		if(JoyPadX == 0)
 		{
-			DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[0], TRUE, FALSE);
+			if(player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
+			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
+		}
+		if(g_player.speed > 3){
+			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
+			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
 		}
 
 	}
@@ -438,7 +451,8 @@ void PlayerControl() {
 	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
 	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 
-
+	DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
+	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
 }
 
 
