@@ -30,7 +30,7 @@ private:
 	int speed;
 	int score;
 public:
-	void AppleControl(bool pflg);			//ƒŠƒ“ƒS—‰ºˆ—ŠÖ”
+	void AppleControl(bool Paseflg);			//ƒŠƒ“ƒS—‰ºˆ—ŠÖ”
 	int CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
 	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 

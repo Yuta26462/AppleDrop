@@ -31,7 +31,7 @@ int g_StageImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
-bool Pflg;
+bool Paseflg;
 
 int LoadImages();
 int LoadSounds();
@@ -161,7 +161,7 @@ void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	timer = TIMELIMIT;
-	Pflg = false;
+	Paseflg = false;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
@@ -242,7 +242,7 @@ void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 	
-	if (Pflg == false) {
+	if (Paseflg == false) {
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 				g_GameState = 0;
@@ -259,12 +259,12 @@ void GameMain(void) {
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	DrawFormatString(280, 250, 0x000000, "%d", Pflg);
-	if (Pflg == true) {
+	DrawFormatString(280, 250, 0x000000, "%d", Paseflg);
+	if (Paseflg == true) {
 		DrawString(300, 250, "PAUSE", 0x000000);
 	}
 
-	AppleFunc.AppleControl(Pflg);
+	AppleFunc.AppleControl(Paseflg);
 
 	PlayerControl();
 
@@ -290,10 +290,10 @@ void DrawGameOver(void) {
 	}
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	AppleFunc.AppleControl(Pflg);
+	AppleFunc.AppleControl(Paseflg);
 
-	DrawFormatString(300, 200, 0x000000, "Pflg:%d", Pflg);
-	if (Pflg == true) {
+	DrawFormatString(300, 200, 0x000000, "Paseflg:%d", Paseflg);
+	if (Paseflg == true) {
 		DrawString(320, 200, "POUSE", 0x000000);
 	}
 
@@ -427,11 +427,11 @@ int ReadRanking(void)
 void PlayerControl() {
 
 	if (g_KeyFlg & PAD_INPUT_M) {
-		if (Pflg == false) {
-			Pflg = true;
+		if (Paseflg == false) {
+			Paseflg = true;
 		}
 		else {
-			Pflg = false;
+			Paseflg = false;
 		}
 	}
 

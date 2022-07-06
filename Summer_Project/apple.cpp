@@ -5,7 +5,7 @@ int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
 int apple_quantity = 0;			//•`‰æ‚³‚ê‚Ä‚¢‚éƒŠƒ“ƒS‚ÌŒÂ”
 int apple_count[4];
 
-void Apple::AppleControl(bool pflg) {
+void Apple::AppleControl(bool Paseflg) {
 	for (int i = 0; i < APPLE_MAX; i++)
 	{
 		if (apple[i].flg == true)
@@ -16,7 +16,7 @@ void Apple::AppleControl(bool pflg) {
 			if (g_player.flg == FALSE)continue;
 
 			//‚Ü‚Á‚·‚®‰º‚ÉˆÚ“®
-			if (pflg == false) {
+			if (Paseflg == false) {
 				apple[i].y += apple[i].speed;
 			}
 
