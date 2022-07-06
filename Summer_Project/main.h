@@ -66,7 +66,7 @@ int ReadRanking(void);
 
 //void BackScrool();
 
-void PlayerControl();
+void PlayerControl(bool pauseflg);
 
 //void EnemyControl();
 //void BikeControl();		//ƒ`ƒƒƒŒƒ“ƒW5—p

@@ -5,7 +5,7 @@ int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
 int apple_quantity = 0;			//•`‰æ‚³‚ê‚Ä‚¢‚éƒŠƒ“ƒS‚ÌŒÂ”
 int apple_count[4];
 
-void Apple::AppleControl(bool Paseflg) {
+void Apple::AppleControl(bool pauseflg) {
 	for (int i = 0; i < APPLE_MAX; i++)
 	{
 		if (apple[i].flg == true)
@@ -16,7 +16,7 @@ void Apple::AppleControl(bool Paseflg) {
 			if (g_player.flg == FALSE)continue;
 
 			//‚Ü‚Á‚·‚®‰º‚ÉˆÚ“®
-			if (Paseflg == false) {
+			if (!pauseflg) {
 				apple[i].y += apple[i].speed;
 			}
 
@@ -110,16 +110,16 @@ int GetAppleType() {
 int GetAppleSpeed(int AppleType) {
 	switch (AppleType) {
 	case RED_APPLE:
-		return 2;
+		return RED_SPEED;
 		break;
 	case GREEN_APPLE:
-		return 5;
+		return GREEN_SPEED;
 		break;
 	case GOLD_APPLE:
-		return 10;
+		return GOLD_SPEED;
 		break;
 	case BLACK_APPLE:
-		return 1;
+		return BLACK_SPEED;
 		break;
 	default:
 		break;

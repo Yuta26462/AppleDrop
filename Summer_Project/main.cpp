@@ -31,10 +31,11 @@ int g_StageImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
-bool Paseflg;
+bool Pauseflg;
 
 int LoadImages();
 int LoadSounds();
+void DrawPause();
 
 //サウンド用変数
 int TitleBGM;
@@ -161,7 +162,7 @@ void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	timer = TIMELIMIT;
-	Paseflg = false;
+	Pauseflg = false;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
@@ -238,11 +239,29 @@ void DrawEnd(void) {
 }
 
 void GameMain(void) {
-
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-	
-	if (Paseflg == false) {
+
+	DrawGraph(0, 0, g_StageImage, FALSE);
+
+	AppleFunc.AppleControl(Pauseflg);
+	PlayerControl(Pauseflg);
+
+	if (g_KeyFlg & 2048) {
+		if (Pauseflg == false) {
+			Pauseflg = true;
+		}
+		else {
+			Pauseflg = false;
+		}
+	}
+
+	DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
+
+	if (!Pauseflg) {
+		
+		if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 				g_GameState = 0;
@@ -251,59 +270,50 @@ void GameMain(void) {
 				g_GameState = 6;
 			}
 		}
-	}
-	if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 
-	if (timer-- == 0) {
-		g_GameState = 6;
 	}
-
-	DrawGraph(0, 0, g_StageImage, FALSE);
-	DrawFormatString(280, 250, 0x000000, "%d", Paseflg);
-	if (Paseflg == true) {
-		DrawString(300, 250, "PAUSE", 0x000000);
+	else {
+		DrawPause();
 	}
 
-	AppleFunc.AppleControl(Paseflg);
-
-	PlayerControl();
+	
 
 	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
 }
 
-void DrawGameOver(void) {
-
-
-	//BackScrool();
-
-	//spflag = 1;
-
-	/*g_Score = (g_Mileage / 10 * 10) + g_EnemyCount4 * 300 + g_EnemyCount3 * 50 + g_EnemyCount2 * 100 + g_EnemyCount1 * 200;*/
-
-	if (g_KeyFlg & PAD_INPUT_M) {
-		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
-			g_GameState = 0;
-		}
-		else {
-			g_GameState = 7;
-		}
-	}
-
-	DrawGraph(0, 0, g_StageImage, FALSE);
-	AppleFunc.AppleControl(Paseflg);
-
-	DrawFormatString(300, 200, 0x000000, "Paseflg:%d", Paseflg);
-	if (Paseflg == true) {
-		DrawString(320, 200, "POUSE", 0x000000);
-	}
-
-	PlayerControl();
-
-	if (g_KeyFlg & 2048)g_GameState = 0;//ポーズ画面へ
-	DrawFormatString(220, 260, 0x000000, "%d", GetJoypadInputState(DX_INPUT_PAD1));
-
-	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
-}
+//void DrawGameOver(void) {
+//
+//
+//	//BackScrool();
+//
+//	//spflag = 1;
+//
+//	/*g_Score = (g_Mileage / 10 * 10) + g_EnemyCount4 * 300 + g_EnemyCount3 * 50 + g_EnemyCount2 * 100 + g_EnemyCount1 * 200;*/
+//
+//	if (g_KeyFlg & PAD_INPUT_M) {
+//		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
+//			g_GameState = 0;
+//		}
+//		else {
+//			g_GameState = 7;
+//		}
+//	}
+//
+//	DrawGraph(0, 0, g_StageImage, FALSE);
+//	AppleFunc.AppleControl(Pauseflg);
+//
+//	DrawFormatString(300, 200, 0x000000, "Pauseflg:%d", Pauseflg);
+//	if (Pauseflg == true) {
+//		DrawString(320, 200, "POUSE", 0x000000);
+//	}
+//
+//	PlayerControl();
+//
+//	if (g_KeyFlg & 2048)g_GameState = 0;//ポーズ画面へ
+//	DrawFormatString(220, 260, 0x000000, "%d", GetJoypadInputState(DX_INPUT_PAD1));
+//
+//	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
+//}
 
 
 
@@ -424,67 +434,67 @@ int ReadRanking(void)
 	return 0;
 }
 
-void PlayerControl() {
+void PlayerControl(bool pauseflg) {
 
-	if (g_KeyFlg & PAD_INPUT_M) {
-		if (Paseflg == false) {
-			Paseflg = true;
-		}
-		else {
-			Paseflg = false;
-		}
-	}
 
 	//	上下左右移動
-	if (g_player.flg == TRUE) {
-		int i = 0;
-		if (JoyPadX < -300 || JoyPadX > 300)PadSpeedTimer++;
-		if (PadSpeedTimer < 10 - i) {
-			if (g_player.speed < 6) {}
+	if (!pauseflg) {
+		if (g_player.flg == TRUE) {
+			int i = 0;
+			if (JoyPadX < -300 || JoyPadX > 300)PadSpeedTimer++;
+			if (PadSpeedTimer < 10 - i) {
+				if (g_player.speed < 6) {}
+			}
+			else {
+				PadSpeedTimer = 0; ++g_player.speed; i += 4;
+			}
+			if (JoyPadX < -300) g_player.x -= g_player.speed;
+			if (JoyPadX > 300) {
+				g_player.x += g_player.speed;
+			}
+			if (JoyPadX < 100 && JoyPadX > -100) { --g_player.speed; }
+			if (g_player.speed < -6) {
+				if (player_angle == -1)g_player.x++;
+				if (player_angle == 1)g_player.x--;
+			}
+			if (JoyPadX == 0)g_player.speed = 0;
 		}
-		else {
-			PadSpeedTimer = 0; ++g_player.speed; i += 4;
-		}
-		if (JoyPadX < -300) g_player.x -= g_player.speed;
-		if (JoyPadX > 300){
-			g_player.x += g_player.speed;
-		}
-		if (JoyPadX < 100 && JoyPadX > -100) {  --g_player.speed; }
-		if (g_player.speed < -6) {
-			if (player_angle == -1)g_player.x++;
-			if (player_angle == 1)g_player.x--;
-		}
-		if (JoyPadX == 0)g_player.speed = 0;
 	}
-
+	
 	//	画面をはみ出さないようにする
 	if (g_player.x < 32)		g_player.x = 32;
 
 	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
 
 	//	プレイヤーの表示
-	if (g_player.flg == TRUE) {
-		
-		if (JoyPadX < -300 || player_angle == -1) {
-			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
-		}
-		if (JoyPadX > 300 || player_angle == 1) {
-			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
-		}
-		if(JoyPadX == 0)
-		{
-			if(player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
-			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
-		}
-		if(g_player.speed > 3){
-			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
-			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-		}
-
+	if (pauseflg) {
+		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
+		if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
 	}
 	else {
-		DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
-		if (g_player.count >= 80)		g_player.flg = TRUE;
+		if (g_player.flg == TRUE) {
+
+			if (JoyPadX < -300 || player_angle == -1) {
+				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
+			}
+			if (JoyPadX > 300 || player_angle == 1) {
+				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
+			}
+			if (JoyPadX == 0)
+			{
+				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
+				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
+			}
+			if (g_player.speed > 3) {
+				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
+				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
+			}
+
+		}
+		else {
+			DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
+			if (g_player.count >= 80)		g_player.flg = TRUE;
+		}
 	}
 
 	//	敵を避けた数を表示
@@ -538,4 +548,12 @@ int LoadSounds(void)
 	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
 	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
 	if ((SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
+}
+
+void DrawPause() {
+	SetFontSize(64);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+	DrawBox(0, 0, 640, 480, 0x000000, TRUE);
+	DrawFormatString(160, 220, 0xfffffff, "ぽ　ー　ず");
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
