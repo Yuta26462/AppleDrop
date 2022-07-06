@@ -53,7 +53,6 @@ void GameInit(void);
 void GameMain(void);
 
 void DrawGameTitle(void);
-void DrawGameOver(void);
 void DrawEnd(void);
 void DrawHelp(void);
 
