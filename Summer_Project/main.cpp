@@ -20,13 +20,17 @@ struct RankingData g_Ranking[RANKING_DATA];
 
 int g_TitleImage;
 int g_Cone;
-int g_PosY, gPosX;
+int g_PosY;
+int JoyPadX, JoyPadY;
+int SelectY;
+int PadTimer;
 int g_WaitTime = 0;
 int g_EndImage;
 int g_StageImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
+bool Pflg;
 
 int LoadImages();
 int LoadSounds();
@@ -65,8 +69,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	while (ProcessMessage() == 0 && g_GameState != 99 && !(g_KeyFlg & PAD_INPUT_START)) {
 
 		g_OldKey = g_NowKey;
-		g_NowKey = GetJoypadInputState(DX_INPUT_KEY_PAD1);
+		g_NowKey = GetJoypadInputState(DX_INPUT_PAD1);
 		g_KeyFlg = g_NowKey & ~g_OldKey;
+
+		GetJoypadAnalogInput(&JoyPadX,&JoyPadY,DX_INPUT_PAD1);
+		SelectY = 0;
+		
+		//if (PadTimer > 300) {
+		//	++PadTimer;
+			if (JoyPadY > 800)SelectY = 1;
+			if (JoyPadY < -800)SelectY = -1;
+		//}
+		//else { PadTimer = 0; }
+		SetJoypadDeadZone(DX_INPUT_PAD1,0.8f);
+		
 
 		ClearDrawScreen();
 
@@ -90,9 +106,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			GameMain();
 			break;
 		case 6:
-			DrawGameOver();
-			break;
-		case 7:
 			InputRanking();
 			break;
 		}
@@ -127,11 +140,14 @@ void DrawGameTitle(void) {
 		if (--MenuNo < 0)MenuNo = 3;
 	}
 
+	//	キーボード操作用
+	/*if (g_KeyFlg & PAD_INPUT_DOWN)if (++MenuNo > 3)MenuNo = 0;
+	if (g_KeyFlg & PAD_INPUT_UP)if (--MenuNo < 0)MenuNo = 3;*/
+	if (SelectY == 1)if (++MenuNo > 3)MenuNo = 0;
+	if (SelectY == -1)if (--MenuNo < 0)MenuNo = 3;
+	if (SelectY == 1 || SelectY == -1)StartJoypadVibration(DX_INPUT_PAD1, 100, 2); if (++g_WaitTime < 60)StopJoypadVibration(DX_INPUT_PAD1); g_WaitTime = 0;
 	// Zキーでメニュー選択
-	if (g_KeyFlg & PAD_INPUT_A)
-	{		
-		g_GameState = MenuNo + 1;
-	}
+	if (g_KeyFlg & PAD_INPUT_1)g_GameState = MenuNo + 1;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
@@ -144,29 +160,25 @@ void DrawGameTitle(void) {
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
 
+	char string[64];
+	wsprintf(string, "X = %d", JoyPadX);
+	DrawString(200, 0, string, 0x000000);
+
+	wsprintf(string, "Y = %d", JoyPadY);
+	DrawString(200, 100, string, 0x000000);
+
 }
 
 void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	timer = TIMELIMIT;
+	Pflg = false;
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
 
 	AppleFunc.AppleInit();
-	
-	//spflag = 0;		//チャレンジ5用
-	//bikec = 0;		//チャレンジ5用
-
-	////	走行距離を初期化
-	//g_Mileage = 0;
-
-	////	敵1を避けた数の初期設定
-	//g_EnemyCount1 = 0;
-	//g_EnemyCount2 = 0;
-	//g_EnemyCount3 = 0;
-	//g_EnemyCount4 = 0;
 
 	//	プレイヤーの初期設定
 	g_player.flg = TRUE;
@@ -174,31 +186,10 @@ void GameInit(void) {
 	g_player.y = PLAYER_POS_Y;
 	g_player.w = PLAYER_WIDTH;
 	g_player.h = PLAYER_HEIGHT;
-	//g_player.angle = 0.0;
 	g_player.count = 0;
 	g_player.speed = PLAYER_SPEED;
-	//g_player.hp = PLAYER_HP;
-	//g_player.fuel = PLAYER_FUEL;
-	//g_player.bari = PLAYER_BARRIER;
-	//g_player.bariup = PLAYER_BARRIERUP;
-	//apple[0].AppleInit();
 
 	g_GameState = 5;
-
-	//for (int i = 0; i < ENEMY_MAX; i++) {
-	//	apple_flg = apple[i].GetAppleFlg();
-	//	apple_flg = false;
-	//	//apple_x = apple[i].GetAppleX();
-	//	
-
-	//	
-	//}
-	//for (int i = 0; i < ENEMY_MAX; i++) {	//チャレンジ5
-	//	g_enemy2[i].flg = FALSE;
-	//}
-	//for (int i = 0; i < ITEM_MAX; i++) {
-	//	g_item[i].flg = FALSE;
-	//}
 }
 
 void DrawRanking(void) {
@@ -207,10 +198,7 @@ void DrawRanking(void) {
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
 	//	スペースキーでメニューに戻る
-	if (g_KeyFlg & PAD_INPUT_M)
-	{
-		g_GameState = 0;
-	}
+	if (g_KeyFlg & PAD_INPUT_2)g_GameState = 0;
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
@@ -223,7 +211,7 @@ void DrawRanking(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & PAD_INPUT_M)	g_GameState = 0;
+	if (g_KeyFlg & PAD_INPUT_2)	g_GameState = 0;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	SetFontSize(16);
@@ -231,14 +219,6 @@ void DrawHelp(void) {
 
 	DrawString(20, 160, "これは障害物を避けながら", 0xffffff, 0);
 	DrawString(20, 180, "走り続けるゲームです", 0xffffff, 0);
-	//DrawString(20, 200, "燃料が尽きるか障害物に", 0xffffff, 0);
-	//DrawString(20, 220, "数回当たるとゲームオーバーです", 0xffffff, 0);
-	//DrawString(20, 250, "アイテム一覧", 0xffffff, 0);
-	//DrawGraph(20, 260, g_Item[0], TRUE);
-	//DrawString(20, 315, "取ると燃料が回復するよ。", 0xffffff, 0);
-	//DrawGraph(20, 335, g_Item[1], TRUE);
-	//DrawString(20, 385, "ダメージを受けている時に取ると耐久回復", 0xffffff, 0);
-	//DrawString(20, 405, "耐久が減っていなかったら燃料が少し回復するよ。", 0xffffff, 0);
 	DrawString(20, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
 }
 
@@ -250,7 +230,6 @@ void DrawEnd(void) {
 
 	//エンド画像表示
 	DrawGraph(0, 0, g_EndImage, FALSE);
-
 	//エンディング表示
 	if (++g_WaitTime < 600) g_PosY = 300 - g_WaitTime / 2;
 
@@ -271,21 +250,20 @@ void DrawEnd(void) {
 }
 
 void GameMain(void) {
-	//if (g_KeyFlg & PAD_INPUT_M)g_GameState = 6;	//テスト用の処理！？
-
-	//SetFontSize(16);
-	//DrawString(20, 20, "ゲームメイン", 0xffffff, 0);
-	//DrawString(150, 450, "---- スペースキーを押してゲームオーバーへ ----", 0xffffff, 0);
-
-	/*BackScrool();*/
-
-	/*EnemyControl();*/
-	//g_enemy2->h = 100;	//	チャレンジ5
-	/*BikeControl();
-
-	ItemControl();*/
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+	
+	if (Pflg == false) {
+		if (timer-- == 0) {
+			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
+				g_GameState = 0;
+			}
+			else {
+				g_GameState = 6;
+			}
+		}
+	}
 	if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 
 	if (timer-- == 0) {
@@ -318,37 +296,17 @@ void DrawGameOver(void) {
 		}
 	}
 
+	DrawGraph(0, 0, g_StageImage, FALSE);
+	AppleFunc.AppleControl(Pflg);
 
-	//g_Mileage = g_Score;
+	DrawFormatString(300, 200, 0x000000, "Pflg:%d", Pflg);
+	if (Pflg == true) {
+		DrawString(320, 200, "POUSE", 0x000000);
+	}
 
-	DrawBox(150, 150, 490, 330, 0x009900, TRUE);
-	DrawBox(150, 150, 490, 330, 0x000000, FALSE);
+	PlayerControl();
 
-	SetFontSize(20);
-	DrawString(220, 170, "ゲームオーバー", 0xcc0000);
-	SetFontSize(16);
-	DrawString(180, 200, "走行距離     ", 0x000000);
-	DrawRotaGraph(230, 230, 0.3f, M_PI / 2, apple_img[0], TRUE, FALSE);
-	DrawRotaGraph(230, 250, 0.3f, M_PI / 2, apple_img[1], TRUE, FALSE);
-	DrawRotaGraph(230, 270, 0.3f, M_PI / 2, apple_img[2], TRUE, FALSE);
-	DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);
-	//DrawRotaGraph(230, 230, 0.3f, M_PI / 2, apple_img[0], TRUE, FALSE);
-	//DrawRotaGraph(230, 250, 0.3f, M_PI / 2, apple_img[1], TRUE, FALSE);
-	//DrawRotaGraph(230, 270, 0.3f, M_PI / 2, apple_img[2], TRUE, FALSE);
-	//DrawRotaGraph(230, 290, 0.3f, M_PI / 2, apple_img[3], TRUE, FALSE);
-
-
-
-	//DrawFormatString(260, 200, 0xFFFFFF, " %6d x  10 = %6d", g_Mileage / 10, g_Mileage / 10 * 10);
-	//DrawFormatString(260, 285, 0xFFFFFF, " %6d x 300 = %6d", g_EnemyCount4, g_EnemyCount4 * 300);
-	//DrawFormatString(260, 222, 0xFFFFFF, " %6d x  50 = %6d", g_EnemyCount3, g_EnemyCount3 * 50);
-	//DrawFormatString(260, 243, 0xFFFFFF, "%6d x  100 = %6d", g_EnemyCount2, g_EnemyCount2 * 100);
-	//DrawFormatString(260, 264, 0xFFFFFF, "%6d x  200 = %6d", g_EnemyCount1, g_EnemyCount1 * 200);
-
-	DrawString(280, 310, "スコア ", 0x000000);
-	DrawFormatString(310, 310, 0xFFFFFF, "         = %6d", g_Score);
-	DrawString(150, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
-
+	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
 }
 
 
@@ -472,12 +430,25 @@ int ReadRanking(void)
 
 void PlayerControl() {
 
-	//	上下左右移動
-	if (g_player.flg == TRUE) {
-		if (g_NowKey & PAD_INPUT_LEFT)	g_player.x -= g_player.speed;
-		if (g_NowKey & PAD_INPUT_RIGHT)	g_player.x += g_player.speed;
-
+	if (g_KeyFlg & PAD_INPUT_M) {
+		if (Pflg == false) {
+			Pflg = true;
+		}
+		else {
+			Pflg = false;
+		}
 	}
+
+	//	上下左右移動
+	if (g_player.flg == TRUE && Pflg == false) {
+		
+		if (JoyPadX < -300 || JoyPadX > 300)PadTimer++;
+		if (PadTimer < 30) {
+			if (g_player.speed < 6) { g_player.speed++; PadTimer = 0; }
+		}
+		if (JoyPadX < -300)	g_player.x -= g_player.speed;
+		if (JoyPadX > 300)	g_player.x += g_player.speed;
+	}DrawFormatString(100, 230, 0x000000, "%d", PadTimer);
 
 	//	画面をはみ出さないようにする
 	if (g_player.x < 32)		g_player.x = 32;
@@ -486,11 +457,11 @@ void PlayerControl() {
 
 	//	プレイヤーの表示
 	if (g_player.flg == TRUE) {
-		if (g_NowKey & PAD_INPUT_LEFT) {
+		if (JoyPadX < -300) {
 			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE);
 		}
-		else if (g_NowKey & PAD_INPUT_RIGHT) {
-			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE);
+		if (JoyPadX > 300) {
+			DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE);
 		}
 		else
 		{
