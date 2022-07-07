@@ -492,7 +492,7 @@ void PlayerControl(bool pauseflg) {
 
 	//	プレイヤーの表示
 	if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 20);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
 		//SetDrawBright(80, 0, 0);
 	}
 	else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
