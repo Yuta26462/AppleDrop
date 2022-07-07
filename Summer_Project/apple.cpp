@@ -68,8 +68,8 @@ int Apple::CreateApple(int maxapple) {
 			apple[i].img = apple_img[apple[i].type];
 			apple[i].x = GetRand(6) * 70 + 30;
 			apple[i].y = -50;
-			apple[i].w = 60;
-			apple[i].h = 60;
+			apple[i].w = 50;
+			apple[i].h = 50;
 			apple[i].speed = GetAppleSpeed(apple[i].type);
 			apple[i].score = apple_score[apple[i].type];
 			//	ê¨å˜

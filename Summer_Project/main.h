@@ -78,8 +78,8 @@ const int SCREEN_HEIGHT = 480;
 
 const int PLAYER_POS_X = SCREEN_WIDTH / 2;
 const int PLAYER_POS_Y = SCREEN_HEIGHT - 50;
-const int PLAYER_WIDTH = 63;
-const int PLAYER_HEIGHT = 120;
+const int PLAYER_WIDTH = 58;
+const int PLAYER_HEIGHT = 62;
 const int PLAYER_SPEED = 5;
 const int PLAYER_HP = 1000;
 const int PLAYER_FUEL = 20000;

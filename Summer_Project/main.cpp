@@ -581,9 +581,9 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 	int sx2 = sx1 + p->w;
 	int sy2 = sy1 + p->h;
 
-	int dx1 = e->GetAppleX() - ((e->GetAppleW() / 2) - 20);
+	int dx1 = e->GetAppleX() - ((e->GetAppleW() / 2));
 	int dy1 = e->GetAppleY() - (e->GetAppleH() / 2);
-	int dx2 = dx1 + e->GetAppleW() - 50;
+	int dx2 = dx1 + e->GetAppleW();
 	int dy2 = dy1 + e->GetAppleH();
 
 	//	’ZŒ`‚ªd‚È‚Á‚Ä‚¢‚ê‚Î“–‚½‚è
