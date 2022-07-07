@@ -8,6 +8,7 @@ int apple_count[4];
 
 
 void Apple::AppleControl(bool pauseflg) {
+	DrawFormatString(100, 400, 0x000000, "aplle_quantity:%d", apple_quantity);
 	for (int i = 0; i < APPLE_MAX; i++)
 	{
 		if (apple[i].flg == true)
@@ -25,6 +26,7 @@ void Apple::AppleControl(bool pauseflg) {
 			//画面をはみ出したら消去
 			if (apple[i].y > SCREEN_HEIGHT + apple[i].h) {
 				apple[i].flg = false;
+				apple[i].pos = 99;
 				apple_quantity--;
 			}
 
@@ -32,6 +34,7 @@ void Apple::AppleControl(bool pauseflg) {
 			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE && !g_player.Poisonflg)
 			{
 				apple[i].flg = false;
+				apple[i].pos = 99;
 				apple_quantity--;
 				g_Score += apple[i].score;
 				apple_count[apple[i].type]++;
@@ -44,16 +47,14 @@ void Apple::AppleControl(bool pauseflg) {
 
 	
 
-	//走行距離ごとに敵出現パターンを制御する
+	//時間ごとにリンゴ出現パターンを制御する
 	if (timer % 25 == 0 && (APPLE_MAX - apple_quantity) / 2 > apple_quantity)
 	{
-		if (StartFlg == true) {
-				apple_quantity++;
-				CreateApple(APPLE_START);
-				StartFlg = false;
+		if (StartFlg == true) {	
+			CreateApple(APPLE_START);
+			StartFlg = false;
 		}
 		else {
-			apple_quantity++;
 			CreateApple(APPLE_MAX);
 		}
 		
@@ -66,12 +67,14 @@ int Apple::CreateApple(int maxapple) {
 			apple[i].flg = true;
 			apple[i].type = GetAppleType();
 			apple[i].img = apple_img[apple[i].type];
-			apple[i].x = GetRand(6) * 70 + 30;
+			apple[i].speed = GetAppleSpeed(apple[i].type);
+			apple[i].pos = GetApplePos(apple[i].speed, i);
+			apple[i].x = apple[i].pos * 70 + 30;//GetRand(6) * 70 + 30;
 			apple[i].y = -50;
 			apple[i].w = 50;
 			apple[i].h = 50;
-			apple[i].speed = GetAppleSpeed(apple[i].type);
 			apple[i].score = apple_score[apple[i].type];
+			apple_quantity++;
 			//	成功
 			return TRUE;
 		}
@@ -111,7 +114,6 @@ int GetAppleType() {
 	}
 }
 
-
 int GetAppleSpeed(int AppleType) {
 	switch (AppleType) {
 	case RED_APPLE:
@@ -130,6 +132,34 @@ int GetAppleSpeed(int AppleType) {
 		break;
 	}
 }
+
+int Apple::GetApplePos(int apple_speed, int num) {
+	int apple_pos = 0;
+	bool Over_flg = true;
+
+	if (Over_flg == TRUE) {
+		for (int i = 0; i < APPLE_MAX; i++) {
+			if (i != num) {
+				apple_pos = GetRand(6);
+				if (apple_pos == apple[i].pos) {
+					CheckAppleSpeed(apple[num].speed, apple[i].speed, &Over_flg);
+				}
+			}
+		}
+	}
+
+	return apple_pos;
+}
+
+void Apple::CheckAppleSpeed(int speed1, int speed2, bool* over_flg) {
+	if (speed1 > speed2) {
+		*over_flg = true;
+	}
+	else {
+		*over_flg = false;
+	}
+}
+
 
 bool* Apple::GetAppleFlg() {
 	return &flg;

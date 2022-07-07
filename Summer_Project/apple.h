@@ -26,6 +26,7 @@ private:
 	bool flg;
 	int type;
 	int img;
+	int pos;
 	int x, y, w, h;
 	int speed;
 	int score;
@@ -34,6 +35,8 @@ public:
 	int CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
 	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 
+	int GetApplePos(int apple_speed,int num);
+	void CheckAppleSpeed(int speed1, int speed2,bool* over_flg);
 	bool* GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
 	int GetAppleX();				//ƒŠƒ“ƒSxÀ•Wæ“¾ŠÖ”
 	int GetAppleY();				//ƒŠƒ“ƒSyÀ•Wæ“¾ŠÖ”

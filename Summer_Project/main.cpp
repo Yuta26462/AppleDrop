@@ -204,7 +204,7 @@ void DrawRanking(void) {
 	SetFontSize(18);
 	for (int i = 0; i < RANKING_DATA; i++) {
 		DrawFormatString(50, 170 + i * 25, 0xffffff, "%2d  %-10s  %10d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
-		DrawString(100, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
+		DrawString(100, 450, "---- Bボタンを押してタイトルへ戻る ----", 0xffffff, 0);
 	}
 }
 
@@ -251,7 +251,8 @@ void DrawEnd(void) {
 
 void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-
+	//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+	
 	DrawGraph(0, 0, g_StageImage, FALSE);
 
 	AppleFunc.AppleControl(Pauseflg);
@@ -267,12 +268,11 @@ void GameMain(void) {
 	}
 
 	DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
+	
 
 	if (!Pauseflg) {
 		
-		if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 				g_GameState = 0;
@@ -285,6 +285,7 @@ void GameMain(void) {
 	}
 	else {
 		DrawPause();
+		StopSoundMem(GameMainBGM);
 	}
 
 	
