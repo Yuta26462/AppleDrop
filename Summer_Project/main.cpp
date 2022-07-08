@@ -1,7 +1,7 @@
 #include "main.h"
 #include <string>	//ranking‚ÅŽg—p
 
-#define TIMELIMIT 900 + 60
+#define TIMELIMIT 1800 + 60
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
