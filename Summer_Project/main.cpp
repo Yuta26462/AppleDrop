@@ -522,7 +522,7 @@ void PlayerControl(bool pauseflg) {
 		//	âÊñ ÇÇÕÇ›èoÇ≥Ç»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
 		if (g_player.x < 32)		g_player.x = 32;
 
-		if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
+		if (g_player.x > SCREEN_WIDTH - 170)		g_player.x = SCREEN_WIDTH - 170;
 
 
 		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
@@ -593,12 +593,12 @@ void PlayerControl(bool pauseflg) {
 		DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
 		DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 
-		DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
+		//DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
 		//	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
 		//	DrawFormatString(320, 260, 0xFFFFFF, "player_angle:%d", player_angle);
 		//	DrawFormatString(320, 290, 0xFFFFFF, "JoyPadX:%d", JoyPadX);
 		//	DrawFormatString(320, 320, 0xFFFFFF, "checkflg:%d", checkflg);
-		DrawFormatString(320, 320, 0xFFFFFF, "Pauseflg:%d", Pauseflg);
+		//DrawFormatString(320, 320, 0xFFFFFF, "Pauseflg:%d", Pauseflg);
 
 	}
 }
