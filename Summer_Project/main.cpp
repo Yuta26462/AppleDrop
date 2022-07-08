@@ -507,21 +507,21 @@ void PlayerControl(bool pauseflg) {
 			if (ina != player_angle /*&& g_player.speed > 4*/) {
 				if (JoyPadX < -800) {
 					checkflg = 1;
-					
+
 				}
 				if (JoyPadX > 800) {
 					checkflg = 2;
 				}
 				if (player_angle == 1) { g_player.x -= g_player.speed; }
 				if (player_angle == -1) { g_player.x += g_player.speed; }
-				
+
 			}
 		}
 
 		//	画面をはみ出さないようにする
 		if (g_player.x < 32)		g_player.x = 32;
 
-	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
+		if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
 
 
 		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
@@ -535,70 +535,71 @@ void PlayerControl(bool pauseflg) {
 
 
 	//	プレイヤーの表示
-	if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-		//SetDrawBright(80, 0, 0);
-	}
-	else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//SetDrawBright(255, 255, 255);
-	}
-	if (Pauseflg) {
-		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
-		if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-	}
-	else {
-		if (g_player.flg == TRUE) {
-			if (JoyPadX < -300 || player_angle == -1) {
-				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
-			}
-			if (JoyPadX > 300 || player_angle == 1) {
-				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
-			}
-			if (JoyPadX == 0)
-			{
-				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
-				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
-			}
-			if (g_player.speed > 3) {
-				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
-				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-			}
+		if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
+			//SetDrawBright(80, 0, 0);
+		}
+		else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			//SetDrawBright(255, 255, 255);
+		}
+		if (Pauseflg) {
+			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
+			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
 		}
 		else {
-			DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
-			if (g_player.count >= 80)		g_player.flg = TRUE;
+			if (g_player.flg == TRUE) {
+				if (JoyPadX < -300 || player_angle == -1) {
+					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
+				}
+				if (JoyPadX > 300 || player_angle == 1) {
+					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
+				}
+				if (JoyPadX == 0)
+				{
+					if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
+					if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
+				}
+				if (g_player.speed > 3) {
+					if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
+					if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
+				}
+			}
+			else {
+				DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
+				if (g_player.count >= 80)		g_player.flg = TRUE;
+			}
+			//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
-		//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
+		//	敵を避けた数を表示
+		DrawBox(500, 0, 640, 480, 0x009900, TRUE);
+		SetFontSize(16);
+		DrawFormatString(540, 20, 0x000000, "残り時間");
+		DrawFormatString(560, 60, 0x000000, "%d", timer / 60);
+		DrawFormatString(540, 100, 0x000000, "SCORE");
+		DrawFormatString(560, 120, 0x000000, "%d", g_Score);
+		//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
+		DrawFormatString(540, 160, 0x000000, "採った数");
+		DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
+		DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
+		DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
+		DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
+
+		DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
+		DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
+		DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
+		DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
+
+		DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
+		//	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
+		//	DrawFormatString(320, 260, 0xFFFFFF, "player_angle:%d", player_angle);
+		//	DrawFormatString(320, 290, 0xFFFFFF, "JoyPadX:%d", JoyPadX);
+		//	DrawFormatString(320, 320, 0xFFFFFF, "checkflg:%d", checkflg);
+		DrawFormatString(320, 320, 0xFFFFFF, "Pauseflg:%d", Pauseflg);
+
 	}
-	//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
-	//	敵を避けた数を表示
-	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
-	SetFontSize(16);
-	DrawFormatString(540, 20, 0x000000, "残り時間");
-	DrawFormatString(560, 60, 0x000000, "%d", timer / 60);
-	DrawFormatString(540, 100, 0x000000, "SCORE");
-	DrawFormatString(560, 120, 0x000000, "%d", g_Score);
-	//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
-	DrawFormatString(540, 160, 0x000000, "採った数");
-	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
-	DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
-	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
-	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
-
-	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
-	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
-	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
-	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
-
-	DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
-	//	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
-	//	DrawFormatString(320, 260, 0xFFFFFF, "player_angle:%d", player_angle);
-	//	DrawFormatString(320, 290, 0xFFFFFF, "JoyPadX:%d", JoyPadX);
-	//	DrawFormatString(320, 320, 0xFFFFFF, "checkflg:%d", checkflg);
-	DrawFormatString(320, 320, 0xFFFFFF, "Pauseflg:%d", Pauseflg);
-
 }
 
 
