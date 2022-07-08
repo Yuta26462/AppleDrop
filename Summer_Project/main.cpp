@@ -9,7 +9,7 @@ enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, 
 Apple apple[APPLE_MAX];
 Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
-int MenuFont;
+int MenuFont, PauseFont;
 int apple_img[4];
 int players_img[6];
 int g_GameState = DRAW_GAMETITLE;
@@ -72,6 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (LoadSounds() == -1)return -1;
 
 	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_CHARSET_DEFAULT);
+	PauseFont = CreateFontToHandle("JK丸ゴシック Medium", 80, 1, DX_CHARSET_DEFAULT);
 
 	while (ProcessMessage() == 0 && g_GameState != END) {
 
@@ -635,6 +636,6 @@ int LoadSounds(void)
 void DrawPause() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox(0, 0, 640, 480, 0x000000, TRUE);
-	DrawFormatString(160, 220, 0xfffffff, "ぽ　ー　ず");
+	DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "ぽ　ー　ず");
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
