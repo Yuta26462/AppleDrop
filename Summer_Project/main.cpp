@@ -288,7 +288,7 @@ void GameMain(void) {
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
 
-	if (g_KeyFlg & (PadType ? 2048 : 8192)) {
+	if (g_KeyFlg & INPUT_START/*(PadType ? 2048 : 8192)*/) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
@@ -302,8 +302,8 @@ void GameMain(void) {
 
 	if (!Pauseflg) {
 
-		if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+		//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
@@ -317,6 +317,7 @@ void GameMain(void) {
 	}
 	else {
 		DrawPause();
+		StopSoundMem(GameMainBGM);
 	}
 
 
@@ -478,17 +479,17 @@ int ReadRanking(void)
 }
 
 void PlayerControl(bool pauseflg) {
-	if (g_KeyFlg & (PadType ? 2048 : 8192)) {
+	/*if (g_KeyFlg & (PadType ? 2048 : 8192)) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
 		else {
 			Pauseflg = false;
 		}
-	}
+	}*/
 	static int checkflg = 0;
 	static int ina = 1;
-	Pauseflg = false;
+	/*Pauseflg = false;*/
 	if (!Pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
