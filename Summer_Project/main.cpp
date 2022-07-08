@@ -182,12 +182,12 @@ void DrawGameTitle(void) {
 	DrawRotaGraph(400, 300 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
 
 	char string[64];
-	wsprintf(string, "X = %d", JoyPadX);
+	/*wsprintf(string, "X = %d", JoyPadX);
 	DrawString(200, 0, string, 0x000000);
 
 	wsprintf(string, "Y = %d", JoyPadY);
 	DrawString(200, 30, string, 0x000000);
-	DrawFormatString(200, 60, 0x000000, "%d", PadTimer);
+	DrawFormatString(200, 60, 0x000000, "%d", PadTimer);*/
 }
 
 void GameInit(void) {
@@ -287,7 +287,7 @@ void GameMain(void) {
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
 
-	if (g_KeyFlg & (PadType ? 2048 : 8192)) {
+	if (g_KeyFlg & INPUT_START/*(PadType ? 2048 : 8192)*/) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
@@ -296,12 +296,13 @@ void GameMain(void) {
 		}
 	}
 
-	DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
+	//DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
+	
 
 	if (!Pauseflg) {
 
-		if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+		//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
@@ -315,6 +316,7 @@ void GameMain(void) {
 	}
 	else {
 		DrawPause();
+		StopSoundMem(GameMainBGM);
 	}
 
 
@@ -475,17 +477,17 @@ int ReadRanking(void)
 }
 
 void PlayerControl(bool pauseflg) {
-	if (g_KeyFlg & (PadType ? 2048 : 8192)) {
+	/*if (g_KeyFlg & (PadType ? 2048 : 8192)) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
 		else {
 			Pauseflg = false;
 		}
-	}
+	}*/
 	static int checkflg = 0;
 	static int ina = 1;
-	Pauseflg = false;
+	/*Pauseflg = false;*/
 	if (!Pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
@@ -519,7 +521,7 @@ void PlayerControl(bool pauseflg) {
 		//	画面をはみ出さないようにする
 		if (g_player.x < 32)		g_player.x = 32;
 
-		if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
+	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
 
 
 		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
@@ -532,15 +534,14 @@ void PlayerControl(bool pauseflg) {
 		/*if (g_player.Poisonflg == TRUE) { invincibletime++; }*/
 
 
-		//	プレイヤーの表示
-		if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-			//SetDrawBright(80, 0, 0);
-		}
-		else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			//SetDrawBright(255, 255, 255);
-		}
+	//	プレイヤーの表示
+	if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
+		//SetDrawBright(80, 0, 0);
+	}
+	else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		//SetDrawBright(255, 255, 255);
 	}
 	if (Pauseflg) {
 		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
@@ -548,38 +549,20 @@ void PlayerControl(bool pauseflg) {
 	}
 	else {
 		if (g_player.flg == TRUE) {
-			//if (g_player.Poisonflg == TRUE && invincibletime % 9 == 8){
-			//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			//	SetDrawBright(255, 255, 255);
-			//}
-/*			if (invincibletime++ % 18 == 0 && g_player.Poisonflg == TRUE) {
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-				SetDrawBright(255, 255, 255);
-			}
-			else *//*if (invincibletime % 9 == 0 && g_player.Poisonflg == TRUE) {
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
-				SetDrawBright(80,0,0);
-			}*/
 			if (JoyPadX < -300 || player_angle == -1) {
 				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
 			}
 			if (JoyPadX > 300 || player_angle == 1) {
-				//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
-				//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 			if (JoyPadX == 0)
 			{
-				//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
 				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
-				//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 			if (g_player.speed > 3) {
-				//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
 				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-				//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 		}
 		else {
@@ -588,10 +571,8 @@ void PlayerControl(bool pauseflg) {
 		}
 		//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//SetDrawBright(255, 255, 255);
-		//}
 	}
-	DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
+	//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
 	//	敵を避けた数を表示
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
@@ -640,7 +621,6 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 	}
 	return FALSE;
 }
-
 int LoadSounds(void)
 {
 	//タイトルBGM
