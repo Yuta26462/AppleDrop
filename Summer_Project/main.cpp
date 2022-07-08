@@ -287,7 +287,7 @@ void GameMain(void) {
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
 
-	if (g_KeyFlg & INPUT_START/*(PadType ? 2048 : 8192)*/) {
+	if (g_KeyFlg & (PadType ? 2048 : 8192)) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
