@@ -1,18 +1,20 @@
 #include "main.h"
+#include <string>	//rankingで使用
 
-#define TIMELIMIT 3600 + 60
+#define TIMELIMIT 1800 + 60
+#define INPUT_START 2048
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
-enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END=99};
-
+enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
 Apple apple[APPLE_MAX];
 Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
 int MenuFont;
 int apple_img[4];
 int players_img[6];
-int g_GameState = 0;
+int g_GameState = DRAW_GAMETITLE;
+//int g_GameState = INPUT_RANKING;
 int g_Score = 0;
 int timer;
 int invincibletime;
@@ -26,8 +28,8 @@ int g_Cone;
 int g_PosY;
 int JoyPadX, JoyPadY;
 int player_angle = 1;
-int SelectY;
-int PadTimer,PadSpeedTimer;
+int SelectX, SelectY;
+int PadTimer, PadSpeedTimer;
 int g_WaitTime = 0;
 int g_EndImage;
 int g_StageImage;
@@ -35,6 +37,7 @@ bool apple_flg;
 int apple_x;
 int apple_y;
 bool Pauseflg;
+bool PadType = false;
 
 int LoadImages();
 int LoadSounds();
@@ -77,18 +80,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		g_NowKey = GetJoypadInputState(DX_INPUT_PAD1);
 		g_KeyFlg = g_NowKey & ~g_OldKey;
 
-		GetJoypadAnalogInput(&JoyPadX,&JoyPadY,DX_INPUT_PAD1);
+		GetJoypadAnalogInput(&JoyPadX, &JoyPadY, DX_INPUT_PAD1);
+		if (CheckJoypadXInput(DX_INPUT_PAD1)) { PadType = true; }
 
-		//if (g_KeyFlg & 1024) DxLib_End(); return 0;
+		if (g_KeyFlg & (PadType ? 1024 : 4096)) g_GameState = END;
+		SelectX = 0;
 		SelectY = 0;
-		
+
 		if (++PadTimer > 10) {
 			PadTimer = 0;
+			if (JoyPadX > 800)SelectX = 1;
+			if (JoyPadX < -800)SelectX = -1;
 			if (JoyPadY > 800)SelectY = 1;
 			if (JoyPadY < -800)SelectY = -1;
 		}
-		SetJoypadDeadZone(DX_INPUT_PAD1,0.8f);
-		
+		SetJoypadDeadZone(DX_INPUT_PAD1, 0.6f);
+
 
 		ClearDrawScreen();
 
@@ -143,26 +150,45 @@ void DrawGameTitle(void) {
 	if (SelectY == 1)if (++MenuNo > 3)MenuNo = 0;
 	if (SelectY == -1)if (--MenuNo < 0)MenuNo = 3;
 	// Zキーでメニュー選択
-	if (g_KeyFlg & PAD_INPUT_1)g_GameState = MenuNo + 1;
+	if (g_KeyFlg & (PadType ? 16 : 32))g_GameState = MenuNo + 1;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
-	
-	
-	
-	DrawFormatStringToHandle(420, 280, 0x9c3e26, MenuFont ,"すたーと" );
-	DrawFormatStringToHandle(420, 320, 0x9c3e26, MenuFont , "らんきんぐ");
-	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont ,"へるぷ");
-	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont , "えんど");
+	static bool ani = true;
+	if (ani == true) {
+		static int aniy = rand() % 50;
+		/*if(++aniy > 10)*/
+		if (++g_WaitTime > 30) DrawFormatStringToHandle(200, 100 + aniy, 0x9c3e26, MenuFont, "り"); aniy = rand() % 20;
+		if (g_WaitTime > 60) DrawFormatStringToHandle(250, 100 + aniy, 0x9c3e26, MenuFont, "ん"); aniy = rand() % 20;
+		if (g_WaitTime > 120) DrawFormatStringToHandle(300, 100 + aniy, 0x9c3e26, MenuFont, "ご"); aniy = rand() % 20;
+		if (g_WaitTime > 180) DrawFormatStringToHandle(350, 100 + aniy, 0x9c3e26, MenuFont, "お"); aniy = rand() % 20;
+		if (g_WaitTime > 240) DrawFormatStringToHandle(400, 100 + aniy, 0x9c3e26, MenuFont, "と"); aniy = rand() % 20;
+		if (g_WaitTime > 300) { DrawFormatStringToHandle(450, 100, 0x9c3e26, MenuFont, "し"); ani = false; g_WaitTime = 0; }
+	}
+	else if (ani == false) {
+
+		DrawFormatStringToHandle(200, 100, 0x9c3e26, MenuFont, "り");
+		DrawFormatStringToHandle(250, 100, 0x9c3e26, MenuFont, "ん");
+		DrawFormatStringToHandle(300, 100, 0x9c3e26, MenuFont, "ご");
+		DrawFormatStringToHandle(350, 100, 0x9c3e26, MenuFont, "お");
+		DrawFormatStringToHandle(400, 100, 0x9c3e26, MenuFont, "と");
+		DrawFormatStringToHandle(450, 100, 0x9c3e26, MenuFont, "し");
+	}
+
+
+	DrawFormatStringToHandle(420, 280, 0x9c3e26, MenuFont, "すたーと");
+	DrawFormatStringToHandle(420, 320, 0x9c3e26, MenuFont, "らんきんぐ");
+	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont, "へるぷ");
+	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont, "えんど");
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
 
 	char string[64];
-	wsprintf(string, "X = %d", JoyPadX);
+	/*wsprintf(string, "X = %d", JoyPadX);
 	DrawString(200, 0, string, 0x000000);
 
 	wsprintf(string, "Y = %d", JoyPadY);
 	DrawString(200, 30, string, 0x000000);
-	DrawFormatString(200, 60, 0x000000, "%d", PadTimer);
+	DrawFormatString(200, 60, 0x000000, "%d", PadTimer);*/
 }
 
 void GameInit(void) {
@@ -196,7 +222,7 @@ void DrawRanking(void) {
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
 	//	スペースキーでメニューに戻る
-	if (g_KeyFlg & 32)g_GameState = DRAW_GAMETITLE;
+	if (g_KeyFlg & (PadType ? 32 : 64))g_GameState = DRAW_GAMETITLE;
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
@@ -204,22 +230,26 @@ void DrawRanking(void) {
 	SetFontSize(18);
 	for (int i = 0; i < RANKING_DATA; i++) {
 		DrawFormatString(50, 170 + i * 25, 0xffffff, "%2d  %-10s  %10d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
-		DrawString(100, 450, "---- Bボタンを押してタイトルへ戻る ----", 0xffffff, 0);
+		DrawString(100, 450, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
 	}
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & 32)	g_GameState = DRAW_GAMETITLE;
-	if (g_KeyFlg & 16)	g_GameState = GAME_MAIN;
+	if (g_KeyFlg & (PadType ? 32 : 64))	g_GameState = DRAW_GAMETITLE;
+	if (g_KeyFlg & (PadType ? 16 : 32))	g_GameState = GAME_INIT;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
-	
-	DrawString(20, 120, "ヘルプ画面", 0xffffff, 0);
 
-	DrawString(20, 160, "これは障害物を避けながら", 0xffffff, 0);
-	DrawString(20, 180, "走り続けるゲームです", 0xffffff, 0);
-	DrawString(20, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
-	DrawString(20, 450, "---- スペースキーを押してタイトルへ戻る ----", 0xffffff, 0);
+	DrawStringToHandle(260, 40, "へるぷ", 0xffffff, MenuFont, 0);
+
+	DrawStringToHandle(20, 120, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(20, 180, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(20, 270, "B", 0x0000ff, MenuFont, 0);
+	DrawStringToHandle(44, 270, "ボタンをおして", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(320, 270, "タイトルへもどる", 0xff8c00, MenuFont, 0);
+	DrawStringToHandle(20, 330, "A", 0xff0000, MenuFont, 0);
+	DrawStringToHandle(44, 330, "ボタンをおして", 0xffffff, MenuFont, 0);
+	if (g_WaitTime > 30) { DrawStringToHandle(320, 330, "ゲームスタート", 0xffff00, MenuFont, 0); } DrawFormatString(100, 100, 0x000000, "%d", g_WaitTime);
 }
 
 void DrawEnd(void) {
@@ -231,20 +261,20 @@ void DrawEnd(void) {
 	//エンド画像表示
 	DrawGraph(0, 0, g_EndImage, FALSE);
 	//エンディング表示
-	if (++g_WaitTime < 600) g_PosY = 300 - g_WaitTime / 2;
+	if (++g_WaitTime < 600) { g_PosY = 300 - g_WaitTime / 2; }
 
 	SetFontSize(24);
-	DrawString(100, 170 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF,0);
-	DrawString(100, 200 + g_PosY, "バージョン　　1.0", 0xFFFFFF,0);
-	DrawString(100, 230 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF,0);
-	DrawString(100, 260 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF,0);
-	DrawString(100, 290 + g_PosY, "　　　　　　　しょうご,しき", 0xFFFFFF,0);
+	DrawString(100, 170 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
+	DrawString(100, 200 + g_PosY, "バージョン　　1.0", 0xFFFFFF, 0);
+	DrawString(100, 230 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF, 0);
+	DrawString(100, 260 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF, 0);
+	DrawString(100, 290 + g_PosY, "　　　　　　　しょうご,しき", 0xFFFFFF, 0);
 	DrawString(100, 310 + g_PosY, "素材利用", 0xFFFFFF);
-	DrawString(100, 340 + g_PosY, "　BGM　　,　 DOVA-SYNDROME", 0xFFFFFF,0);
-	DrawString(100, 365 + g_PosY, "　SE　　　　　効果音工房", 0xFFFFFF,0);
+	DrawString(100, 340 + g_PosY, "　BGM　　,　 DOVA-SYNDROME", 0xFFFFFF, 0);
+	DrawString(100, 365 + g_PosY, "　SE　　　　　効果音工房", 0xFFFFFF, 0);
 
 	//タイムの加算処理＆終了
-	if (++g_WaitTime > 900) g_GameState = END;
+	if (++g_WaitTime > 900) { g_WaitTime = 0; g_GameState = END; }
 
 	DeleteFontToHandle(MenuFont);
 }
@@ -252,13 +282,13 @@ void DrawEnd(void) {
 void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
-	
+
 	DrawGraph(0, 0, g_StageImage, FALSE);
 
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
 
-	if (g_KeyFlg & 2048) {
+	if (g_KeyFlg & INPUT_START/*(PadType ? 2048 : 8192)*/) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
@@ -267,18 +297,20 @@ void GameMain(void) {
 		}
 	}
 
-	DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
+	//DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
 	
 
 	if (!Pauseflg) {
-		
+
+		//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
+
 		if (timer-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
-				g_GameState = 0;
+				g_GameState = DRAW_RANKING;
 			}
 			else {
-				g_GameState = 6;
+				g_GameState = INPUT_RANKING;
 			}
 		}
 
@@ -288,45 +320,11 @@ void GameMain(void) {
 		StopSoundMem(GameMainBGM);
 	}
 
-	
+
 
 	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
-	DrawFormatString(200, 100, 0x000000, "JoyPad:%d", GetJoypadInputState(DX_INPUT_PAD1));
+	//DrawFormatString(200, 100, 0x000000, "JoyPad:%d", GetJoypadInputState(DX_INPUT_PAD1));
 }
-
-//void DrawGameOver(void) {
-//
-//
-//	//BackScrool();
-//
-//	//spflag = 1;
-//
-//	/*g_Score = (g_Mileage / 10 * 10) + g_EnemyCount4 * 300 + g_EnemyCount3 * 50 + g_EnemyCount2 * 100 + g_EnemyCount1 * 200;*/
-//
-//	if (g_KeyFlg & PAD_INPUT_M) {
-//		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
-//			g_GameState = 0;
-//		}
-//		else {
-//			g_GameState = 7;
-//		}
-//	}
-//
-//	DrawGraph(0, 0, g_StageImage, FALSE);
-//	AppleFunc.AppleControl(Pauseflg);
-//
-//	DrawFormatString(300, 200, 0x000000, "Pauseflg:%d", Pauseflg);
-//	if (Pauseflg == true) {
-//		DrawString(320, 200, "POUSE", 0x000000);
-//	}
-//
-//	PlayerControl();
-//
-//	if (g_KeyFlg & 2048)g_GameState = 0;//ポーズ画面へ
-//	DrawFormatString(220, 260, 0x000000, "%d", GetJoypadInputState(DX_INPUT_PAD1));
-//
-//	//DrawFormatStringToHandle(270, 25, 0x000000, MenuFont, "x:%d  y:%d", MouseX, MouseY);	//デバック用 座標確認
-//}
 
 
 
@@ -349,24 +347,56 @@ void InputRanking(void)
 	//ランキング画像表示
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
-	// フォントサイズの設定
-	SetFontSize(20);
+	static char buf[10] = "_________";
 
 	// 名前入力指示文字列の描画
-	DrawString(150, 240, "ランキングに登録します", 0xFFFFFF);
-	DrawString(150, 270, "名前を英字で入力してください", 0xFFFFFF);
+	DrawFormatStringToHandle(120, 100, 0xFFFFFF, MenuFont, "ランキングに登録します");
+	DrawFormatStringToHandle(65, 150, 0xFFFFFF, MenuFont, "名前を英字で入力してください");
 
 	// 名前の入力
-	DrawString(150, 310, "> ", 0xFFFFFF);
-	DrawBox(160, 305, 300, 335, 0x000055, TRUE);
-	//if (KeyInputSingleCharString(170, 310, 10, g_Ranking[RANKING_DATA - 1].name, FALSE) == 1) {
-	//	g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
-	//	SortRanking();		//ランキング並べ替え
-	//	SaveRanking();		//ランキングデータの保存
-	//	g_GameState = 2;	//ゲームモードの変更
-	//}
-	if(g_KeyFlg & 16)g_GameState = DRAW_RANKING;
+	DrawFormatStringToHandle(120, 200, 0xFFFFFF, MenuFont, "> ");
+	DrawBox(190, 200, 425, 250, 0x000055, TRUE);
+	DrawFormatStringToHandle(200, 205, 0xFFFFFF, MenuFont, "%s", buf);
 
+	char input_char = '0';
+	for (int j = 0; j < 5; j++) {
+		for (int i = 1; i < 14; i++) {
+			if (input_char < '{' || input_char < '[') {
+				DrawFormatString(i * 30 + 100, 260 + 30 * j, 0x000000, "%c", input_char++);
+			}
+			if (input_char == ':') { input_char = 'a'; j = 1; i = 0; }
+			if (input_char == '{') { input_char = 'A'; j = 3; i = 0; }
+		}
+	}
+	static int selecterX = 0;
+	static int selecterY = 0;
+	if (SelectX == 1)if (++selecterX > 12)selecterX = 0;
+	if (SelectX == -1)if (--selecterX < 0)selecterX = 12;
+	if (SelectY == 1)if (++selecterY > 4)selecterY = 0;
+	if (SelectY == -1)if (--selecterY < 0)selecterY = 4;
+	if (g_KeyFlg & (PadType ? 16 : 32)) {}
+	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x000000, FALSE);
+
+
+	static int i = 0;
+	if (i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? 2048 : 8192)) {
+		buf[strlen(buf) - 1] = '\n';
+		//for (int j = 0; i <= 9; j++) { if (isalnum(buf[j]) != 0) {  } }
+		strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf);
+
+		g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
+		SortRanking();		//ランキング並べ替え
+		SaveRanking();		//ランキングデータの保存
+		g_GameState = DRAW_RANKING;
+	}
+	if (g_KeyFlg & (PadType ? 16 : 32)) {
+		if (selecterY == 0 && selecterX >= 0 && selecterX < 9) { buf[i++] = (char)48 + selecterX; }
+		if (selecterY == 1 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)97 + selecterX; }
+		if (selecterY == 2 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)110 + selecterX; }
+		if (selecterY == 3 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)65 + selecterX; }
+		if (selecterY == 4 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)78 + selecterX; }
+	}
+	//isalnum
 }
 
 void SortRanking(void)
@@ -406,7 +436,7 @@ int  SaveRanking(void)
 #pragma warning(disable:4996)
 
 	// ファイルオープン
-	if ((fp = fopen("dat/05/rankingdata.txt", "w")) == NULL) {
+	if ((fp = fopen("dat/rankingdata.txt", "w")) == NULL) {
 		/* エラー処理 */
 		printf("Ranking Data Error\n");
 		return -1;
@@ -430,7 +460,7 @@ int ReadRanking(void)
 #pragma warning(disable:4996)
 
 	//ファイルオープン
-	if ((fp = fopen("dat/05/rankingdata.txt", "r")) == NULL) {
+	if ((fp = fopen("dat/rankingdata.txt", "r")) == NULL) {
 		//エラー処理
 		printf("Ranking Data Error\n");
 		return -1;
@@ -449,38 +479,51 @@ int ReadRanking(void)
 }
 
 void PlayerControl(bool pauseflg) {
-
-
-	//	上下左右移動
-	if (!pauseflg) {
+	/*if (g_KeyFlg & (PadType ? 2048 : 8192)) {
+		if (Pauseflg == false) {
+			Pauseflg = true;
+		}
+		else {
+			Pauseflg = false;
+		}
+	}*/
+	static int checkflg = 0;
+	static int ina = 1;
+	/*Pauseflg = false;*/
+	if (!Pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
-			if (JoyPadX < -300 || JoyPadX > 300)PadSpeedTimer++;
-			if (PadSpeedTimer < 10 - i) {
-				if (g_player.speed < 6) {}
+			//if (JoyPadX < -300 || JoyPadX > 300)
+			PadSpeedTimer++;
+			if (PadSpeedTimer > 10 - i) {
+				PadSpeedTimer = 0;
+				if (g_player.speed < 6) {
+					++g_player.speed; i += 4; ina = player_angle; checkflg = 0;
+				}
 			}
-			else {
-				PadSpeedTimer = 0; ++g_player.speed; i += 4;
+			if (g_player.speed > 0 && JoyPadX < -300) { g_player.x -= g_player.speed; }
+			if (g_player.speed > 0 && JoyPadX > 300) { g_player.x += g_player.speed; }
+			if (JoyPadX == 0)g_player.speed = 0; i = 0;
+
+
+			if (ina != player_angle /*&& g_player.speed > 4*/) {
+				if (JoyPadX < -800) {
+					checkflg = 1;
+
+				}
+				if (JoyPadX > 800) {
+					checkflg = 2;
+				}
 			}
-			if (JoyPadX < -300) g_player.x -= g_player.speed;
-			if (JoyPadX > 300) {
-				g_player.x += g_player.speed;
-			}
-			if (JoyPadX < 100 && JoyPadX > -100) { --g_player.speed; }
-			if (g_player.speed < -6) {
-				if (player_angle == -1)g_player.x++;
-				if (player_angle == 1)g_player.x--;
-			}
-			if (JoyPadX == 0)g_player.speed = 0;
 		}
 	}
-	
+
 	//	画面をはみ出さないようにする
 	if (g_player.x < 32)		g_player.x = 32;
 
-	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
+	if (g_player.x > SCREEN_WIDTH - 170)		g_player.x = SCREEN_WIDTH - 170;
 
-	
+
 	if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
 		g_player.Poisonflg = false;
 		invincibletime = 0;
@@ -494,50 +537,30 @@ void PlayerControl(bool pauseflg) {
 	//	プレイヤーの表示
 	if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-		//SetDrawBright(80, 0, 0);
 	}
 	else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//SetDrawBright(255, 255, 255);
 	}
-	if (pauseflg) {
+	if (Pauseflg) {
 		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
 		if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
 	}
 	else {
 		if (g_player.flg == TRUE) {
-			//if (g_player.Poisonflg == TRUE && invincibletime % 9 == 8){
-			//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			//	SetDrawBright(255, 255, 255);
-			//}
-/*			if (invincibletime++ % 18 == 0 && g_player.Poisonflg == TRUE) {
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-				SetDrawBright(255, 255, 255);
-			}
-			else *//*if (invincibletime % 9 == 0 && g_player.Poisonflg == TRUE) {
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
-				SetDrawBright(80,0,0);
-			}*/
 			if (JoyPadX < -300 || player_angle == -1) {
 				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
 			}
 			if (JoyPadX > 300 || player_angle == 1) {
-				//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 				DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
-				//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 			if (JoyPadX == 0)
 			{
-				//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
 				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
-				//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 			if (g_player.speed > 3) {
-				//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 				if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
 				if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-				//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			}
 		}
 		else {
@@ -546,15 +569,13 @@ void PlayerControl(bool pauseflg) {
 		}
 		//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//SetDrawBright(255, 255, 255);
-		//}
 	}
-	DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
+	//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
 	//	敵を避けた数を表示
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	SetFontSize(16);
 	DrawFormatString(540, 20, 0x000000, "残り時間");
-	DrawFormatString(560, 60, 0x000000, "%d", timer/60);
+	DrawFormatString(560, 60, 0x000000, "%d", timer / 60);
 	DrawFormatString(540, 100, 0x000000, "SCORE");
 	DrawFormatString(560, 120, 0x000000, "%d", g_Score);
 	//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
@@ -570,7 +591,11 @@ void PlayerControl(bool pauseflg) {
 	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 
 	DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
-	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
+	//	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
+	//	DrawFormatString(320, 260, 0xFFFFFF, "player_angle:%d", player_angle);
+	//	DrawFormatString(320, 290, 0xFFFFFF, "JoyPadX:%d", JoyPadX);
+	//	DrawFormatString(320, 320, 0xFFFFFF, "checkflg:%d", checkflg);
+
 }
 
 
@@ -593,7 +618,6 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 	}
 	return FALSE;
 }
-
 int LoadSounds(void)
 {
 	//タイトルBGM
