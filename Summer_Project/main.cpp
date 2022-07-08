@@ -234,8 +234,8 @@ void DrawRanking(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & 32)	g_GameState = DRAW_GAMETITLE;
-	if (g_KeyFlg & 16)	g_GameState = GAME_INIT;
+	if (g_KeyFlg & (PadType ? 32 : 64))	g_GameState = DRAW_GAMETITLE;
+	if (g_KeyFlg & (PadType ? 16 : 32))	g_GameState = GAME_INIT;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 
@@ -287,7 +287,7 @@ void GameMain(void) {
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
 
-	if (g_KeyFlg & 2048) {
+	if (g_KeyFlg & (PadType ? 2048 : 8192)) {
 		if (Pauseflg == false) {
 			Pauseflg = true;
 		}
@@ -486,7 +486,7 @@ void PlayerControl(bool pauseflg) {
 	static int checkflg = 0;
 	static int ina = 1;
 	Pauseflg = false;
-	if (!pauseflg) {
+	if (!Pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
 			//if (JoyPadX < -300 || JoyPadX > 300)
@@ -539,7 +539,7 @@ void PlayerControl(bool pauseflg) {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		//SetDrawBright(255, 255, 255);
 	}
-	if (pauseflg) {
+	if (Pauseflg) {
 		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
 		if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
 	}
