@@ -1,7 +1,7 @@
 #include "main.h"
 #include <string>	//rankingで使用
 
-#define TIMELIMIT 1800 + 60
+#define TIMELIMIT 900 + 60
 
 LPCSTR font_path = "../Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
@@ -197,6 +197,7 @@ void GameInit(void) {
 	timer = TIMELIMIT;
 	invincibletime = 0;
 	Pauseflg = false;
+
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
@@ -219,6 +220,7 @@ void GameInit(void) {
 void DrawRanking(void) {
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
 	//	スペースキーでメニューに戻る
@@ -281,7 +283,13 @@ void DrawEnd(void) {
 
 void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-	//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+	if (StartFlg == TRUE) {
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, TRUE);
+	}
+	else {
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
+	}
+	
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
 
@@ -302,7 +310,6 @@ void GameMain(void) {
 
 	if (!Pauseflg) {
 
-		//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
 		if (timer-- == 0) {
@@ -343,6 +350,8 @@ int LoadImages() {
 
 void InputRanking(void)
 {
+	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
+
 	//ランキング画像表示
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
