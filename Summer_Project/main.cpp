@@ -351,7 +351,7 @@ int LoadImages() {
 void InputRanking(void)
 {
 	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
-
+	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 	//ƒ‰ƒ“ƒLƒ“ƒO‰æ‘œ•\Ž¦
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
