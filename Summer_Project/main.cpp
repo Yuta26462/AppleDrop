@@ -505,39 +505,42 @@ void PlayerControl(bool pauseflg) {
 			if (ina != player_angle /*&& g_player.speed > 4*/) {
 				if (JoyPadX < -800) {
 					checkflg = 1;
-
+					
 				}
 				if (JoyPadX > 800) {
 					checkflg = 2;
 				}
+				if (player_angle == 1) { g_player.x -= g_player.speed; }
+				if (player_angle == -1) { g_player.x += g_player.speed; }
+				
 			}
 		}
-	}
 
-	//	画面をはみ出さないようにする
-	if (g_player.x < 32)		g_player.x = 32;
+		//	画面をはみ出さないようにする
+		if (g_player.x < 32)		g_player.x = 32;
 
-	if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
-
-
-	if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
-		g_player.Poisonflg = false;
-		invincibletime = 0;
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//SetDrawBright(255, 255, 255);
-	}
-
-	/*if (g_player.Poisonflg == TRUE) { invincibletime++; }*/
+		if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
 
 
-	//	プレイヤーの表示
-	if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-		//SetDrawBright(80, 0, 0);
-	}
-	else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		//SetDrawBright(255, 255, 255);
+		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
+			g_player.Poisonflg = false;
+			invincibletime = 0;
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			//SetDrawBright(255, 255, 255);
+		}
+
+		/*if (g_player.Poisonflg == TRUE) { invincibletime++; }*/
+
+
+		//	プレイヤーの表示
+		if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
+			//SetDrawBright(80, 0, 0);
+		}
+		else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			//SetDrawBright(255, 255, 255);
+		}
 	}
 	if (Pauseflg) {
 		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
@@ -613,6 +616,7 @@ void PlayerControl(bool pauseflg) {
 	//	DrawFormatString(320, 260, 0xFFFFFF, "player_angle:%d", player_angle);
 	//	DrawFormatString(320, 290, 0xFFFFFF, "JoyPadX:%d", JoyPadX);
 	//	DrawFormatString(320, 320, 0xFFFFFF, "checkflg:%d", checkflg);
+	DrawFormatString(320, 320, 0xFFFFFF, "Pauseflg:%d", Pauseflg);
 
 }
 
@@ -648,7 +652,6 @@ int LoadSounds(void)
 }
 
 void DrawPause() {
-	SetFontSize(64);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox(0, 0, 640, 480, 0x000000, TRUE);
 	DrawFormatString(160, 220, 0xfffffff, "ぽ　ー　ず");
