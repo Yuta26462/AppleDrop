@@ -22,7 +22,7 @@ struct PLAYER g_player;
 struct RankingData g_Ranking[RANKING_DATA];
 
 int g_TitleImage;
-int g_Cone;
+int SelecterImage;
 int g_PosY;
 int JoyPadX, JoyPadY;
 int player_angle = 1;
@@ -175,7 +175,8 @@ void DrawGameTitle(void) {
 	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont, "‚Ö‚é‚Õ");
 	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont, "‚¦‚ñ‚Ç");
 
-	DrawRotaGraph(400, 300 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
+	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, SelecterImage, TRUE);
+	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
 }
 
 void GameInit(void) {
@@ -330,9 +331,7 @@ int LoadImages() {
 	if (LoadDivGraph("images/apple.png", 5, 4, 1, 50, 50, apple_img) == -1) return -1;
 
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
-	if ((g_Cone = LoadGraph("images/cone.bmp")) == -1)return-1;
-	//if ((g_Item[0] = LoadGraph("images/greenapple.png")) == -1)return-1;
-	//if ((g_Item[1] = LoadGraph("images/apple.png")) == -1)return-1;
+	if ((SelecterImage = LoadGraph("images/player2.png")) == -1)return-1;
 	if ((g_EndImage = LoadGraph("images/background.png")) == -1)return-1;
 	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//ƒŠƒ“ƒS
 	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
