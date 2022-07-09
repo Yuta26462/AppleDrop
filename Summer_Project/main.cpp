@@ -69,6 +69,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
 	if (LoadImages() == -1)return -1;
 	if (LoadSounds() == -1)return -1;
+	if (ReadRanking() == -1)return -1;
 
 	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_CHARSET_DEFAULT);
 	PauseFont = CreateFontToHandle("JK丸ゴシック Medium", 80, 1, DX_CHARSET_DEFAULT);
@@ -88,10 +89,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if (++PadTimer > 10) {
 			PadTimer = 0;
-			if (JoyPadX > 800)SelectX = 1;
-			if (JoyPadX < -800)SelectX = -1;
-			if (JoyPadY > 800)SelectY = 1;
-			if (JoyPadY < -800)SelectY = -1;
+			if (JoyPadX > 300)SelectX = 1;
+			if (JoyPadX < -300)SelectX = -1;
+			if (JoyPadY > 300)SelectY = 1;
+			if (JoyPadY < -300)SelectY = -1;
 		}
 		SetJoypadDeadZone(DX_INPUT_PAD1, 0.6f);
 
@@ -199,7 +200,7 @@ void GameInit(void) {
 	g_player.w = PLAYER_WIDTH;
 	g_player.h = PLAYER_HEIGHT;
 	g_player.count = 0;
-	g_player.speed = PLAYER_SPEED;
+	g_player.speed = 0;
 	g_player.Poisonflg = false;
 
 	g_GameState = GAME_MAIN;
@@ -345,6 +346,7 @@ void InputRanking(void)
 	//ランキング画像表示
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
+	static char default_char[10] = "_________";
 	static char buf[10] = "_________";
 
 	// 名前入力指示文字列の描画
@@ -382,25 +384,27 @@ void InputRanking(void)
 	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x000000, FALSE);
 
 
-	static int i = 0;
-	if (i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? 2048 : 8192)) {
-		buf[i] = '\0';
+	static int input_i = 0;
+	if (input_i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? 2048 : 8192)) {
+		buf[input_i] = '\0';
 		std::string buf_str = buf;
-		buf_str = buf_str.erase(i);
+		buf_str = buf_str.erase(input_i);
 		strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf_str.c_str());
 
 		g_Ranking[RANKING_DATA- 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
 		SortRanking();		//ランキング並べ替え
 		SaveRanking();		//ランキングデータの保存
+		input_i = 0;
+		strcpyDx(buf, default_char);
 		g_GameState = DRAW_RANKING;
 	}
 	if (g_KeyFlg & (PadType ? 16 : 32)) {
-		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[i++] = (char)48 + selecterX; }
-		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)97 + selecterX; }
-		if (selecterY == 2 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)110 + selecterX; }
-		if (selecterY == 3 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)65 + selecterX; }
-		if (selecterY == 4 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)78 + selecterX; }
-		if (!isalnum(buf[i - 1])) { i--; }
+		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = (char)48 + selecterX; }
+		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)97 + selecterX; }
+		if (selecterY == 2 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)110 + selecterX; }
+		if (selecterY == 3 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)65 + selecterX; }
+		if (selecterY == 4 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)78 + selecterX; }
+		if (!isalnum(buf[input_i - 1])) { input_i--; }
 	}
 }
 

@@ -47,4 +47,71 @@
       <Filter>リソース ファイル</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\apple.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\background.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\cat.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\cat2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\End.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\pause.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\player.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\player2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\Ranking.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\Title.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\BGM\Small_Happy.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\Walking_Ameba.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\どこまでもワンダーランド.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\ねこワールド.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\ほゎ.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\ミニマルなマーチ.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\click.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\help.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\select.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\jkmarugo\JK-Maru-Gothic-M.otf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dat\rankingdata.txt" />
+  </ItemGroup>
 </Project>
