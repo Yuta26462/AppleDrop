@@ -13,7 +13,6 @@ int MenuFont, PauseFont;
 int apple_img[4];
 int players_img[6];
 int g_GameState = DRAW_GAMETITLE;
-//int g_GameState = INPUT_RANKING;
 int g_Score = 0;
 int timer;
 int invincibletime;
@@ -144,12 +143,8 @@ void DrawGameTitle(void) {
 	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 
-	//	キーボード操作用
-	/*if (g_KeyFlg & PAD_INPUT_DOWN)if (++MenuNo > 3)MenuNo = 0;
-	if (g_KeyFlg & PAD_INPUT_UP)if (--MenuNo < 0)MenuNo = 3;*/
 	if (SelectY == 1)if (++MenuNo > 3)MenuNo = 0;
 	if (SelectY == -1)if (--MenuNo < 0)MenuNo = 3;
-	// Zキーでメニュー選択
 	if (g_KeyFlg & (PadType ? 16 : 32))g_GameState = MenuNo + 1;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
@@ -181,14 +176,6 @@ void DrawGameTitle(void) {
 	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont, "えんど");
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 0.7f, M_PI / 2, g_Cone, TRUE);
-
-	char string[64];
-	/*wsprintf(string, "X = %d", JoyPadX);
-	DrawString(200, 0, string, 0x000000);
-
-	wsprintf(string, "Y = %d", JoyPadY);
-	DrawString(200, 30, string, 0x000000);
-	DrawFormatString(200, 60, 0x000000, "%d", PadTimer);*/
 }
 
 void GameInit(void) {
@@ -226,11 +213,13 @@ void DrawRanking(void) {
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
-
-	SetFontSize(18);
 	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatString(50, 170 + i * 25, 0xffffff, "%2d  %-10s  %10d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
-		DrawString(100, 450, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
+		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s  %10d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		
+		if (++g_WaitTime < 120) {
+			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
+		}
+		else if (g_WaitTime > 360) { g_WaitTime = 0; }
 	}
 }
 
@@ -249,7 +238,10 @@ void DrawHelp(void) {
 	DrawStringToHandle(320, 270, "タイトルへもどる", 0xff8c00, MenuFont, 0);
 	DrawStringToHandle(20, 330, "A", 0xff0000, MenuFont, 0);
 	DrawStringToHandle(44, 330, "ボタンをおして", 0xffffff, MenuFont, 0);
-	if (g_WaitTime > 30) { DrawStringToHandle(320, 330, "ゲームスタート", 0xffff00, MenuFont, 0); } DrawFormatString(100, 100, 0x000000, "%d", g_WaitTime);
+	if (++g_WaitTime < 30) {
+		DrawStringToHandle(320, 330, "ゲームスタート", 0xffff00, MenuFont, 0);
+	}
+	else if(g_WaitTime > 60){  g_WaitTime = 0; }
 }
 
 void DrawEnd(void) {
@@ -351,11 +343,17 @@ void InputRanking(void)
 	// 名前入力指示文字列の描画
 	DrawFormatStringToHandle(120, 100, 0xFFFFFF, MenuFont, "ランキングに登録します");
 	DrawFormatStringToHandle(65, 150, 0xFFFFFF, MenuFont, "名前を英字で入力してください");
-
+	if (g_WaitTime < 30) {
+		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xffffff, 0);
+	}
+	else if (g_WaitTime > 60) { g_WaitTime = 0; }
 	// 名前の入力
 	DrawFormatStringToHandle(120, 200, 0xFFFFFF, MenuFont, "> ");
 	DrawBox(190, 200, 425, 250, 0x000055, TRUE);
-	DrawFormatStringToHandle(200, 205, 0xFFFFFF, MenuFont, "%s", buf);
+	if (++g_WaitTime < 30) {
+		DrawFormatStringToHandle(200, 205, 0xFFFFFF, MenuFont, "%s", buf);
+	}
+	else if (g_WaitTime > 60) { g_WaitTime = 0; }
 
 	char input_char = '0';
 	for (int j = 0; j < 5; j++) {
@@ -379,21 +377,23 @@ void InputRanking(void)
 
 	static int i = 0;
 	if (i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? 2048 : 8192)) {
-		buf[strlen(buf) - 1] = '\n';
-		//for (int j = 0; i <= 9; j++) { if (isalnum(buf[j]) != 0) {  } }
-		strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf);
+		buf[i] = '\0';
+		std::string buf_str = buf;
+		buf_str = buf_str.erase(i);
+		strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf_str.c_str());
 
-		g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
+		g_Ranking[RANKING_DATA- 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
 		SortRanking();		//ランキング並べ替え
 		SaveRanking();		//ランキングデータの保存
 		g_GameState = DRAW_RANKING;
 	}
 	if (g_KeyFlg & (PadType ? 16 : 32)) {
-		if (selecterY == 0 && selecterX >= 0 && selecterX < 9) { buf[i++] = (char)48 + selecterX; }
-		if (selecterY == 1 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)97 + selecterX; }
-		if (selecterY == 2 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)110 + selecterX; }
-		if (selecterY == 3 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)65 + selecterX; }
-		if (selecterY == 4 && selecterX >= 0 && selecterX < 12) { buf[i++] = (char)78 + selecterX; }
+		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[i++] = (char)48 + selecterX; }
+		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)97 + selecterX; }
+		if (selecterY == 2 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)110 + selecterX; }
+		if (selecterY == 3 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)65 + selecterX; }
+		if (selecterY == 4 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)78 + selecterX; }
+		if (!isalnum(buf[i - 1])) { i--; }
 	}
 	//isalnum
 }
@@ -487,36 +487,36 @@ void PlayerControl(bool pauseflg) {
 		}
 	}*/
 	static int checkflg = 0;
-	static int ina = 1;
-	/*Pauseflg = false;*/
+	static int old_player_angle = 0;
 	if (!Pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
-			//if (JoyPadX < -300 || JoyPadX > 300)
 			PadSpeedTimer++;
 			if (PadSpeedTimer > 10 - i) {
 				PadSpeedTimer = 0;
-				if (g_player.speed < 6) {
-					++g_player.speed; i += 4; ina = player_angle; checkflg = 0;
+				if (g_player.speed < 6 && g_player.speed > -6) {
+					/*++g_player.speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
+					if (JoyPadX < -300) { g_player.speed++; i += JoyPadX / 200; }
+					if (JoyPadX > 300) { g_player.speed++; i += JoyPadX / 200; }
+				}
+				if(JoyPadX >= -300 && JoyPadX <= 300){
+					i = 0;
+					if (g_player.speed > 0)g_player.speed--;
+					if (g_player.speed < 0)g_player.speed++;
+				}
+				if (old_player_angle != player_angle && g_player.speed < 6) {
+					if (JoyPadX < -300 && player_angle == -1) {
+						g_player.speed--;
+					}
 				}
 			}
-			if (g_player.speed > 0 && JoyPadX < -300) { g_player.x -= g_player.speed; }
-			if (g_player.speed > 0 && JoyPadX > 300) { g_player.x += g_player.speed; }
-			if (JoyPadX == 0)g_player.speed = 0; i = 0;
 
 
-			if (ina != player_angle /*&& g_player.speed > 4*/) {
-				if (JoyPadX < -800) {
-					checkflg = 1;
-
-				}
-				if (JoyPadX > 800) {
-					checkflg = 2;
-				}
-				if (player_angle == 1) { g_player.x -= g_player.speed; }
-				if (player_angle == -1) { g_player.x += g_player.speed; }
-
+			if (old_player_angle != player_angle && g_player.speed > 3) {
+				g_player.speed = -2;
 			}
+			if (player_angle == 1) { g_player.x += g_player.speed; }
+			if (player_angle == -1) { g_player.x -= g_player.speed; }
 		}
 
 		//	画面をはみ出さないようにする
@@ -538,11 +538,9 @@ void PlayerControl(bool pauseflg) {
 	//	プレイヤーの表示
 		if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-			//SetDrawBright(80, 0, 0);
 		}
 		else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			//SetDrawBright(255, 255, 255);
 		}
 		if (Pauseflg) {
 			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
@@ -574,14 +572,12 @@ void PlayerControl(bool pauseflg) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 		//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
-		//	敵を避けた数を表示
 		DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 		SetFontSize(16);
 		DrawFormatString(540, 20, 0x000000, "残り時間");
 		DrawFormatString(560, 60, 0x000000, "%d", timer / 60);
 		DrawFormatString(540, 100, 0x000000, "SCORE");
 		DrawFormatString(560, 120, 0x000000, "%d", g_Score);
-		//DrawFormatString(560, 40, 0xFFFFFF, "%08d", g_Ranking[0].score);
 		DrawFormatString(540, 160, 0x000000, "採った数");
 		DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
 		DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
@@ -592,13 +588,6 @@ void PlayerControl(bool pauseflg) {
 		DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
 		DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
 		DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
-
-		DrawFormatString(320, 200, 0xFFFFFF, "g_player.speed:%d", g_player.speed);
-		//	DrawFormatString(320, 230, 0xFFFFFF, "PadSpeedTimer:%d", PadSpeedTimer);
-		//	DrawFormatString(320, 260, 0xFFFFFF, "player_angle:%d", player_angle);
-		//	DrawFormatString(320, 290, 0xFFFFFF, "JoyPadX:%d", JoyPadX);
-		//	DrawFormatString(320, 320, 0xFFFFFF, "checkflg:%d", checkflg);
-		DrawFormatString(320, 320, 0xFFFFFF, "Pauseflg:%d", Pauseflg);
 
 	}
 }
