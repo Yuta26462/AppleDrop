@@ -211,7 +211,6 @@ void DrawRanking(void) {
 	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
-	//	スペースキーでメニューに戻る
 	if (g_KeyFlg & (PadType ? 32 : 64))g_GameState = DRAW_GAMETITLE;
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
@@ -403,7 +402,6 @@ void InputRanking(void)
 		if (selecterY == 4 && selecterX >= 0 && selecterX <= 12) { buf[i++] = (char)78 + selecterX; }
 		if (!isalnum(buf[i - 1])) { i--; }
 	}
-	//isalnum
 }
 
 void SortRanking(void)
@@ -537,7 +535,6 @@ void PlayerControl(bool pauseflg) {
 			g_player.Poisonflg = false;
 			invincibletime = 0;
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			//SetDrawBright(255, 255, 255);
 		}
 
 		/*if (g_player.Poisonflg == TRUE) { invincibletime++; }*/
