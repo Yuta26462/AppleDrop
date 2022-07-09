@@ -184,6 +184,7 @@ void GameInit(void) {
 	timer = TIMELIMIT;
 	invincibletime = 0;
 	Pauseflg = false;
+
 	for (int i = 0; i < 4; i++) {
 		apple_count[i] = 0;
 	}
@@ -206,6 +207,7 @@ void GameInit(void) {
 void DrawRanking(void) {
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
 	//	スペースキーでメニューに戻る
@@ -273,7 +275,13 @@ void DrawEnd(void) {
 
 void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-	//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
+	if (StartFlg == TRUE) {
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, TRUE);
+	}
+	else {
+		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
+	}
+	
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
 
@@ -294,7 +302,6 @@ void GameMain(void) {
 
 	if (!Pauseflg) {
 
-		//if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK);
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
 		if (timer-- == 0) {
@@ -335,6 +342,8 @@ int LoadImages() {
 
 void InputRanking(void)
 {
+	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
+	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 	//ランキング画像表示
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
@@ -522,7 +531,7 @@ void PlayerControl(bool pauseflg) {
 		//	画面をはみ出さないようにする
 		if (g_player.x < 32)		g_player.x = 32;
 
-		if (g_player.x > SCREEN_WIDTH - 160)		g_player.x = SCREEN_WIDTH - 160;
+		if (g_player.x > SCREEN_WIDTH - 170)		g_player.x = SCREEN_WIDTH - 170;
 
 
 		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
