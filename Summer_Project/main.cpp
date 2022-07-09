@@ -508,7 +508,7 @@ void PlayerControl(bool pauseflg) {
 					if (JoyPadX < -300) { g_player.speed++; i += JoyPadX / 200; }
 					if (JoyPadX > 300) { g_player.speed++; i += JoyPadX / 200; }
 				}
-				if(JoyPadX >= -300 && JoyPadX <= 300){
+				if (JoyPadX >= -300 && JoyPadX <= 300) {
 					i = 0;
 					if (g_player.speed > 0)g_player.speed--;
 					if (g_player.speed < 0)g_player.speed++;
@@ -551,6 +551,7 @@ void PlayerControl(bool pauseflg) {
 		else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
+	}
 		if (Pauseflg) {
 			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
 			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
@@ -597,8 +598,6 @@ void PlayerControl(bool pauseflg) {
 		DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
 		DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
 		DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
-
-	}
 }
 
 
