@@ -41,7 +41,11 @@ void Apple::AppleControl(bool pauseflg) {
 				g_Score += apple[i].score;
 				apple_count[apple[i].type]++;
 				if (apple[i].type == BLACK_APPLE) {
+					PlaySoundMem(PoisonApple_SE, DX_PLAYTYPE_BACK);
 					g_player.Poisonflg = true;
+				}
+				if (apple[i].type == GOLD_APPLE) {
+					PlaySoundMem(GoldenApple_SE, DX_PLAYTYPE_BACK);
 				}
 			}
 		}

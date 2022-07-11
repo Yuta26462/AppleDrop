@@ -12,7 +12,7 @@ int g_OldKey, g_NowKey, g_KeyFlg;
 int MenuFont, PauseFont;
 int apple_img[4];
 int players_img[9];
-int g_GameState = DRAW_GAMETITLE;
+int g_GameState = INPUT_RANKING;
 int g_Score = 0;
 int timer;
 int invincibletime;
@@ -42,13 +42,12 @@ void DrawPause();
 void HelpGuide(int num);
 void Sidebar();
 
-//サウンド用変数
 int TitleBGM;
 int GameMainBGM;
 int RankingBGM;
 int EndBGM;
-int Selecter_SE,OK_SE, Return_SE, Key_Remove_SE;
-int GoldenApple_SE;
+int Selecter_SE, OK_SE, Return_SE, Key_Remove_SE;
+int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -652,6 +651,8 @@ int LoadSounds(void)
 	if ((Return_SE = LoadSoundMem("Sound/SE/Return.wav")) == -1) return -1;
 	if ((Key_Remove_SE = LoadSoundMem("Sound/SE/Key_Remove.wav")) == -1) return -1;
 	if ((GoldenApple_SE = LoadSoundMem("Sound/SE/gold_apple.wav")) == -1) return -1;
+	if ((PoisonApple_SE = LoadSoundMem("Sound/SE/Poison_Apple.wav")) == -1) return -1;
+	if ((Red_AND_Green_Apple_SE = LoadSoundMem("Sound/SE/Red&Green_Apple.wav")) == -1) return -1;
 
 }
 
@@ -706,10 +707,12 @@ void HelpGuide(int num) {
 		break;
 
 	case INPUT_RANKING:
-		DrawCircle(204, 457, 10, 0x000000, 1);
-		DrawFormatString(200, 450, 0xFFFFFF, "B  1文字削除");
-		DrawOval(354, 457, 30, 10, 0x000000, 1);
-		DrawFormatString(330, 450, 0xFFFFFF, "START 名前確定");
+		DrawCircle(164, 457, 10, 0x000000, 1);
+		DrawFormatString(160, 450, 0xFFFFFF, "B  1文字削除");
+		DrawCircle(304, 457, 10, 0x000000, 1);
+		DrawFormatString(300, 450, 0xFFFFFF, "A  入力");
+		DrawOval(424, 457, 30, 10, 0x000000, 1);
+		DrawFormatString(400, 450, 0xFFFFFF, "START 名前確定");
 		break;
 
 	default:

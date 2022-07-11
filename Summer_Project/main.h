@@ -19,6 +19,9 @@
 #define DINPUT_START							8192
 #define DINPUT_BACK								4096
 
+//サウンド用変数
+extern int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
+
 class Menu {
 public:
 	void menu(void);
