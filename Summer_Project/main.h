@@ -6,6 +6,22 @@
 
 #include "apple.h"
 
+#define XINPUT_A								16
+#define XINPUT_B								32
+#define XINPUT_X								64
+#define XINPUT_Y								128
+#define XINPUT_START							2048
+#define XINPUT_BACK								1024
+#define DINPUT_A								32
+#define DINPUT_B								64
+#define DINPUT_X								16
+#define DINPUT_Y								128
+#define DINPUT_START							8192
+#define DINPUT_BACK								4096
+
+//サウンド用変数
+extern int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
+
 class Menu {
 public:
 	void menu(void);
@@ -31,6 +47,7 @@ extern Apple AppleFunc;
 extern bool apple_flg;
 extern int apple_count[4];
 extern int apple_img[4];	//キャラ画像変数
+
 
 //int g_Item[2];
 

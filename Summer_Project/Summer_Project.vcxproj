@@ -166,6 +166,33 @@
   <ItemGroup>
     <ResourceCompile Include="..\Resource.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\apple.png" />
+    <Image Include="images\background.png" />
+    <Image Include="images\End.png" />
+    <Image Include="images\pause.png" />
+    <Image Include="images\player.png" />
+    <Image Include="images\player2.png" />
+    <Image Include="images\Ranking.png" />
+    <Image Include="images\Title.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\BGM\Small_Happy.wav" />
+    <Media Include="Sound\BGM\Walking_Ameba.wav" />
+    <Media Include="Sound\BGM\どこまでもワンダーランド.wav" />
+    <Media Include="Sound\BGM\ねこワールド.wav" />
+    <Media Include="Sound\BGM\ほゎ.wav" />
+    <Media Include="Sound\BGM\ミニマルなマーチ.wav" />
+    <Media Include="Sound\SE\click.wav" />
+    <Media Include="Sound\SE\help.wav" />
+    <Media Include="Sound\SE\select.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\jkmarugo\JK-Maru-Gothic-M.otf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dat\rankingdata.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
