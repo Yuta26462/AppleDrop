@@ -58,6 +58,9 @@ void Apple::AppleControl(bool pauseflg) {
 				if (apple[i].type == GOLD_APPLE) {
 					PlaySoundMem(GoldenApple_SE, DX_PLAYTYPE_BACK);
 				}
+				if (apple[i].type == RED_APPLE || GREEN_APPLE) {
+					PlaySoundMem(Red_AND_Green_Apple_SE, DX_PLAYTYPE_BACK);
+				}
 			}
 		}
 	}
@@ -150,11 +153,11 @@ int Apple::GetApplePos(int apple_speed, int num) {
 
 	apple_pos = GetRand(6);
 	for (int i = 0; i < APPLE_MAX; i++) {
-		if (Over_flg == TRUE && checkflg == TRUE) {		//重なった場合、位置を決め直す
-			i = 0;
-			apple_pos = GetRand(6);
-			checkflg = false;
-		}
+		//if (Over_flg == TRUE && checkflg == TRUE) {		//重なった場合、位置を決め直す
+		//	i = 0;
+		//	apple_pos = GetRand(6);
+		//	checkflg = false;
+		//}
 		//位置が同じ既存のリンゴを調べる
 		if (i != num && apple_pos == apple[i].pos) {
 			CheckAppleSpeed(apple[num].speed, apple[i].speed);	
