@@ -2,12 +2,26 @@
 
 
 int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
-int apple_quantity = 0;			//描画されているリンゴの個数
 int apple_count[4];
 bool Over_flg = false;			//リンゴが重なっているかのフラグ
+int apple_quantity = 0;			//描画されているリンゴの個数
+
 
 
 void Apple::AppleControl(bool pauseflg) {
+	//時間ごとにリンゴ出現パターンを制御する
+	if (timer % 25 == 0 && apple_quantity <= APPLE_MAX/* && (APPLE_MAX - apple_quantity) / 2 > apple_quantity*/)
+	{
+		if (StartFlg == true) {
+			CreateApple(APPLE_START);
+			StartFlg = false;
+		}
+		else {
+			CreateApple((APPLE_MAX - apple_quantity) / 2);
+		}
+
+	}
+
 	for (int i = 0; i < APPLE_MAX; i++)
 	{
 		if (apple[i].flg == true)
@@ -16,9 +30,6 @@ void Apple::AppleControl(bool pauseflg) {
 			DrawRotaGraph(apple[i].x, apple[i].y, 1.0f, 0, apple[i].img, TRUE, FALSE);
 
 			if (g_player.flg == FALSE)continue;
-
-			
-			
 
 			//まっすぐ下に移動
 			if (!pauseflg) {
@@ -47,40 +58,33 @@ void Apple::AppleControl(bool pauseflg) {
 		}
 	}
 
-	
-
-	//時間ごとにリンゴ出現パターンを制御する
-	if (timer % 25 == 0 && (APPLE_MAX - apple_quantity) / 2 > apple_quantity)
-	{
-		if (StartFlg == true) {	
-			CreateApple(APPLE_START);
-			StartFlg = false;
-		}
-		else {
-			CreateApple(APPLE_MAX);
-		}
-		
-	}
 }
 
 int Apple::CreateApple(int maxapple) {
-	for (int i = 0; i < maxapple; i++) {
-		if (apple[i].flg == false) {
-			apple[i].flg = true;
-			apple[i].type = GetAppleType();
-			apple[i].img = apple_img[apple[i].type];
-			apple[i].speed = GetAppleSpeed(apple[i].type);
-			apple[i].pos = GetApplePos(apple[i].speed,i);
-			apple[i].x = apple[i].pos * 70 + 30;/*GetRand(6) * 70 + 30;*///
-			apple[i].y = -50;
-			apple[i].w = 50;
-			apple[i].h = 50;
-			apple[i].score = apple_score[apple[i].type];
-			apple_quantity++;
-			//	成功
-			return TRUE;
-		}
+	
+	int apple_count = 0;
+	apple_count = apple_quantity;
+	 for (int i = 0; i < APPLE_MAX; i++) {
+		 if ((apple_quantity - apple_count) < maxapple) {
+			 if (apple[i].flg == false) {
+				 apple[i].flg = true;
+				 apple[i].type = GetAppleType();
+				 apple[i].img = apple_img[apple[i].type];
+				 apple[i].speed = GetAppleSpeed(apple[i].type);
+				 apple[i].pos = GetApplePos(apple[i].speed, i);
+				 apple[i].x = apple[i].pos * 70 + 30;/*GetRand(6) * 70 + 30;*///
+				 apple[i].y = -50;
+				 apple[i].w = 50;
+				 apple[i].h = 50;
+				 apple[i].score = apple_score[apple[i].type];
+
+					 apple_quantity++;
+				 //	成功
+				 return TRUE;
+			 }
+		 }
 	}
+
 	//	失敗
 	return FALSE;
 }

@@ -45,6 +45,7 @@ extern bool apple_flg;
 extern int apple_count[4];
 extern int apple_img[4];	//ƒLƒƒƒ‰‰æ‘œ•Ï”
 
+
 //int g_Item[2];
 
 
