@@ -11,26 +11,25 @@ Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
 int MenuFont, PauseFont;
 int apple_img[4];
-int players_img[6];
+int players_img[9];
 int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int timer;
 int invincibletime;
-int g_RankingImage;
 bool StartFlg = false;
 struct PLAYER g_player;
 struct RankingData g_Ranking[RANKING_DATA];
 
 int g_TitleImage;
-int SelecterImage;
 int g_PosY;
 int JoyPadX, JoyPadY;
 int player_angle = 1;
 int SelectX, SelectY;
 int PadTimer, PadSpeedTimer;
 int g_WaitTime = 0;
-int g_EndImage;
 int g_StageImage;
+int g_RankingImage;
+int g_EndImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
@@ -41,13 +40,15 @@ int LoadImages();
 int LoadSounds();
 void DrawPause();
 void HelpGuide(int num);
+void Sidebar();
 
 //サウンド用変数
 int TitleBGM;
 int GameMainBGM;
 int RankingBGM;
 int EndBGM;
-int SE;
+int Selecter_SE,OK_SE, Return_SE, Key_Remove_SE;
+int GoldenApple_SE;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -68,7 +69,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if (DxLib_Init() == -1)return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
-	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
 	if (LoadImages() == -1)return -1;
 	if (LoadSounds() == -1)return -1;
 	if (ReadRanking() == -1)return -1;
@@ -90,16 +90,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		GetJoypadAnalogInput(&JoyPadX, &JoyPadY, DX_INPUT_PAD1);
 		if (CheckJoypadXInput(DX_INPUT_PAD1)) { PadType = true; }
 
-		if (g_KeyFlg & (PadType ? XINPUT_BACK : DINPUT_BACK)) g_GameState = END;
+		if (g_KeyFlg & (PadType ? XINPUT_BACK : DINPUT_BACK)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = END; }
 		SelectX = 0;
 		SelectY = 0;
 
 		if (++PadTimer > 10) {
 			PadTimer = 0;
-			if (JoyPadX > 300)SelectX = 1;
-			if (JoyPadX < -300)SelectX = -1;
-			if (JoyPadY > 300)SelectY = 1;
-			if (JoyPadY < -300)SelectY = -1;
+			if (JoyPadX > 100)SelectX = 1;
+			if (JoyPadX < -100)SelectX = -1;
+			if (JoyPadY > 100)SelectY = 1;
+			if (JoyPadY < -100)SelectY = -1;
 		}
 		SetJoypadDeadZone(DX_INPUT_PAD1, 0.6f);
 
@@ -154,9 +154,9 @@ void DrawGameTitle(void) {
 	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 
-	if (SelectY == 1)if (++MenuNo > 3)MenuNo = 0;
-	if (SelectY == -1)if (--MenuNo < 0)MenuNo = 3;
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A))g_GameState = MenuNo + 1;
+	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
+	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
+	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	static bool ani = true;
@@ -186,8 +186,10 @@ void DrawGameTitle(void) {
 	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont, "へるぷ");
 	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont, "えんど");
 
-	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, SelecterImage, TRUE);
+	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
+	DrawFormatString(200, 400,0x000000, "%d", JoyPadX);
+	DrawFormatString(200, 430, 0x000000, "%d", JoyPadY);
 }
 
 void GameInit(void) {
@@ -222,12 +224,13 @@ void DrawRanking(void) {
 	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B))g_GameState = DRAW_GAMETITLE;
+	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
 	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s  %10d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
+		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, MenuFont, "%5d", g_Ranking[i].score);
 		
 		if (++g_WaitTime < 120) {
 			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
@@ -237,8 +240,8 @@ void DrawRanking(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B))	g_GameState = DRAW_GAMETITLE;
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A))	g_GameState = GAME_INIT;
+	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 
@@ -269,7 +272,7 @@ void DrawEnd(void) {
 	if (CheckSoundMem(EndBGM) == 0)PlaySoundMem(EndBGM, DX_PLAYTYPE_BACK);
 
 	//エンド画像表示
-	DrawGraph(0, 0, g_EndImage, FALSE);
+	DrawExtendGraph(0, 0,640,480, g_EndImage, FALSE);
 	//エンディング表示
 	if (++g_WaitTime < 600) { g_PosY = 300 - g_WaitTime / 2; }
 
@@ -303,12 +306,15 @@ void GameMain(void) {
 	DrawGraph(0, 0, g_StageImage, FALSE);
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
+	Sidebar();
 
 	if (g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
 		if (Pauseflg == false) {
+			PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 			Pauseflg = true;
 		}
 		else {
+			PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK);
 			Pauseflg = false;
 		}
 	}
@@ -343,14 +349,12 @@ void GameMain(void) {
 
 
 int LoadImages() {
-	if (LoadDivGraph("images/apple.png", 5, 4, 1, 50, 50, apple_img) == -1) return -1;
-
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
-	if ((SelecterImage = LoadGraph("images/player2.png")) == -1)return-1;
-	if ((g_EndImage = LoadGraph("images/background.png")) == -1)return-1;
+	if ((g_EndImage = LoadGraph("images/End.png")) == -1)return-1;
 	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//リンゴ
-	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
-	if (LoadDivGraph("images/player.png", 6, 3, 2, 32, 32, players_img) == -1)return -1;	//リンゴ
+	if ((g_StageImage = LoadGraph("images/background.png")) == -1)return-1;
+	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
+	if (LoadDivGraph("images/player.png", 9, 3, 3, 32, 32, players_img) == -1)return -1;
 	return 0;
 }
 
@@ -410,10 +414,12 @@ void InputRanking(void)
 	if (SelectY == 1)if (++selecterY > 4)selecterY = 0;
 	if (SelectY == -1)if (--selecterY < 0)selecterY = 4;
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {}
+	if(SelectY == 1){}
 	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x696969, FALSE);
 
 
 	if (input_i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
+		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		if (input_i <= 0) { errorflg = 1; }
 		else {
 			buf[input_i] = '\0';
@@ -430,6 +436,7 @@ void InputRanking(void)
 		}
 	}
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {
+		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = (char)48 + selecterX; }
 		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)97 + selecterX; }
 		if (selecterY == 2 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)110 + selecterX; }
@@ -438,6 +445,7 @@ void InputRanking(void)
 		if (!isalnum(buf[input_i - 1])) { buf[--input_i] = '_'; }
 	}
 	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) {
+		PlaySoundMem(Key_Remove_SE, DX_PLAYTYPE_BACK);
 		if(input_i > 0)buf[--input_i] = '_'; 
 	}
 }
@@ -487,7 +495,7 @@ int  SaveRanking(void)
 
 	// ランキングデータ分配列データを書き込む
 	for (int i = 0; i < RANKING_DATA; i++) {
-		fprintf(fp, "%2d %10s %10d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		fprintf(fp, "%2d %10s %5d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
 	}
 
 	//ファイルクローズ
@@ -512,7 +520,7 @@ int ReadRanking(void)
 	//ランキングデータ配分列データを読み込む
 	for (int i = 0; i < RANKING_DATA; i++) {
 
-		fscanf(fp, "%2d %10s %10d", &g_Ranking[i].no, g_Ranking[i].name, &g_Ranking[i].score);
+		fscanf(fp, "%2d %10s %5d", &g_Ranking[i].no, g_Ranking[i].name, &g_Ranking[i].score);
 	}
 
 	//ファイルクローズ
@@ -536,20 +544,20 @@ void PlayerControl(bool pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
 			PadSpeedTimer++;
-			if (PadSpeedTimer > 10 - i) {
+			if (PadSpeedTimer > 20 - i) {
 				PadSpeedTimer = 0;
 				if (g_player.speed < 6 && g_player.speed > -6) {
 					/*++g_player.speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
-					if (JoyPadX < -300) { g_player.speed++; i += JoyPadX / 200; }
-					if (JoyPadX > 300) { g_player.speed++; i += JoyPadX / 200; }
+					if (JoyPadX < -100) { g_player.speed++; /*i += JoyPadX / 200;*/ }
+					if (JoyPadX > 100) { g_player.speed++; /*i += JoyPadSX / 200;*/ }
 				}
-				if (JoyPadX >= -300 && JoyPadX <= 300) {
+				if (JoyPadX >= -100 && JoyPadX <= 100) {
 					i = 0;
-					if (g_player.speed > 0)g_player.speed--;
+					if (g_player.speed > 0)g_player.speed-= 2;
 					if (g_player.speed < 0)g_player.speed++;
 				}
 				if (old_player_angle != player_angle && g_player.speed < 6) {
-					if (JoyPadX < -300 && player_angle == -1) {
+					if (JoyPadX < -100 && player_angle == -1) {
 						g_player.speed--;
 					}
 				}
@@ -608,23 +616,6 @@ void PlayerControl(bool pauseflg) {
 		else if (g_WaitTime > 40) {
 			g_WaitTime = 0;
 		}
-		//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
-		DrawBox(500, 0, 640, 480, 0x009900, TRUE);
-		SetFontSize(16);
-		DrawFormatString(540, 20, 0x000000, "残り時間");
-		DrawFormatString(560, 60, 0x000000, "%d", timer / 60);
-		DrawFormatString(540, 100, 0x000000, "SCORE");
-		DrawFormatString(560, 120, 0x000000, "%d", g_Score);
-		DrawFormatString(540, 160, 0x000000, "採った数");
-		DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
-		DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
-		DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
-		DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
-
-		DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
-		DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
-		DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
-		DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 }
 
 
@@ -649,12 +640,18 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 }
 int LoadSounds(void)
 {
-	//タイトルBGM
-	if ((TitleBGM = LoadSoundMem("Sound/BGM/ほゎ.wav")) == -1) return -1;
-	if ((GameMainBGM = LoadSoundMem("Sound/BGM/ミニマルなマーチ.wav")) == -1) return -1;
-	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
-	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
-	if ((SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
+	//BGM
+	if ((TitleBGM = LoadSoundMem("Sound/BGM/Title.wav")) == -1) return -1;
+	if ((GameMainBGM = LoadSoundMem("Sound/BGM/GameMain.wav")) == -1) return -1;
+	if ((RankingBGM = LoadSoundMem("Sound/BGM/Ranking.wav")) == -1) return -1;
+	if ((EndBGM = LoadSoundMem("Sound/BGM/End.wav")) == -1) return -1;
+	//SE
+	if ((Selecter_SE = LoadSoundMem("Sound/SE/Selecter.wav")) == -1) return -1;
+	if ((OK_SE = LoadSoundMem("Sound/SE/OK.wav")) == -1) return -1;
+	if ((Return_SE = LoadSoundMem("Sound/SE/Return.wav")) == -1) return -1;
+	if ((Key_Remove_SE = LoadSoundMem("Sound/SE/Key_Remove.wav")) == -1) return -1;
+	if ((GoldenApple_SE = LoadSoundMem("Sound/SE/gold_apple.wav")) == -1) return -1;
+
 }
 
 void DrawPause() {
@@ -717,4 +714,23 @@ void HelpGuide(int num) {
 	default:
 		break;
 	}
+}
+
+void Sidebar() {
+	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
+	DrawFormatString(540, 20, 0xFFFFFF, "残り時間");
+	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", timer / 60);
+	if(timer / 60 <= 10){ DrawFormatStringToHandle(545, 50, 0xff4500, MenuFont, "%2d", timer / 60); }
+	DrawFormatString(545, 100, 0xffff99, "SCORE");
+	DrawFormatString(550, 120, 0xffff99, "%4d", g_Score);
+	DrawFormatString(540, 160, 0xFFFFFF, "採った数");
+	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
+	DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
+	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
+	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
+
+	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
+	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
+	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
+	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 }

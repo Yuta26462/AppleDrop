@@ -54,12 +54,6 @@
     <Image Include="images\background.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="images\cat.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\cat2.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
     <Image Include="images\End.png">
       <Filter>リソース ファイル</Filter>
     </Image>
@@ -76,9 +70,6 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="images\Title.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\apple2.png">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>
