@@ -303,7 +303,6 @@ void GameMain(void) {
 	
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
 	Sidebar();
@@ -318,7 +317,7 @@ void GameMain(void) {
 			Pauseflg = false;
 		}
 	}
-
+	
 	//DrawFormatString(280, 250, 0x000000, "%d", Pauseflg);
 	
 
