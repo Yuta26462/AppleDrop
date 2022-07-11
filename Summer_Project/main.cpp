@@ -47,7 +47,8 @@ int TitleBGM;
 int GameMainBGM;
 int RankingBGM;
 int EndBGM;
-int SE;
+int Selecter_SE,OK_SE;
+int GoldenApple_SE;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -96,10 +97,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if (++PadTimer > 10) {
 			PadTimer = 0;
-			if (JoyPadX > 300)SelectX = 1;
-			if (JoyPadX < -300)SelectX = -1;
-			if (JoyPadY > 300)SelectY = 1;
-			if (JoyPadY < -300)SelectY = -1;
+			if (JoyPadX > 100)SelectX = 1;
+			if (JoyPadX < -100)SelectX = -1;
+			if (JoyPadY > 100)SelectY = 1;
+			if (JoyPadY < -100)SelectY = -1;
 		}
 		SetJoypadDeadZone(DX_INPUT_PAD1, 0.6f);
 
@@ -154,9 +155,10 @@ void DrawGameTitle(void) {
 	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 
-	if (SelectY == 1)if (++MenuNo > 3)MenuNo = 0;
-	if (SelectY == -1)if (--MenuNo < 0)MenuNo = 3;
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A))g_GameState = MenuNo + 1;
+	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
+	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
+	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;
+}
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	static bool ani = true;
@@ -188,6 +190,8 @@ void DrawGameTitle(void) {
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, SelecterImage, TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
+	DrawFormatString(200, 400,0x000000, "%d", JoyPadX);
+	DrawFormatString(200, 430, 0x000000, "%d", JoyPadY);
 }
 
 void GameInit(void) {
@@ -227,7 +231,7 @@ void DrawRanking(void) {
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
 	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s  %10d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s  %5d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
 		
 		if (++g_WaitTime < 120) {
 			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
@@ -237,8 +241,8 @@ void DrawRanking(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B))	g_GameState = DRAW_GAMETITLE;
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A))	g_GameState = GAME_INIT;
+	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 
@@ -415,6 +419,7 @@ void InputRanking(void)
 
 
 	if (input_i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
+		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		if (input_i <= 0) { errorflg = 1; }
 		else {
 			buf[input_i] = '\0';
@@ -431,6 +436,7 @@ void InputRanking(void)
 		}
 	}
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {
+		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = (char)48 + selecterX; }
 		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)97 + selecterX; }
 		if (selecterY == 2 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)110 + selecterX; }
@@ -488,7 +494,7 @@ int  SaveRanking(void)
 
 	// ランキングデータ分配列データを書き込む
 	for (int i = 0; i < RANKING_DATA; i++) {
-		fprintf(fp, "%2d %10s %10d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		fprintf(fp, "%2d %10s %5d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
 	}
 
 	//ファイルクローズ
@@ -513,7 +519,7 @@ int ReadRanking(void)
 	//ランキングデータ配分列データを読み込む
 	for (int i = 0; i < RANKING_DATA; i++) {
 
-		fscanf(fp, "%2d %10s %10d", &g_Ranking[i].no, g_Ranking[i].name, &g_Ranking[i].score);
+		fscanf(fp, "%2d %10s %5d", &g_Ranking[i].no, g_Ranking[i].name, &g_Ranking[i].score);
 	}
 
 	//ファイルクローズ
@@ -662,7 +668,10 @@ int LoadSounds(void)
 	if ((GameMainBGM = LoadSoundMem("Sound/BGM/ミニマルなマーチ.wav")) == -1) return -1;
 	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
 	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
-	if ((SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
+	if ((Selecter_SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
+	if ((OK_SE = LoadSoundMem("Sound/SE/click.wav")) == -1) return -1;
+	if ((GoldenApple_SE = LoadSoundMem("Sound/SE/gold_apple.wav")) == -1) return -1;
+
 }
 
 void DrawPause() {
