@@ -229,7 +229,8 @@ void DrawRanking(void) {
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
 	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s  %5d", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
+		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, MenuFont, "%5d", g_Ranking[i].score);
 		
 		if (++g_WaitTime < 120) {
 			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
