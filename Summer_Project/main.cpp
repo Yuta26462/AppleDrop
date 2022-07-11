@@ -11,26 +11,25 @@ Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
 int MenuFont, PauseFont;
 int apple_img[4];
-int players_img[6];
+int players_img[9];
 int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int timer;
 int invincibletime;
-int g_RankingImage;
 bool StartFlg = false;
 struct PLAYER g_player;
 struct RankingData g_Ranking[RANKING_DATA];
 
 int g_TitleImage;
-int SelecterImage;
 int g_PosY;
 int JoyPadX, JoyPadY;
 int player_angle = 1;
 int SelectX, SelectY;
 int PadTimer, PadSpeedTimer;
 int g_WaitTime = 0;
-int g_EndImage;
 int g_StageImage;
+int g_RankingImage;
+int g_EndImage;
 bool apple_flg;
 int apple_x;
 int apple_y;
@@ -41,6 +40,7 @@ int LoadImages();
 int LoadSounds();
 void DrawPause();
 void HelpGuide(int num);
+void Sidebar();
 
 //サウンド用変数
 int TitleBGM;
@@ -69,7 +69,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if (DxLib_Init() == -1)return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
-	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
 	if (LoadImages() == -1)return -1;
 	if (LoadSounds() == -1)return -1;
 	if (ReadRanking() == -1)return -1;
@@ -157,8 +156,7 @@ void DrawGameTitle(void) {
 
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;
-}
+	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	static bool ani = true;
@@ -188,7 +186,7 @@ void DrawGameTitle(void) {
 	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont, "へるぷ");
 	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont, "えんど");
 
-	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, SelecterImage, TRUE);
+	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
 	DrawFormatString(200, 400,0x000000, "%d", JoyPadX);
 	DrawFormatString(200, 430, 0x000000, "%d", JoyPadY);
@@ -308,6 +306,7 @@ void GameMain(void) {
 
 	AppleFunc.AppleControl(Pauseflg);
 	PlayerControl(Pauseflg);
+	Sidebar();
 
 	if (g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
 		if (Pauseflg == false) {
@@ -348,14 +347,12 @@ void GameMain(void) {
 
 
 int LoadImages() {
-	if (LoadDivGraph("images/apple.png", 5, 4, 1, 50, 50, apple_img) == -1) return -1;
-
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
-	if ((SelecterImage = LoadGraph("images/player2.png")) == -1)return-1;
-	if ((g_EndImage = LoadGraph("images/background.png")) == -1)return-1;
+	if ((g_EndImage = LoadGraph("images/End.png")) == -1)return-1;
 	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//リンゴ
-	if ((g_StageImage = LoadGraph("images/pause.png")) == -1)return-1;
-	if (LoadDivGraph("images/player.png", 6, 3, 2, 32, 32, players_img) == -1)return -1;	//リンゴ
+	if ((g_StageImage = LoadGraph("images/background.png")) == -1)return-1;
+	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
+	if (LoadDivGraph("images/player.png", 9, 3, 3, 32, 32, players_img) == -1)return -1;
 	return 0;
 }
 
@@ -543,20 +540,20 @@ void PlayerControl(bool pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
 			PadSpeedTimer++;
-			if (PadSpeedTimer > 10 - i) {
+			if (PadSpeedTimer > 20 - i) {
 				PadSpeedTimer = 0;
 				if (g_player.speed < 6 && g_player.speed > -6) {
 					/*++g_player.speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
-					if (JoyPadX < -300) { g_player.speed++; i += JoyPadX / 200; }
-					if (JoyPadX > 300) { g_player.speed++; i += JoyPadX / 200; }
+					if (JoyPadX < -100) { g_player.speed++; /*i += JoyPadX / 200;*/ }
+					if (JoyPadX > 100) { g_player.speed++; /*i += JoyPadSX / 200;*/ }
 				}
-				if (JoyPadX >= -300 && JoyPadX <= 300) {
+				if (JoyPadX >= -100 && JoyPadX <= 100) {
 					i = 0;
-					if (g_player.speed > 0)g_player.speed--;
+					if (g_player.speed > 0)g_player.speed-= 2;
 					if (g_player.speed < 0)g_player.speed++;
 				}
 				if (old_player_angle != player_angle && g_player.speed < 6) {
-					if (JoyPadX < -300 && player_angle == -1) {
+					if (JoyPadX < -100 && player_angle == -1) {
 						g_player.speed--;
 					}
 				}
@@ -615,23 +612,6 @@ void PlayerControl(bool pauseflg) {
 		else if (g_WaitTime > 40) {
 			g_WaitTime = 0;
 		}
-		//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
-		DrawBox(500, 0, 640, 480, 0x009900, TRUE);
-		SetFontSize(16);
-		DrawFormatString(540, 20, 0x000000, "残り時間");
-		DrawFormatString(560, 60, 0x000000, "%d", timer / 60);
-		DrawFormatString(540, 100, 0x000000, "SCORE");
-		DrawFormatString(560, 120, 0x000000, "%d", g_Score);
-		DrawFormatString(540, 160, 0x000000, "採った数");
-		DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
-		DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
-		DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
-		DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
-
-		DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
-		DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
-		DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
-		DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 }
 
 
@@ -727,4 +707,23 @@ void HelpGuide(int num) {
 	default:
 		break;
 	}
+}
+
+void Sidebar() {
+	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
+	SetFontSize(16);
+	DrawFormatString(540, 20, 0x000000, "残り時間");
+	DrawFormatStringToHandle(545, 50, 0x000000,MenuFont, "%2d", timer / 60);
+	DrawFormatString(545, 100, 0x000000, "SCORE");
+	DrawFormatString(550, 120, 0x000000, "%4d", g_Score);
+	DrawFormatString(540, 160, 0x000000, "採った数");
+	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
+	DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
+	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
+	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
+
+	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
+	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
+	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
+	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 }
