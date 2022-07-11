@@ -6,6 +6,19 @@
 
 #include "apple.h"
 
+#define XINPUT_A								16
+#define XINPUT_B								32
+#define XINPUT_X								64
+#define XINPUT_Y								128
+#define XINPUT_START							2048
+#define XINPUT_BACK								1024
+#define DINPUT_A								32
+#define DINPUT_B								64
+#define DINPUT_X								16
+#define DINPUT_Y								128
+#define DINPUT_START							8192
+#define DINPUT_BACK								4096
+
 class Menu {
 public:
 	void menu(void);

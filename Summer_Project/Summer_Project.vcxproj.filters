@@ -78,6 +78,9 @@
     <Image Include="images\Title.png">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="images\apple2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Sound\BGM\Small_Happy.wav">

@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\apple.png" />
+    <Image Include="images\apple2.png" />
     <Image Include="images\background.png" />
     <Image Include="images\cat.png" />
     <Image Include="images\cat2.png" />
