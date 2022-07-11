@@ -47,7 +47,7 @@ int TitleBGM;
 int GameMainBGM;
 int RankingBGM;
 int EndBGM;
-int Selecter_SE,OK_SE;
+int Selecter_SE,OK_SE, Return_SE, Key_Remove_SE;
 int GoldenApple_SE;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
@@ -90,7 +90,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		GetJoypadAnalogInput(&JoyPadX, &JoyPadY, DX_INPUT_PAD1);
 		if (CheckJoypadXInput(DX_INPUT_PAD1)) { PadType = true; }
 
-		if (g_KeyFlg & (PadType ? XINPUT_BACK : DINPUT_BACK)) g_GameState = END;
+		if (g_KeyFlg & (PadType ? XINPUT_BACK : DINPUT_BACK)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = END; }
 		SelectX = 0;
 		SelectY = 0;
 
@@ -224,7 +224,7 @@ void DrawRanking(void) {
 	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
 	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
 
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B))g_GameState = DRAW_GAMETITLE;
+	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
 
 	DrawGraph(0, 0, g_RankingImage, FALSE);
 
@@ -240,7 +240,7 @@ void DrawRanking(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
@@ -272,7 +272,7 @@ void DrawEnd(void) {
 	if (CheckSoundMem(EndBGM) == 0)PlaySoundMem(EndBGM, DX_PLAYTYPE_BACK);
 
 	//エンド画像表示
-	DrawGraph(0, 0, g_EndImage, FALSE);
+	DrawExtendGraph(0, 0,640,480, g_EndImage, FALSE);
 	//エンディング表示
 	if (++g_WaitTime < 600) { g_PosY = 300 - g_WaitTime / 2; }
 
@@ -311,9 +311,11 @@ void GameMain(void) {
 
 	if (g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
 		if (Pauseflg == false) {
+			PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 			Pauseflg = true;
 		}
 		else {
+			PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK);
 			Pauseflg = false;
 		}
 	}
@@ -413,6 +415,7 @@ void InputRanking(void)
 	if (SelectY == 1)if (++selecterY > 4)selecterY = 0;
 	if (SelectY == -1)if (--selecterY < 0)selecterY = 4;
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {}
+	if(SelectY == 1){}
 	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x696969, FALSE);
 
 
@@ -443,6 +446,7 @@ void InputRanking(void)
 		if (!isalnum(buf[input_i - 1])) { buf[--input_i] = '_'; }
 	}
 	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) {
+		PlaySoundMem(Key_Remove_SE, DX_PLAYTYPE_BACK);
 		if(input_i > 0)buf[--input_i] = '_'; 
 	}
 }
@@ -637,13 +641,16 @@ int HitBoxPlayer(PLAYER* p, Apple* e) {
 }
 int LoadSounds(void)
 {
-	//タイトルBGM
-	if ((TitleBGM = LoadSoundMem("Sound/BGM/ほゎ.wav")) == -1) return -1;
-	if ((GameMainBGM = LoadSoundMem("Sound/BGM/ミニマルなマーチ.wav")) == -1) return -1;
-	if ((RankingBGM = LoadSoundMem("Sound/BGM/Walking_Ameba.wav")) == -1) return -1;
-	if ((EndBGM = LoadSoundMem("Sound/BGM/Small_Happy.wav")) == -1) return -1;
-	if ((Selecter_SE = LoadSoundMem("Sound/SE/select.wav")) == -1) return -1;
-	if ((OK_SE = LoadSoundMem("Sound/SE/click.wav")) == -1) return -1;
+	//BGM
+	if ((TitleBGM = LoadSoundMem("Sound/BGM/Title.wav")) == -1) return -1;
+	if ((GameMainBGM = LoadSoundMem("Sound/BGM/GameMain.wav")) == -1) return -1;
+	if ((RankingBGM = LoadSoundMem("Sound/BGM/Ranking.wav")) == -1) return -1;
+	if ((EndBGM = LoadSoundMem("Sound/BGM/End.wav")) == -1) return -1;
+	//SE
+	if ((Selecter_SE = LoadSoundMem("Sound/SE/Selecter.wav")) == -1) return -1;
+	if ((OK_SE = LoadSoundMem("Sound/SE/OK.wav")) == -1) return -1;
+	if ((Return_SE = LoadSoundMem("Sound/SE/Return.wav")) == -1) return -1;
+	if ((Key_Remove_SE = LoadSoundMem("Sound/SE/Key_Remove.wav")) == -1) return -1;
 	if ((GoldenApple_SE = LoadSoundMem("Sound/SE/gold_apple.wav")) == -1) return -1;
 
 }
@@ -712,12 +719,12 @@ void HelpGuide(int num) {
 
 void Sidebar() {
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
-	SetFontSize(16);
-	DrawFormatString(540, 20, 0x000000, "残り時間");
-	DrawFormatStringToHandle(545, 50, 0x000000,MenuFont, "%2d", timer / 60);
-	DrawFormatString(545, 100, 0x000000, "SCORE");
-	DrawFormatString(550, 120, 0x000000, "%4d", g_Score);
-	DrawFormatString(540, 160, 0x000000, "採った数");
+	DrawFormatString(540, 20, 0xFFFFFF, "残り時間");
+	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", timer / 60);
+	if(timer / 60 <= 10){ DrawFormatStringToHandle(545, 50, 0xff4500, MenuFont, "%2d", timer / 60); }
+	DrawFormatString(545, 100, 0xffff99, "SCORE");
+	DrawFormatString(550, 120, 0xffff99, "%4d", g_Score);
+	DrawFormatString(540, 160, 0xFFFFFF, "採った数");
 	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
 	DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
 	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
