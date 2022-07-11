@@ -576,22 +576,12 @@ void PlayerControl(bool pauseflg) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 
-		/*if (g_player.Poisonflg == TRUE) { invincibletime++; }*/
-
-
-	//	プレイヤーの表示
-		if (invincibletime % 36 == 0 && g_player.Poisonflg == TRUE) {
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-		}
-		else if (invincibletime % 18 == 0 && g_player.Poisonflg == TRUE) {
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		}
 	}
 		if (Pauseflg) {
 			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
 			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
 		}
-		else {
+		else if((g_player.Poisonflg == TRUE && g_WaitTime++ < 20) || g_player.Poisonflg == FALSE){
 			if (g_player.flg == TRUE) {
 				if (JoyPadX < -300 || player_angle == -1) {
 					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
@@ -615,6 +605,9 @@ void PlayerControl(bool pauseflg) {
 			}
 			//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+		else if (g_WaitTime > 40) {
+			g_WaitTime = 0;
 		}
 		//DrawFormatString(100, 300, 0x000000, "invincibletime:%d", invincibletime);
 		DrawBox(500, 0, 640, 480, 0x009900, TRUE);
