@@ -156,6 +156,8 @@ void DrawGameTitle(void) {
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
+	int change = 0; if (g_KeyFlg & (PadType ? XINPUT_Y : DINPUT_Y)) { int change = 1;; ChangeVolumeSoundMem(0, GameMainBGM); }
+	else if (change == 0) { change = 1; ChangeVolumeSoundMem(255, GameMainBGM); }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	static bool ani = true;
