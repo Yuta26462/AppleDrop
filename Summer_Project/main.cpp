@@ -12,7 +12,7 @@ int g_OldKey, g_NowKey, g_KeyFlg;
 int MenuFont, PauseFont;
 int apple_img[4];
 int players_img[9];
-int g_GameState = INPUT_RANKING;
+int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int timer;
 int invincibletime;
