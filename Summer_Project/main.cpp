@@ -18,7 +18,7 @@ int timer;
 int invincibletime;
 bool StartFlg = false;
 struct PLAYER g_player;
-struct RankingData g_Ranking[RANKING_DATA];
+Ranking ranking;
 
 int g_TitleImage;
 int g_PosY;
@@ -70,7 +70,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 	if (LoadImages() == -1)return -1;
 	if (LoadSounds() == -1)return -1;
-	if (ReadRanking() == -1)return -1;
+	if (ranking.ReadRanking() == -1)return -1;
 
 	if (GetJoypadNum() == 0) {
 		if (MessageBox(NULL, "コントローラーを接続してください。", "コントローラーが未接続です。", MB_OKCANCEL | MB_ICONWARNING) == 1)
@@ -219,27 +219,6 @@ void GameInit(void) {
 	g_GameState = GAME_MAIN;
 }
 
-void DrawRanking(void) {
-
-	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
-	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
-
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
-
-	DrawGraph(0, 0, g_RankingImage, FALSE);
-
-	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff,MenuFont ,"%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
-		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, MenuFont, "%5d", g_Ranking[i].score);
-		
-		if (++g_WaitTime < 120) {
-			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
-		}
-		else if (g_WaitTime > 360) { g_WaitTime = 0; }
-	}
-}
-
 void DrawHelp(void) {
 	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
@@ -278,7 +257,7 @@ void DrawEnd(void) {
 	if (++g_WaitTime < 600) { g_PosY = 300 - g_WaitTime / 2; }
 
 	SetFontSize(24);
-	DrawString(140, 80 + g_PosY, "タイトル　　　りんごおとし", 0xFFFFFF, 0);
+	DrawString(140, 80 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
 	DrawString(140, 110 + g_PosY, "バージョン　　1.0", 0xFFFFFF, 0);
 	DrawString(140, 140 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF, 0);
 	DrawString(140, 170 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF, 0);
@@ -426,11 +405,11 @@ void InputRanking(void)
 			buf[input_i] = '\0';
 			std::string buf_str = buf;
 			buf_str = buf_str.erase(input_i);
-			strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf_str.c_str());
+			strcpyDx(ranking.GetRankingName(RANKING_DATA - 1), buf_str.c_str());
 
 			g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
-			SortRanking();		//ランキング並べ替え
-			SaveRanking();		//ランキングデータの保存
+			ranking.SortRanking();		//ランキング並べ替え
+			ranking.SaveRanking();		//ランキングデータの保存
 			input_i = 0;
 			strcpyDx(buf, default_char);
 			g_GameState = DRAW_RANKING;
@@ -451,84 +430,6 @@ void InputRanking(void)
 	}
 }
 
-void SortRanking(void)
-{
-	int i, j;
-	RankingData work;
-
-	// 選択法ソート
-	for (i = 0; i < RANKING_DATA - 1; i++) {
-		for (j = i + 1; j < RANKING_DATA; j++) {
-			if (g_Ranking[i].score <= g_Ranking[j].score) {
-				work = g_Ranking[i];
-				g_Ranking[i] = g_Ranking[j];
-				g_Ranking[j] = work;
-			}
-		}
-	}
-
-	// 順位付け
-	for (i = 0; i < RANKING_DATA; i++) {
-		g_Ranking[i].no = 1;
-	}
-	// 得点が同じ場合は、同じ順位とする
-	// 同順位があった場合の次の順位はデータ個数が加算された順位とする
-	for (i = 0; i < RANKING_DATA - 1; i++) {
-		for (j = i + 1; j < RANKING_DATA; j++) {
-			if (g_Ranking[i].score > g_Ranking[j].score) {
-				g_Ranking[j].no++;
-			}
-		}
-	}
-}
-
-int  SaveRanking(void)
-{
-	FILE* fp;
-#pragma warning(disable:4996)
-
-	// ファイルオープン
-	if ((fp = fopen("dat/rankingdata.txt", "w")) == NULL) {
-		/* エラー処理 */
-		printf("Ranking Data Error\n");
-		return -1;
-	}
-
-	// ランキングデータ分配列データを書き込む
-	for (int i = 0; i < RANKING_DATA; i++) {
-		fprintf(fp, "%2d %10s %5d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
-	}
-
-	//ファイルクローズ
-	fclose(fp);
-
-	return 0;
-
-}
-
-int ReadRanking(void)
-{
-	FILE* fp;
-#pragma warning(disable:4996)
-
-	//ファイルオープン
-	if ((fp = fopen("dat/rankingdata.txt", "r")) == NULL) {
-		//エラー処理
-		printf("Ranking Data Error\n");
-		return -1;
-	}
-
-	//ランキングデータ配分列データを読み込む
-	for (int i = 0; i < RANKING_DATA; i++) {
-
-		fscanf(fp, "%2d %10s %5d", &g_Ranking[i].no, g_Ranking[i].name, &g_Ranking[i].score);
-	}
-
-	//ファイルクローズ
-	fclose(fp);
-
-	return 0;
-}
 
 void PlayerControl(bool pauseflg) {
 	/*if (g_KeyFlg & (PadType ? 2048 : 8192)) {
@@ -545,35 +446,27 @@ void PlayerControl(bool pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
 			PadSpeedTimer++;
-			if(PadSpeedTimer < 10){
-				if (JoyPadX < 0 || JoyPadX > 0) {
-					if (player_angle == 1)g_player.x++;
-					if (player_angle == -1)g_player.x--;
-				}
-			}
-			if (PadSpeedTimer > 10 - i) {
+			if (PadSpeedTimer > 20 - i) {
 				PadSpeedTimer = 0;
-				if (g_player.speed < 3 && g_player.speed > -3) {
+				if (g_player.speed < 6 && g_player.speed > -6) {
 					/*++g_player.speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
 					if (JoyPadX < -100) { g_player.speed++; /*i += JoyPadX / 200;*/ }
 					if (JoyPadX > 100) { g_player.speed++; /*i += JoyPadSX / 200;*/ }
 				}
 				if (JoyPadX >= -100 && JoyPadX <= 100) {
 					i = 0;
-					if (JoyPadX < -100) { if (player_angle == 1)g_player.x++; /*i += JoyPadX / 200;*/ }
-					if (JoyPadX > 100) { if (player_angle == -1)g_player.x--;  /*g_player.speed++;*/ /*i += JoyPadSX / 200;*/ }
-					if (g_player.speed > 0)g_player.speed-= 1;
+					if (g_player.speed > 0)g_player.speed-= 2;
 					if (g_player.speed < 0)g_player.speed++;
 				}
-			/*	if (old_player_angle != player_angle && g_player.speed < 6) {
+				if (old_player_angle != player_angle && g_player.speed < 6) {
 					if (JoyPadX < -100 && player_angle == -1) {
 						g_player.speed--;
 					}
-				}*/
+				}
 			}
 
 
-			if (old_player_angle != player_angle && g_player.speed > 1) {
+			if (old_player_angle != player_angle && g_player.speed > 3) {
 				g_player.speed = -2;
 			}
 			if (player_angle == 1) { g_player.x += g_player.speed; }
@@ -599,10 +492,10 @@ void PlayerControl(bool pauseflg) {
 		}
 		else if((g_player.Poisonflg == TRUE && g_WaitTime++ < 20) || g_player.Poisonflg == FALSE){
 			if (g_player.flg == TRUE) {
-				if (JoyPadX < -0 || player_angle == -1) {
+				if (JoyPadX < -300 || player_angle == -1) {
 					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
 				}
-				if (JoyPadX > 0 || player_angle == 1) {
+				if (JoyPadX > 300 || player_angle == 1) {
 					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
 				}
 				if (JoyPadX == 0)
@@ -746,4 +639,25 @@ void Sidebar() {
 	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
 	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
 	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
+}
+
+void DrawRanking(void) {
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
+	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
+
+	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+
+	DrawGraph(0, 0, g_RankingImage, FALSE);
+
+	for (int i = 0; i < RANKING_DATA; i++) {
+		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff, MenuFont, "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
+		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, MenuFont, "%5d", g_Ranking[i].score);
+
+		if (++g_WaitTime < 120) {
+			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
+		}
+		else if (g_WaitTime > 360) { g_WaitTime = 0; }
+	}
 }

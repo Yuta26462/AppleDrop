@@ -2,9 +2,9 @@
 #include "DxLib.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
-#define RANKING_DATA 5
 
 #include "apple.h"
+#include "ranking.h"
 
 #define XINPUT_A								16
 #define XINPUT_B								32
@@ -30,6 +30,7 @@ public:
 };
 
 extern Menu menu;
+extern Ranking ranking;
 
 
 extern int g_OldKey, g_NowKey, g_KeyFlg;
@@ -77,18 +78,10 @@ void DrawHelp(void);
 void DrawRanking(void);
 void InputRanking(void);
 
-void SortRanking(void);
-int SaveRanking(void);
-int ReadRanking(void);
-
 //void BackScrool();
 
 void PlayerControl(bool pauseflg);
 
-//void EnemyControl();
-//void BikeControl();		//チャレンジ5用
-//int CreateEnemy();
-//int CreateBike();		//チャレンジ5用
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -134,12 +127,6 @@ extern struct PLAYER g_player;
 //struct ENEMY g_item[ITEM_MAX];
 //struct ENEMY g_item00 = { TRUE,0,0,0,-50,50,50,0,1 };
 
-struct	RankingData {
-	int no;
-	char name[11];
-	long score;
-};
-extern struct RankingData g_Ranking[RANKING_DATA];
 
 int HitBoxPlayer(PLAYER* p, Apple* e);
 void ItemControl();		//	アイテム処理
