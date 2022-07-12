@@ -278,7 +278,7 @@ void DrawEnd(void) {
 	if (++g_WaitTime < 600) { g_PosY = 300 - g_WaitTime / 2; }
 
 	SetFontSize(24);
-	DrawString(140, 80 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
+	DrawString(140, 80 + g_PosY, "タイトル　　　りんごおとし", 0xFFFFFF, 0);
 	DrawString(140, 110 + g_PosY, "バージョン　　1.0", 0xFFFFFF, 0);
 	DrawString(140, 140 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF, 0);
 	DrawString(140, 170 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF, 0);
@@ -545,27 +545,35 @@ void PlayerControl(bool pauseflg) {
 		if (g_player.flg == TRUE) {
 			int i = 0;
 			PadSpeedTimer++;
-			if (PadSpeedTimer > 20 - i) {
+			if(PadSpeedTimer < 10){
+				if (JoyPadX < 0 || JoyPadX > 0) {
+					if (player_angle == 1)g_player.x++;
+					if (player_angle == -1)g_player.x--;
+				}
+			}
+			if (PadSpeedTimer > 10 - i) {
 				PadSpeedTimer = 0;
-				if (g_player.speed < 6 && g_player.speed > -6) {
+				if (g_player.speed < 3 && g_player.speed > -3) {
 					/*++g_player.speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
 					if (JoyPadX < -100) { g_player.speed++; /*i += JoyPadX / 200;*/ }
 					if (JoyPadX > 100) { g_player.speed++; /*i += JoyPadSX / 200;*/ }
 				}
 				if (JoyPadX >= -100 && JoyPadX <= 100) {
 					i = 0;
-					if (g_player.speed > 0)g_player.speed-= 2;
+					if (JoyPadX < -100) { if (player_angle == 1)g_player.x++; /*i += JoyPadX / 200;*/ }
+					if (JoyPadX > 100) { if (player_angle == -1)g_player.x--;  /*g_player.speed++;*/ /*i += JoyPadSX / 200;*/ }
+					if (g_player.speed > 0)g_player.speed-= 1;
 					if (g_player.speed < 0)g_player.speed++;
 				}
-				if (old_player_angle != player_angle && g_player.speed < 6) {
+			/*	if (old_player_angle != player_angle && g_player.speed < 6) {
 					if (JoyPadX < -100 && player_angle == -1) {
 						g_player.speed--;
 					}
-				}
+				}*/
 			}
 
 
-			if (old_player_angle != player_angle && g_player.speed > 3) {
+			if (old_player_angle != player_angle && g_player.speed > 1) {
 				g_player.speed = -2;
 			}
 			if (player_angle == 1) { g_player.x += g_player.speed; }
@@ -573,9 +581,9 @@ void PlayerControl(bool pauseflg) {
 		}
 
 		//	画面をはみ出さないようにする
-		if (g_player.x < 32)		g_player.x = 32;
+		if (g_player.x < 32) { g_player.x = 32; g_player.speed = 0; }
 
-		if (g_player.x > SCREEN_WIDTH - 170)		g_player.x = SCREEN_WIDTH - 170;
+		if (g_player.x > SCREEN_WIDTH - 170) { g_player.x = SCREEN_WIDTH - 170; g_player.speed = 0;}
 
 
 		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
@@ -591,10 +599,10 @@ void PlayerControl(bool pauseflg) {
 		}
 		else if((g_player.Poisonflg == TRUE && g_WaitTime++ < 20) || g_player.Poisonflg == FALSE){
 			if (g_player.flg == TRUE) {
-				if (JoyPadX < -300 || player_angle == -1) {
+				if (JoyPadX < -0 || player_angle == -1) {
 					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
 				}
-				if (JoyPadX > 300 || player_angle == 1) {
+				if (JoyPadX > 0 || player_angle == 1) {
 					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
 				}
 				if (JoyPadX == 0)
