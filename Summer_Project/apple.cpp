@@ -150,8 +150,9 @@ int GetAppleSpeed(int AppleType) {
 int Apple::GetApplePos(int apple_speed, int num) {
 	int apple_pos = 0;
 	bool checkflg = false;
-	int old_position[7] = { 0,0,0,0,0,0,0 };
+	int old_position[7] = { 99,99,99,99,99,99,99 };
 	int repeat_count = 0;
+	int j;
 
 	apple_pos = GetRand(6);
 	for (int i = 0; i < APPLE_MAX; i++) {
@@ -160,10 +161,16 @@ int Apple::GetApplePos(int apple_speed, int num) {
 			break;
 		}
 		if (Over_flg == TRUE && checkflg == TRUE && repeat_count <= 6) {		//重なった場合、位置を決め直す
-			i = 0;
+			j = 0;
 			apple_pos = GetRand(6);
 			checkflg = false;
+			old_position[repeat_count] = apple[i - 1].pos;
+			while (apple_pos != old_position[j] && j < 7) {
+				apple_pos = GetRand(6);
+				j++;
+			}
 			repeat_count++;
+			i = 0;
 		}
 		//位置が同じ既存のリンゴを調べる
 		if (i != num && apple_pos == apple[i].pos) {

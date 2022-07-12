@@ -35,6 +35,7 @@ int apple_x;
 int apple_y;
 bool Pauseflg;
 bool PadType = false;
+bool AllReset = false;
 
 int LoadImages();
 int LoadSounds();
@@ -150,12 +151,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 
+	if (AllReset) {
+		MenuNo = 0;
+		AllReset = false;
+	}
+
 	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
 	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
 
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
+	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {
+		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); 
+		g_GameState = MenuNo + 1;
+	}
+	
+
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	static bool ani = true;
@@ -194,6 +205,7 @@ void DrawGameTitle(void) {
 void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
+	AllReset = true;
 	timer = TIMELIMIT;
 	invincibletime = 0;
 	Pauseflg = false;
@@ -243,7 +255,7 @@ void DrawHelp(void) {
 	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
-
+	
 	DrawStringToHandle(260, 40, "‚Ö‚é‚Õ", 0xffffff, MenuFont, 0);
 
 	DrawStringToHandle(20, 120, "‚±‚ÌƒQ[ƒ€‚Í§ŒÀŽžŠÔF‚R‚O•b‚Å", 0xffffff, MenuFont, 0);
@@ -262,6 +274,7 @@ void DrawHelp(void) {
 		DrawStringToHandle(320, 330, "ƒQ[ƒ€ƒXƒ^[ƒg", 0xffff00, MenuFont, 0);
 	}
 	else if(g_WaitTime > 60){  g_WaitTime = 0; }
+
 }
 
 void DrawEnd(void) {
