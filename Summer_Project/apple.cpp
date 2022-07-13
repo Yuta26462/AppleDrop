@@ -173,9 +173,14 @@ int Apple::GetApplePos(int apple_speed, int num) {
 			apple_pos = GetRand(6);
 			checkflg = false;
 			old_position[repeat_count] = apple[i - 1].pos;
-			while (apple_pos == old_position[j] && j < 7) {
-				apple_pos = GetRand(6);
-				j++;
+			
+			while (j < 7) {
+				if (apple_pos == old_position[j]) {
+					apple_pos = GetRand(6);
+				}
+				else {
+					j++;
+				}
 			}
 			repeat_count++;
 			i = 0;
