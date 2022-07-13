@@ -368,7 +368,6 @@ void PlayerControl(bool pauseflg) {
 				}
 			}
 
-
 			if (old_player_angle != player_angle && g_player.speed > 3) {
 				g_player.speed = -2;
 			}

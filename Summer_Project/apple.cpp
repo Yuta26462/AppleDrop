@@ -2,22 +2,29 @@
 
 
 int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
-int apple_count[4];
+int apple_count[4];				//リンゴを取得した個数
 bool Over_flg = false;			//リンゴが重なっているかのフラグ
 int apple_quantity = 0;			//描画されているリンゴの個数
+int Made_apples = 0;			//生成するリンゴの個数
 
 
 
 void Apple::AppleControl(bool pauseflg) {
 	//時間ごとにリンゴ出現パターンを制御する
-	if (timer % 25 == 0 && apple_quantity <= APPLE_MAX/* && (APPLE_MAX - apple_quantity) / 2 > apple_quantity*/)
+	if (timer % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
+		//最初は4個生成
 		if (StartFlg == true) {
 			CreateApple(APPLE_START);
 			StartFlg = false;
 		}
 		else {
-			CreateApple((APPLE_MAX - apple_quantity) / 2);
+			Made_apples = (APPLE_MAX - apple_quantity) / 2;
+			//切り上げ
+			if (Made_apples % 2) {
+				Made_apples++;
+			}
+			CreateApple(Made_apples);
 		}
 
 	}
@@ -142,6 +149,7 @@ int GetAppleSpeed(int AppleType) {
 		return BLACK_SPEED;
 		break;
 	default:
+		return -1;
 		break;
 	}
 }
