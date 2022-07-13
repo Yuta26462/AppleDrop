@@ -90,7 +90,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		GetJoypadAnalogInput(&JoyPadX, &JoyPadY, DX_INPUT_PAD1);
 		if (CheckJoypadXInput(DX_INPUT_PAD1)) { PadType = true; }
 
-		if (g_KeyFlg & (PadType ? XINPUT_BACK : DINPUT_BACK)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = END; }
+		if (PadInput(INPUT_BACK)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = END; }
 		SelectX = 0;
 		SelectY = 0;
 
@@ -156,13 +156,13 @@ void DrawGameTitle(void) {
 		AllReset = false;
 	}
 
-	if (CheckSoundMem(RankingBGM) == 1)StopSoundMem(RankingBGM);
-	if (CheckSoundMem(TitleBGM) == 0)PlaySoundMem(TitleBGM, DX_PLAYTYPE_BACK);
+	if (CheckSoundMem(GetSound(BGM_Ranking)) == 1)StopSoundMem(GetSound(BGM_Ranking));
+	if (CheckSoundMem(GetSound(BGM_Title)) == 0)PlaySoundMem(GetSound(BGM_Title), DX_PLAYTYPE_BACK);
 
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
-	int change = 0; if (g_KeyFlg & (PadType ? XINPUT_Y : DINPUT_Y)) { int change = 1;; ChangeVolumeSoundMem(0, GameMainBGM); }
+	if (PadInput(INPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
+	int change = 0; if (PadInput(INPUT_Y)) { int change = 1;; ChangeVolumeSoundMem(0, GameMainBGM); }
 	else if (change == 0) { change = 1; ChangeVolumeSoundMem(255, GameMainBGM); }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
@@ -170,12 +170,12 @@ void DrawGameTitle(void) {
 	if (ani == true) {
 		static int aniy = rand() % 50;
 		/*if(++aniy > 10)*/
-		if (++g_WaitTime > 30) DrawFormatStringToHandle(200, 100 + aniy, 0x9c3e26, MenuFont, "り"); aniy = rand() % 20;
-		if (g_WaitTime > 60) DrawFormatStringToHandle(250, 100 + aniy, 0x9c3e26, MenuFont, "ん"); aniy = rand() % 20;
-		if (g_WaitTime > 120) DrawFormatStringToHandle(300, 100 + aniy, 0x9c3e26, MenuFont, "ご"); aniy = rand() % 20;
-		if (g_WaitTime > 180) DrawFormatStringToHandle(350, 100 + aniy, 0x9c3e26, MenuFont, "お"); aniy = rand() % 20;
-		if (g_WaitTime > 240) DrawFormatStringToHandle(400, 100 + aniy, 0x9c3e26, MenuFont, "と"); aniy = rand() % 20;
-		if (g_WaitTime > 300) { DrawFormatStringToHandle(450, 100, 0x9c3e26, MenuFont, "し"); ani = false; g_WaitTime = 0; }
+		if (SetTimer(0) > 30) DrawFormatStringToHandle(200, 100 + aniy, 0x9c3e26, MenuFont, "り"); aniy = rand() % 20;
+		if (GetTimer() > 60) DrawFormatStringToHandle(250, 100 + aniy, 0x9c3e26, MenuFont, "ん"); aniy = rand() % 20;
+		if (GetTimer() > 120) DrawFormatStringToHandle(300, 100 + aniy, 0x9c3e26, MenuFont, "ご"); aniy = rand() % 20;
+		if (GetTimer() > 180) DrawFormatStringToHandle(350, 100 + aniy, 0x9c3e26, MenuFont, "お"); aniy = rand() % 20;
+		if (GetTimer() > 240) DrawFormatStringToHandle(400, 100 + aniy, 0x9c3e26, MenuFont, "と"); aniy = rand() % 20;
+		if (GetTimer() > 300) { DrawFormatStringToHandle(450, 100, 0x9c3e26, MenuFont, "し"); ani = false; ResetTimer(); }
 	}
 	else if (ani == false) {
 
@@ -227,8 +227,8 @@ void GameInit(void) {
 }
 
 void DrawHelp(void) {
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
+	if (PadInput(INPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+	if (PadInput(INPUT_A)) { PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = GAME_INIT; }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
@@ -246,10 +246,10 @@ void DrawHelp(void) {
 	DrawStringToHandle(470, 280,"ぽーず", 0xff8c00,MenuFont);
 	DrawStringToHandle(20, 330, "A", 0xff0000, MenuFont, 0);
 	DrawStringToHandle(44, 330, "ボタンをおして", 0xffffff, MenuFont, 0);
-	if (++g_WaitTime < 30) {
+	if (SetTimer(0) < 30) {
 		DrawStringToHandle(320, 330, "ゲームスタート", 0xffff00, MenuFont, 0);
 	}
-	else if(g_WaitTime > 60){  g_WaitTime = 0; }
+	else if(GetTimer() > 60){  ResetTimer(); }
 
 }
 
@@ -262,7 +262,7 @@ void DrawEnd(void) {
 	//エンド画像表示
 	DrawExtendGraph(0, 0,640,480, g_EndImage, FALSE);
 	//エンディング表示
-	if (++g_WaitTime < 600) { g_PosY = 300 - g_WaitTime / 2; }
+	if (SetTimer(0) < 600) { g_PosY = 300 - GetTimer() / 2; }
 
 	SetFontSize(24);
 	DrawString(140, 80 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
@@ -276,7 +276,7 @@ void DrawEnd(void) {
 	DrawString(140, 325 + g_PosY, "　SE　　　　　効果音工房", 0xFFFFFF, 0);
 
 	//タイムの加算処理＆終了
-	if (++g_WaitTime > 900) { g_WaitTime = 0; g_GameState = END; }
+	if (SetTimer(0) > 900) { ResetTimer(); g_GameState = END; }
 
 	DeleteFontToHandle(MenuFont);
 }
@@ -296,7 +296,7 @@ void GameMain(void) {
 	PlayerControl(Pauseflg);
 	Sidebar();
 
-	if (g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
+	if (PadInput(INPUT_START)) {
 		if (Pauseflg == false) {
 			PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 			Pauseflg = true;
@@ -346,6 +346,27 @@ int LoadImages() {
 	return 0;
 }
 
+void DrawRanking(void) {
+
+	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
+	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
+	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
+
+	if (PadInput(INPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+
+	DrawGraph(0, 0, g_RankingImage, FALSE);
+
+	for (int i = 0; i < RANKING_DATA; i++) {
+		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff, MenuFont, "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
+		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, MenuFont, "%5d", g_Ranking[i].score);
+
+		if (SetTimer(0) < 120) {
+			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
+		}
+		else if (GetTimer() > 360) { ResetTimer(); }
+	}
+}
+
 void InputRanking(void)
 {
 	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
@@ -361,10 +382,10 @@ void InputRanking(void)
 	// 名前入力指示文字列の描画
 	DrawFormatStringToHandle(120, 100, 0xFFFFFF, MenuFont, "ランキングに登録します");
 	DrawFormatStringToHandle(65, 150, 0xFFFFFF, MenuFont, "名前を英字で入力してください");
-	if (g_WaitTime < 30) {
+	if (GetTimer() < 30) {
 		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xffffff, 0);
 	}
-	else if (g_WaitTime > 60) { g_WaitTime = 0; }
+	else if (GetTimer() > 60) { ResetTimer(); }
 	// 名前の入力
 	DrawFormatStringToHandle(120, 200, 0xFFFFFF, MenuFont, "> ");
 	DrawBox(190, 200, 425, 250, 0x000055, TRUE);
@@ -377,13 +398,13 @@ void InputRanking(void)
 		for (int i = 0; input_i > i; i++) { DrawFormatStringToHandle(195 + i * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[i]); }
 		/*if(display > input_i){ DrawFormatStringToHandle(200 + input_i * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[input_i - 1]); }*/
 
-	if (++g_WaitTime < 30) {
+	if (SetTimer(0) < 30) {
 		//DrawFormatStringToHandle(200, 205, 0xFFFFFF, MenuFont, "%s", buf);
 		for (int display = 10; input_i < display; display--) {
 			DrawFormatStringToHandle(170 + display * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[display - 1]);
 		}
 	}
-	else if (g_WaitTime > 60) { g_WaitTime = 0; }
+	else if (GetTimer() > 60) { ResetTimer(); }
 
 	char input_char = '0';
 	for (int j = 0; j < 5; j++) {
@@ -401,12 +422,12 @@ void InputRanking(void)
 	if (SelectX == -1)if (--selecterX < 0)selecterX = 12; if (selecterY == 0 && selecterX > 9)selecterX = 9;
 	if (SelectY == 1)if (++selecterY > 4)selecterY = 0;
 	if (SelectY == -1)if (--selecterY < 0)selecterY = 4;
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {}
-	if(SelectY == 1){}
+	if (PadInput(INPUT_A)) {}
+	if (SelectX == -1 || SelectX == 1 || SelectY == -1 || SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); }
 	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x696969, FALSE);
 
 
-	if (input_i >= 9 || /*strlen(buf) >= 9 ||*/ g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START)) {
+	if (PadInput(INPUT_START)) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		if (input_i <= 0) { errorflg = 1; }
 		else {
@@ -414,6 +435,7 @@ void InputRanking(void)
 			std::string buf_str = buf;
 			buf_str = buf_str.erase(input_i);
 			strcpyDx(ranking.GetRankingName(RANKING_DATA - 1), buf_str.c_str());
+			//strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf_str.c_str());
 
 			g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
 			ranking.SortRanking();		//ランキング並べ替え
@@ -423,7 +445,7 @@ void InputRanking(void)
 			g_GameState = DRAW_RANKING;
 		}
 	}
-	if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A)) {
+	if (PadInput(INPUT_A) && input_i < 9) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = (char)48 + selecterX; }
 		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)97 + selecterX; }
@@ -432,7 +454,7 @@ void InputRanking(void)
 		if (selecterY == 4 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)78 + selecterX; }
 		if (!isalnum(buf[input_i - 1])) { buf[--input_i] = '_'; }
 	}
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) {
+	if (PadInput(INPUT_B)) {
 		PlaySoundMem(Key_Remove_SE, DX_PLAYTYPE_BACK);
 		if(input_i > 0)buf[--input_i] = '_'; 
 	}
@@ -440,14 +462,6 @@ void InputRanking(void)
 
 
 void PlayerControl(bool pauseflg) {
-	/*if (g_KeyFlg & (PadType ? 2048 : 8192)) {
-		if (Pauseflg == false) {
-			Pauseflg = true;
-		}
-		else {
-			Pauseflg = false;
-		}
-	}*/
 	static int checkflg = 0;
 	static int old_player_angle = 0;
 	if (!Pauseflg) {
@@ -563,7 +577,7 @@ int LoadSounds(void)
 	if ((GoldenApple_SE = LoadSoundMem("Sound/SE/gold_apple.wav")) == -1) return -1;
 	if ((PoisonApple_SE = LoadSoundMem("Sound/SE/Poison_Apple.wav")) == -1) return -1;
 	if ((Red_AND_Green_Apple_SE = LoadSoundMem("Sound/SE/Red&Green_Apple.wav")) == -1) return -1;
-
+	return 0;
 }
 
 void DrawPause() {
@@ -649,23 +663,69 @@ void Sidebar() {
 	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
 }
 
-void DrawRanking(void) {
-
-	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
-	if (CheckSoundMem(GameMainBGM) == 1)StopSoundMem(GameMainBGM);
-	if (CheckSoundMem(RankingBGM) == 0)PlaySoundMem(RankingBGM, DX_PLAYTYPE_BACK);
-
-	if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B)) { PlaySoundMem(Return_SE, DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
-
-	DrawGraph(0, 0, g_RankingImage, FALSE);
-
-	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff, MenuFont, "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
-		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, MenuFont, "%5d", g_Ranking[i].score);
-
-		if (++g_WaitTime < 120) {
-			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
-		}
-		else if (g_WaitTime > 360) { g_WaitTime = 0; }
+int SetTimer(int num) {
+	if (num == 0) {
+		++g_WaitTime;
+		return g_WaitTime;
 	}
+	else {
+		g_WaitTime = num;
+	}
+	return g_WaitTime;
+}
+
+int GetTimer(void) {
+	return g_WaitTime;
+}
+
+void ResetTimer(void) {
+	g_WaitTime = 0;
+}
+
+bool PadInput(int Key) {
+	if (Key > 0 && Key < 9) {
+		if (Key == INPUT_A) {
+			if (g_KeyFlg & (PadType ? XINPUT_A : DINPUT_A))return true;
+		}
+		if (Key == INPUT_B) {
+			if (g_KeyFlg & (PadType ? XINPUT_B : DINPUT_B))return true;
+		}
+		if (Key == INPUT_X) {
+			if (g_KeyFlg & (PadType ? XINPUT_X : DINPUT_X))return true;
+		}
+		if (Key == INPUT_Y) {
+			if (g_KeyFlg & (PadType ? XINPUT_Y : DINPUT_Y))return true;
+		}
+		if (Key == INPUT_BACK) {
+			if (g_KeyFlg & (PadType ? XINPUT_BACK : DINPUT_BACK))return true;
+		}
+		if (Key == INPUT_START) {
+			if (g_KeyFlg & (PadType ? XINPUT_START : DINPUT_START))return true;
+		}
+	}
+	return false;
+}
+
+int GetSound(int sound_name) {
+	if (sound_name == BGM_Title)return TitleBGM;
+	if (sound_name == BGM_GameMain)return GameMainBGM;
+	if (sound_name == BGM_Ranking)return RankingBGM;
+	if (sound_name == BGM_END)return EndBGM;
+
+	if (sound_name == SE_Selecter)return Selecter_SE;
+	if (sound_name == SE_OK)return OK_SE;
+	if (sound_name == SE_Return)return Return_SE;
+	if (sound_name == SE_Key_Remove)return Key_Remove_SE;
+	if (sound_name == SE_GoldenApple)return GoldenApple_SE;
+	if (sound_name == SE_Red_AND_Green_Apple)return Red_AND_Green_Apple_SE;
+	if (sound_name == SE_PoisonApple)return PoisonApple_SE;
+	return 0;
+}
+
+int GetImage(int imagename){
+	if (imagename == Image_Title)return g_TitleImage;
+	if (imagename == Image_Stage)return g_StageImage;
+	if (imagename == Image_Ranking)return g_RankingImage;
+	if (imagename == Image_End)return g_EndImage;
+	return 0;
 }

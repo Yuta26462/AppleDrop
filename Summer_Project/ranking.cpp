@@ -7,6 +7,7 @@ int Ranking::GetRankingNum(int num) {
 		int no = g_Ranking[num].no;
 		return no;
 	}
+	return 0;
 }
 
 char* Ranking::GetRankingName(int num) {
@@ -20,6 +21,7 @@ char* Ranking::GetRankingName(int num) {
 			return name;
 		}
 	}
+	return 0;
 }
 
 long Ranking::GetRankingScore(int num) {
@@ -29,6 +31,7 @@ long Ranking::GetRankingScore(int num) {
 			score = g_Ranking[num].score;
 		return score;
 	}
+	return 0;
 }
 
 int Ranking::ReadRanking(void)
