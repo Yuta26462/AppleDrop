@@ -13,21 +13,16 @@ int apple_img[4];
 int players_img[9];
 int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
-int timer;
-int invincibletime;
+int timer;	//êßå¿éûä‘óp
 bool StartFlg = false;
 struct PLAYER g_player;
 Ranking ranking;
 PLAYER_CLASS player;
 
 int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;
-int g_PosY;
 int JoyPadX, JoyPadY,PadTimer;
 int SelectX, SelectY;
 int g_WaitTime = 0;
-bool apple_flg;
-int apple_x;
-int apple_y;
 bool Pauseflg;
 bool PadType = false;
 bool AllReset = false;
@@ -196,7 +191,7 @@ void GameInit(void) {
 	StartFlg = true;
 	AllReset = true;
 	timer = TIMELIMIT;
-	invincibletime = 0;
+	ResetTimer();
 	Pauseflg = false;
 
 	for (int i = 0; i < 4; i++) {
@@ -246,7 +241,7 @@ void DrawHelp(void) {
 }
 
 void DrawEnd(void) {
-	int g_PosY = 0;
+	static int g_PosY = 0;
 
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (CheckSoundMem(EndBGM) == 0)PlaySoundMem(EndBGM, DX_PLAYTYPE_BACK);

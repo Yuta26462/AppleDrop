@@ -49,7 +49,6 @@ extern bool AllReset;
 
 extern int g_Score;
 extern int g_RankingImage;
-extern int invincibletime;			//–³“G”»’èŽžŠÔ
 
 extern Apple apple[APPLE_MAX];
 extern Apple AppleFunc;

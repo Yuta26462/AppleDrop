@@ -43,9 +43,9 @@ void PLAYER_CLASS::PlayerControl(bool pauseflg) {
 		if (g_player.x > SCREEN_WIDTH - 170) { g_player.x = SCREEN_WIDTH - 170; g_player.speed = 0; }
 
 
-		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
+		if (g_player.Poisonflg == TRUE && GetTimer() >= 120) {
 			g_player.Poisonflg = false;
-			invincibletime = 0;
+			ResetTimer();
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 
@@ -54,7 +54,7 @@ void PLAYER_CLASS::PlayerControl(bool pauseflg) {
 		if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, GetPlayerImage(Image_DASH_LeftPlayer), TRUE, FALSE);
 		if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, GetPlayerImage(Image_DASH_RightPlayer), TRUE, FALSE);
 	}
-	else if ((g_player.Poisonflg == TRUE && SetTimer(0) < 20) || g_player.Poisonflg == FALSE) {
+	else if ((g_player.Poisonflg == TRUE && SetTimer(0) % 40 < 20) || g_player.Poisonflg == FALSE) {
 		if (g_player.flg == TRUE) {
 			if(player_angle == 0){ DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);}
 			if (GetAnalogInput(AnalogInput_X) < -0 || player_angle == -1) {
@@ -77,10 +77,6 @@ void PLAYER_CLASS::PlayerControl(bool pauseflg) {
 			DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), GetPlayerImage(Image_LeftPlayer), TRUE, FALSE);
 			if (g_player.count >= 80)		g_player.flg = TRUE;
 		}
-		//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	}
-	else if (GetTimer() > 40) {
-		ResetTimer();
+		
 	}
 }
