@@ -223,7 +223,7 @@ void GameInit(void) {
 	g_player.speed = 0;
 	g_player.Poisonflg = false;
 
-	g_GameState = GAME_MAIN;
+	g_GameState = INPUT_RANKING;//GAME_MAIN;
 }
 
 void DrawHelp(void) {
@@ -418,6 +418,14 @@ void InputRanking(void)
 	}
 	static int selecterX = 0;
 	static int selecterY = 0;
+
+	//カーソルの位置をリセット
+	if (AllReset) {
+		selecterX = 0;
+		selecterY = 0;
+		AllReset = false;
+	}
+
 	if (SelectX == 1)if (++selecterX > 12)selecterX = 0; else if (selecterY == 0 && selecterX > 9)selecterX = 0;
 	if (SelectX == -1)if (--selecterX < 0)selecterX = 12; if (selecterY == 0 && selecterX > 9)selecterX = 9;
 	if (SelectY == 1)if (++selecterY > 4)selecterY = 0;
@@ -442,6 +450,7 @@ void InputRanking(void)
 			ranking.SaveRanking();		//ランキングデータの保存
 			input_i = 0;
 			strcpyDx(buf, default_char);
+			AllReset = true;
 			g_GameState = DRAW_RANKING;
 		}
 	}
