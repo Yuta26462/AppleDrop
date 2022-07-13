@@ -5,9 +5,12 @@
 
 #include "apple.h"
 #include "ranking.h"
+#include "player.h"
 
 #define Select_X								1
 #define Select_Y								2
+#define AnalogInput_X								1
+#define AnalogInput_Y								2
 
 #define INPUT_A									1
 #define INPUT_B									2
@@ -18,7 +21,8 @@
 
 enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
 enum {BGM_Title = 1, BGM_GameMain,BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple,SE_Red_AND_Green_Apple,SE_PoisonApple};
-enum {Image_Title, Image_Stage, Image_Ranking, Image_End };
+enum {Image_Title, Image_Stage, Image_Ranking, Image_End};
+enum {Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
 enum {Font_Menu = 1, Font_Pause};
 
 //サウンド用変数
@@ -33,6 +37,7 @@ public:
 
 extern Menu menu;
 extern Ranking ranking;
+extern PLAYER_CLASS player;
 
 
 extern int g_OldKey, g_NowKey, g_KeyFlg;
@@ -84,11 +89,14 @@ void DrawHelp(void);
 int SetTimer(int num);
 int GetTimer(void);
 void ResetTimer(void);
+int GetAnalogInput(int xy);
 bool PadInput(int Key);
 int GetSound(int sound_name);
 int GetImage(int imagename);
 int GetFont(int num);
 int GetSelect(int xy);
+bool isPause(void);
+int GetPlayerImage(int player_status);
 
 //void BackScrool();
 

@@ -171,7 +171,7 @@ int Ranking::ReadRanking(void)
 	//ランキングデータ配分列データを読み込む
 	for (int i = 0; i < RANKING_DATA; i++) {
 
-		fscanf(fp, "%2d %10s %5d", &g_Ranking[i].no, g_Ranking[i].name, &g_Ranking[i].score);
+		fscanf_s(fp, "%2d %10s %5d", &g_Ranking[i].no, &g_Ranking[i].name, 9, &g_Ranking[i].score);
 	}
 
 	//ファイルクローズ

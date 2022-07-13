@@ -18,13 +18,12 @@ int invincibletime;
 bool StartFlg = false;
 struct PLAYER g_player;
 Ranking ranking;
+PLAYER_CLASS player;
 
 int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;
 int g_PosY;
-int JoyPadX, JoyPadY;
-int player_angle = 1;
+int JoyPadX, JoyPadY,PadTimer;
 int SelectX, SelectY;
-int PadTimer, PadSpeedTimer;
 int g_WaitTime = 0;
 bool apple_flg;
 int apple_x;
@@ -286,7 +285,7 @@ void GameMain(void) {
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
 	AppleFunc.AppleControl(Pauseflg);
-	PlayerControl(Pauseflg);
+	player.PlayerControl(Pauseflg);
 	Sidebar();
 
 	if (PadInput(INPUT_START)) {
@@ -339,89 +338,6 @@ int LoadImages() {
 	return 0;
 }
 
-
-
-
-void PlayerControl(bool pauseflg) {
-	static int checkflg = 0;
-	static int old_player_angle = 0;
-	if (!Pauseflg) {
-		if (g_player.flg == TRUE) {
-			int i = 0;
-			PadSpeedTimer++;
-			if (PadSpeedTimer > 20 - i) {
-				PadSpeedTimer = 0;
-				if (g_player.speed < 6 && g_player.speed > -6) {
-					/*++g_player.speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
-					if (JoyPadX < -100) { g_player.speed++; /*i += JoyPadX / 200;*/ }
-					if (JoyPadX > 100) { g_player.speed++; /*i += JoyPadSX / 200;*/ }
-				}
-				if (JoyPadX >= -100 && JoyPadX <= 100) {
-					i = 0;
-					if (g_player.speed > 0)g_player.speed-= 2;
-					if (g_player.speed < 0)g_player.speed++;
-				}
-				if (old_player_angle != player_angle && g_player.speed < 6) {
-					if (JoyPadX < -100 && player_angle == -1) {
-						g_player.speed--;
-					}
-				}
-			}
-
-
-			if (old_player_angle != player_angle && g_player.speed > 3) {
-				g_player.speed = -2;
-			}
-			if (player_angle == 1) { g_player.x += g_player.speed; }
-			if (player_angle == -1) { g_player.x -= g_player.speed; }
-		}
-
-		//	âÊñ ÇÇÕÇ›èoÇ≥Ç»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
-		if (g_player.x < 32) { g_player.x = 32; g_player.speed = 0; }
-
-		if (g_player.x > SCREEN_WIDTH - 170) { g_player.x = SCREEN_WIDTH - 170; g_player.speed = 0;}
-
-
-		if (g_player.Poisonflg == TRUE && invincibletime++ >= 120) {
-			g_player.Poisonflg = false;
-			invincibletime = 0;
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		}
-
-	}
-		if (Pauseflg) {
-			if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
-			if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-		}
-		else if((g_player.Poisonflg == TRUE && g_WaitTime++ < 20) || g_player.Poisonflg == FALSE){
-			if (g_player.flg == TRUE) {
-				if (JoyPadX < -300 || player_angle == -1) {
-					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[0], TRUE, FALSE); player_angle = -1;
-				}
-				if (JoyPadX > 300 || player_angle == 1) {
-					DrawRotaGraph(g_player.x, g_player.y, 2.3f, -M_PI / 18, players_img[5], TRUE, FALSE); player_angle = 1;
-				}
-				if (JoyPadX == 0)
-				{
-					if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[1], TRUE, FALSE);
-					if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[4], TRUE, FALSE);
-				}
-				if (g_player.speed > 3) {
-					if (player_angle == -1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[2], TRUE, FALSE);
-					if (player_angle == 1)DrawRotaGraph(g_player.x, g_player.y, 2.3f, 0, players_img[3], TRUE, FALSE);
-				}
-			}
-			else {
-				DrawRotaGraph(g_player.x, g_player.y, 0.3f, M_PI / 8 * (++g_player.count / 5), players_img[0], TRUE, FALSE);
-				if (g_player.count >= 80)		g_player.flg = TRUE;
-			}
-			//if (invincibletime % 18 == 17 && g_player.Poisonflg == TRUE) {
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		}
-		else if (g_WaitTime > 40) {
-			g_WaitTime = 0;
-		}
-}
 
 
 int HitBoxPlayer(PLAYER* p, Apple* e) {
@@ -563,6 +479,14 @@ void ResetTimer(void) {
 	g_WaitTime = 0;
 }
 
+int GetAnalogInput(int xy) {
+	if (-1000 <= xy && xy <= 1000) {
+		if (xy == AnalogInput_X)return JoyPadX;
+		if (xy == AnalogInput_Y)return JoyPadY;
+	}
+	return 0;
+}
+
 bool PadInput(int Key) {
 	if (Key > 0 && Key < 9) {
 		if (Key == INPUT_A) {
@@ -611,6 +535,18 @@ int GetImage(int imagename){
 	return 0;
 }
 
+int GetPlayerImage(int player_status) {
+	if (player_status == Image_LeftPlayer)return players_img[0];
+	if (player_status == Image_IDOL_LeftPlayer)return players_img[1];
+	if (player_status == Image_DASH_LeftPlayer)return players_img[2];
+	if (player_status == Image_DASH_RightPlayer)return players_img[3];
+	if (player_status == Image_IDOL_RightPlayer)return players_img[4];
+	if (player_status == Image_RightPlayer)return players_img[5];
+	if (player_status == Image_TOP_Player)return players_img[6];
+	if (player_status == Image_TOP_IDOLPlayer)return players_img[7];
+	if (player_status == Image_TOP_Player2)return players_img[8];
+	return 0;
+}
 int GetFont(int num) {
 	if (num == 1)return MenuFont;
 	if (num == 2)return PauseFont;
@@ -621,4 +557,8 @@ int GetSelect(int xy) {
 	if (xy == Select_X)return SelectX;
 	if (xy == Select_Y)return SelectY;
 	return 0;
+}
+
+bool isPause(void) {
+	return Pauseflg;
 }
