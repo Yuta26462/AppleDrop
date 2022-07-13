@@ -74,6 +74,14 @@ void Ranking::InputRanking(void)
 	}
 	static int selecterX = 0;
 	static int selecterY = 0;
+
+	//カーソルの位置をリセット
+	if (AllReset) {
+		selecterX = 0;
+		selecterY = 0;
+		AllReset = false;
+	}
+
 	if (GetSelect(Select_X) == 1)if (++selecterX > 12)selecterX = 0; else if (selecterY == 0 && selecterX > 9)selecterX = 0;
 	if (GetSelect(Select_X) == -1)if (--selecterX < 0)selecterX = 12; if (selecterY == 0 && selecterX > 9)selecterX = 9;
 	if (GetSelect(Select_Y) == 1)if (++selecterY > 4)selecterY = 0;

@@ -216,7 +216,7 @@ void GameInit(void) {
 	g_player.speed = 0;
 	g_player.Poisonflg = false;
 
-	g_GameState = INPUT_RANKING;//GAME_MAIN;
+	g_GameState = GAME_MAIN;
 }
 
 void DrawHelp(void) {
@@ -340,67 +340,6 @@ int LoadImages() {
 }
 
 
-	if (SetTimer(0) < 30) {
-		//DrawFormatStringToHandle(200, 205, 0xFFFFFF, MenuFont, "%s", buf);
-		for (int display = 10; input_i < display; display--) {
-			DrawFormatStringToHandle(170 + display * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[display - 1]);
-		}
-	}
-	else if (GetTimer() > 60) { ResetTimer(); }
-
-	char input_char = '0';
-	for (int j = 0; j < 5; j++) {
-		for (int i = 1; i < 14; i++) {
-			if (input_char < '{' || input_char < '[') {
-				DrawFormatString(i * 30 + 100, 260 + 30 * j, 0x000000, "%c", input_char++);
-			}
-			if (input_char == ':') { input_char = 'a'; j = 1; i = 0; }
-			if (input_char == '{') { input_char = 'A'; j = 3; i = 0; }
-		}
-	}
-	static int selecterX = 0;
-	static int selecterY = 0;
-	if (SelectX == 1)if (++selecterX > 12)selecterX = 0; else if (selecterY == 0 && selecterX > 9)selecterX = 0;
-	if (SelectX == -1)if (--selecterX < 0)selecterX = 12; if (selecterY == 0 && selecterX > 9)selecterX = 9;
-	if (SelectY == 1)if (++selecterY > 4)selecterY = 0;
-	if (SelectY == -1)if (--selecterY < 0)selecterY = 4;
-	if (PadInput(INPUT_A)) {}
-	if (SelectX == -1 || SelectX == 1 || SelectY == -1 || SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); }
-	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x696969, FALSE);
-
-
-	if (PadInput(INPUT_START)) {
-		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
-		if (input_i <= 0) { errorflg = 1; }
-		else {
-			buf[input_i] = '\0';
-			std::string buf_str = buf;
-			buf_str = buf_str.erase(input_i);
-			strcpyDx(ranking.GetRankingName(RANKING_DATA - 1), buf_str.c_str());
-			//strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf_str.c_str());
-
-			g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
-			ranking.SortRanking();		//ランキング並べ替え
-			ranking.SaveRanking();		//ランキングデータの保存
-			input_i = 0;
-			strcpyDx(buf, default_char);
-			g_GameState = DRAW_RANKING;
-		}
-	}
-	if (PadInput(INPUT_A) && input_i < 9) {
-		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
-		if (selecterY == 0 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = (char)48 + selecterX; }
-		if (selecterY == 1 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)97 + selecterX; }
-		if (selecterY == 2 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)110 + selecterX; }
-		if (selecterY == 3 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)65 + selecterX; }
-		if (selecterY == 4 && selecterX >= 0 && selecterX <= 12) { buf[input_i++] = (char)78 + selecterX; }
-		if (!isalnum(buf[input_i - 1])) { buf[--input_i] = '_'; }
-	}
-	if (PadInput(INPUT_B)) {
-		PlaySoundMem(Key_Remove_SE, DX_PLAYTYPE_BACK);
-		if(input_i > 0)buf[--input_i] = '_'; 
-	}
-}
 
 
 void PlayerControl(bool pauseflg) {
