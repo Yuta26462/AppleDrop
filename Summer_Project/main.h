@@ -6,18 +6,8 @@
 #include "apple.h"
 #include "ranking.h"
 
-#define XINPUT_A								16
-#define XINPUT_B								32
-#define XINPUT_X								64
-#define XINPUT_Y								128
-#define XINPUT_START							2048
-#define XINPUT_BACK								1024
-#define DINPUT_A								32
-#define DINPUT_B								64
-#define DINPUT_X								16
-#define DINPUT_Y								128
-#define DINPUT_START							8192
-#define DINPUT_BACK								4096
+#define Select_X								1
+#define Select_Y								2
 
 #define INPUT_A									1
 #define INPUT_B									2
@@ -26,9 +16,10 @@
 #define INPUT_BACK								7
 #define INPUT_START								8
 
-
+enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
 enum {BGM_Title = 1, BGM_GameMain,BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple,SE_Red_AND_Green_Apple,SE_PoisonApple};
 enum {Image_Title, Image_Stage, Image_Ranking, Image_End };
+enum {Font_Menu = 1, Font_Pause};
 
 //サウンド用変数
 extern int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
@@ -60,6 +51,8 @@ extern bool apple_flg;
 extern int apple_count[4];
 extern int apple_img[4];	//キャラ画像変数
 
+extern int g_GameState;
+
 
 //int g_Item[2];
 
@@ -86,14 +79,15 @@ void DrawGameTitle(void);
 void DrawEnd(void);
 void DrawHelp(void);
 
-void DrawRanking(void);
-void InputRanking(void);
+
 int SetTimer(int num);
 int GetTimer(void);
 void ResetTimer(void);
 bool PadInput(int Key);
 int GetSound(int sound_name);
 int GetImage(int imagename);
+int GetFont(int num);
+int GetSelect(int xy);
 
 //void BackScrool();
 

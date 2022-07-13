@@ -1,5 +1,6 @@
 #pragma once
 #define RANKING_DATA 5
+#include <string>	//ranking‚ÅŽg—p
 extern struct RankingData g_Ranking[RANKING_DATA];
 
 struct	RankingData {
@@ -16,4 +17,6 @@ public:
 	int ReadRanking(void);
 	int  SaveRanking(void);
 	void SortRanking(void);
+	void DrawRanking(void);
+	void InputRanking(void);
 };
