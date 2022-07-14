@@ -2,38 +2,44 @@
 
 #define TIMELIMIT 1800 + 60
 
-LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
-
-Apple apple[APPLE_MAX];
 int g_OldKey, g_NowKey, g_KeyFlg;
-int MenuFont, PauseFont;
-int apple_img[4];
-int players_img[9];
+
 int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
 Ranking ranking;
 PLAYER player;
+Apple apple[APPLE_MAX];
 
-int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;
-int JoyPadX, JoyPadY,PadTimer;
-int SelectX, SelectY;
-int g_WaitTime = 0;
-bool Pauseflg;
-bool PadType = false;
-bool AllReset = false;
+int JoyPadX, JoyPadY,PadTimer;	//アナログスティック傾きXY
+int SelectX, SelectY;			//カーソル移動用XY(アナログスティック)
+int g_WaitTime = 0;				//タイマー関数用変数
+bool Pauseflg;					//ポーズ用フラグ
+bool PadType = false;			//XInputの有効性を検出
+bool AllReset = false;			//タイトル画面とランキング画面の選択位置をリセットする。(2回目対処用)
 
-int LoadImages();
-int LoadSounds();
-void DrawPause();
-void HelpGuide(int num);
-void Sidebar();
+int LoadImages();				//画像データ読み込み
+int LoadSounds();				//音声データ読み込み
+void DrawPause();				//ポーズ用
+void HelpGuide(int num);		//操作説明
+void Sidebar();					//制限時間、スコア、りんごの取得数表示用
 
-int TitleBGM, GameMainBGM, RankingBGM, EndBGM;
-int Selecter_SE, OK_SE, Return_SE, Key_Remove_SE;
-int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
+/********************素材*********************/
+//フォント
+LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
+int MenuFont, PauseFont;	//フォントハンドル
+//画像
+int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;		//画面表示用
+int players_img[9];			//プレイヤー操作画像[左(3),右(3),前(3)]
+int apple_img[4];			//りんごの画像[赤りんご、緑りんご、金のりんご、毒りんご]
+//音声
+int TitleBGM, GameMainBGM, RankingBGM, EndBGM;					//BGM
+int Selecter_SE, OK_SE, Return_SE, Key_Remove_SE;				//操作音SE
+int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;		//りんご用SE
+
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -293,7 +299,7 @@ void GameMain(void) {
 			}
 			else {
 				g_GameState = INPUT_RANKING;
-			}
+			}x
 		}
 
 	}

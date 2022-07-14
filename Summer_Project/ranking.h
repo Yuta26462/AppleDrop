@@ -11,12 +11,12 @@ struct	RankingData {
 
 class Ranking {
 public:
-	int GetRankingNum(int num);
-	char* GetRankingName(int num);
-	long GetRankingScore(int num);
-	int ReadRanking(void);
-	int  SaveRanking(void);
-	void SortRanking(void);
-	void DrawRanking(void);
-	void InputRanking(void);
+	int GetRankingNum(int num);			//ランキングのNo.を取得する。
+	char* GetRankingName(int num);		//ランキングの名前を取得する。
+	long GetRankingScore(int num);		//ランキングのスコアを取得する。
+	int ReadRanking(void);				//ランキングを読み込み。
+	int  SaveRanking(void);				//ランキングの保存。
+	void SortRanking(void);				//ランキングのソート(入れ替え)。
+	void DrawRanking(void);				//ランキングの表示
+	void InputRanking(void);			//ランキングデータ登録。
 };

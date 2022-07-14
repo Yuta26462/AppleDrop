@@ -30,11 +30,11 @@ void Ranking::InputRanking(void)
 	//ランキング画像表示
 	DrawGraph(0, 0, GetImage(Image_Ranking), FALSE);
 
-	static char default_char[10] = "_________";
-	static char buf[10] = "_________";
-	static int input_i = 0;
-	static int errorflg = 0;
-
+	static char default_char[10] = "_________";			//初期表示
+	static char buf[10] = "_________";					//入力値
+	static int input_i = 0;								//入力値(1文字)
+	static int errorflg = 0;							//エラー検出用フラグ
+	
 	// 名前入力指示文字列の描画
 	DrawFormatStringToHandle(120, 100, 0xFFFFFF, GetFont(Font_Menu), "ランキングに登録します");
 	DrawFormatStringToHandle(65, 150, 0xFFFFFF, GetFont(Font_Menu), "名前を英字で入力してください");

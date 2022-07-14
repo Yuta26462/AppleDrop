@@ -40,29 +40,29 @@ void GameInit(void);
 void GameMain(void);
 
 void DrawGameTitle(void);
-void DrawEnd(void);
-void DrawHelp(void);
-int GetGameStatus(void);
-void SetGameStatus(int GameStatus);
+void DrawEnd(void);						//エンド画面を描画する。
+void DrawHelp(void);					//へるぷ画面んを描画する。
+int GetGameStatus(void);				//ゲーム画面を取得する。
+void SetGameStatus(int GameStatus);		//ゲーム画面をセットする。
 
-int SetTimer(int num);
-int GetTimer(void);
-void ResetTimer(void);
-int GetAnalogInput(int xy);
-bool PadInput(int Key);
-int GetSound(int sound_name);
-int GetImage(int imagename);
-int GetFont(int num);
-int GetSelect(int xy);
-bool isPause(void);
-int GetPlayerImage(int player_status);
-int GetAppleImage(int type);
-int GetMainScore(void);
-void SetMainScore(int score);
-bool GetStartFlg(void);
-void SetStartFlg(bool Flg);
-bool GetAllReset(void);
-void SetAllReset(bool Flg);
+int SetTimer(int num);					//タイマーをセットする( num = 0 で前置++でセット)
+int GetTimer(void);						//タイマーを取得する。
+void ResetTimer(void);					//タイマーをリセットする。
+int GetAnalogInput(int xy);				//アナログスティックの入力XYを取得する。
+bool PadInput(int Key);					//コントローラーの入力状態を確認する。
+int GetSound(int sound_name);			//音声データを取得する。
+int GetImage(int imagename);			//画像データを取得する。
+int GetFont(int num);					//フォントデータを取得する。
+int GetSelect(int xy);					//アナログスティックの静的入力XYを取得する。
+bool isPause(void);						//ポーズ状態を取得する。
+int GetPlayerImage(int player_status);	//プレイヤー画像を取得する。
+int GetAppleImage(int type);			//りんごの種類別画像を取得する。
+int GetMainScore(void);					//ゲームメインのスコアを取得する。
+void SetMainScore(int score);			//ゲームメインのスコアをセットする。
+bool GetStartFlg(void);					//
+void SetStartFlg(bool Flg);				//
+bool GetAllReset(void);					//
+void SetAllReset(bool Flg);				//
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
