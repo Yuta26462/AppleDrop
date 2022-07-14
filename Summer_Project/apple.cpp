@@ -11,7 +11,7 @@ int Made_apples = 0;			//生成するリンゴの個数
 
 void Apple::AppleControl(bool pauseflg) {
 	//時間ごとにリンゴ出現パターンを制御する
-	if (timer % 25 == 0 && apple_quantity <= APPLE_MAX)
+	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
 		//最初は4個生成
 		if (StartFlg == true) {
@@ -36,7 +36,7 @@ void Apple::AppleControl(bool pauseflg) {
 			//敵の表示
 			DrawRotaGraph(apple[i].x, apple[i].y, 1.0f, 0, apple[i].img, TRUE, FALSE);
 
-			if (g_player.flg == FALSE)continue;
+			if (player.GetPlayerFlg() == FALSE)continue;
 
 			//まっすぐ下に移動
 			if (!pauseflg) {
@@ -51,7 +51,7 @@ void Apple::AppleControl(bool pauseflg) {
 			}
 
 			//当たり判定
-			if (HitBoxPlayer(&g_player, &apple[i]) == TRUE && !g_player.Poisonflg)
+			if (player.HitBoxPlayer(&apple[i]) == TRUE && (player.GetStatus() == Poison_OFF))
 			{
 				apple[i].flg = false;
 				apple[i].pos = 99;
@@ -60,7 +60,7 @@ void Apple::AppleControl(bool pauseflg) {
 				apple_count[apple[i].type]++;
 				if (apple[i].type == BLACK_APPLE) {
 					PlaySoundMem(PoisonApple_SE, DX_PLAYTYPE_BACK);
-					g_player.Poisonflg = true;
+					player.SetStatus(Poison_ON);
 				}
 				if (apple[i].type == GOLD_APPLE) {
 					PlaySoundMem(GoldenApple_SE, DX_PLAYTYPE_BACK);
@@ -83,7 +83,7 @@ int Apple::CreateApple(int maxapple) {
 			 if (apple[i].flg == false) {
 				 apple[i].flg = true;
 				 apple[i].type = GetAppleType();
-				 apple[i].img = apple_img[apple[i].type];
+				 apple[i].img = GetAppleImage(apple[i].type);
 				 apple[i].speed = GetAppleSpeed(apple[i].type);
 				 apple[i].pos = GetApplePos(apple[i].speed, i);
 				 apple[i].x = apple[i].pos * 70 + 30;/*GetRand(6) * 70 + 30;*///
@@ -229,4 +229,18 @@ int Apple::GetAppleH() {
 
 int Apple::getpos() {
 	return pos;
+}
+
+int Apple::GetAppleCount(int type) {
+	if (type == RED_APPLE) return apple_count[0];
+	if (type == GREEN_APPLE) return apple_count[1];
+	if (type == GOLD_APPLE) return apple_count[2];
+	if (type == BLACK_APPLE) return apple_count[3];
+	return -1;
+}
+
+void Apple::ResetAppleCount(void) {
+	for (int i = 0; i < 4; i++) {
+		apple_count[i] = 0;
+	}
 }

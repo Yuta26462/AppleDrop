@@ -13,11 +13,10 @@ int apple_img[4];
 int players_img[9];
 int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
-int timer;	//制限時間用
+int TimeLimit;	//制限時間用
 bool StartFlg = false;
-struct PLAYER g_player;
 Ranking ranking;
-PLAYER_CLASS player;
+PLAYER player;
 
 int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;
 int JoyPadX, JoyPadY,PadTimer;
@@ -120,7 +119,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		HelpGuide(g_GameState);
 
-
 		ScreenFlip();
 
 		dNextTime += 16.66;
@@ -190,25 +188,14 @@ void GameInit(void) {
 	g_Score = 0;
 	StartFlg = true;
 	AllReset = true;
-	timer = TIMELIMIT;
+	TimeLimit = TIMELIMIT;
 	ResetTimer();
 	Pauseflg = false;
 
-	for (int i = 0; i < 4; i++) {
-		apple_count[i] = 0;
-	}
+	apple->ResetAppleCount();
 
 	AppleFunc.AppleInit();
-
-	//	プレイヤーの初期設定
-	g_player.flg = TRUE;
-	g_player.x = PLAYER_POS_X;
-	g_player.y = PLAYER_POS_Y;
-	g_player.w = PLAYER_WIDTH;
-	g_player.h = PLAYER_HEIGHT;
-	g_player.count = 0;
-	g_player.speed = 0;
-	g_player.Poisonflg = false;
+	player.ResetPlayer();
 
 	g_GameState = GAME_MAIN;
 }
@@ -301,7 +288,7 @@ void GameMain(void) {
 
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
-		if (timer-- == 0) {
+		if (TimeLimit-- == 0) {
 			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 				g_GameState = DRAW_RANKING;
 			}
@@ -334,26 +321,6 @@ int LoadImages() {
 }
 
 
-
-int HitBoxPlayer(PLAYER* p, Apple* e) {
-
-	//	x,y は中心座標とする
-	int sx1 = p->x - (p->w / 2);
-	int sy1 = p->y - (p->h / 2);
-	int sx2 = sx1 + p->w;
-	int sy2 = sy1 + p->h;
-
-	int dx1 = e->GetAppleX() - ((e->GetAppleW() / 2));
-	int dy1 = e->GetAppleY() - (e->GetAppleH() / 2);
-	int dx2 = dx1 + e->GetAppleW();
-	int dy2 = dy1 + e->GetAppleH();
-
-	//	短形が重なっていれば当たり
-	if (sx1 < dx2 && dx1 < sx2 && sy1 < dy2 && dy1 < sy2) {
-		return TRUE;
-	}
-	return FALSE;
-}
 int LoadSounds(void)
 {
 	//BGM
@@ -439,8 +406,8 @@ void HelpGuide(int num) {
 void Sidebar() {
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	DrawFormatString(540, 20, 0xFFFFFF, "残り時間");
-	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", timer / 60);
-	if(timer / 60 <= 10){ DrawFormatStringToHandle(545, 50, 0xff4500, MenuFont, "%2d", timer / 60); }
+	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", TimeLimit / 60);
+	if(TimeLimit / 60 <= 10){ DrawFormatStringToHandle(545, 50, 0xff4500, MenuFont, "%2d", TimeLimit / 60); }
 	DrawFormatString(545, 100, 0xffff99, "SCORE");
 	DrawFormatString(550, 120, 0xffff99, "%4d", g_Score);
 	DrawFormatString(540, 160, 0xFFFFFF, "採った数");
@@ -449,10 +416,10 @@ void Sidebar() {
 	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
 	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
 
-	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple_count[0]);
-	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple_count[1]);
-	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple_count[2]);
-	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple_count[3]);
+	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple->GetAppleCount(RED_APPLE));
+	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple->GetAppleCount(GREEN_APPLE));
+	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple->GetAppleCount(GOLD_APPLE));
+	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple->GetAppleCount(BLACK_APPLE));
 }
 
 int SetTimer(int num) {
@@ -542,6 +509,15 @@ int GetPlayerImage(int player_status) {
 	if (player_status == Image_TOP_Player2)return players_img[8];
 	return 0;
 }
+
+int GetAppleImage(int type) {
+	if (type == Image_RedApple)return apple_img[0];
+	if (type == Image_GreenApple)return apple_img[1];
+	if (type == Image_GoldenApple)return apple_img[2];
+	if (type == Image_PoisonApple)return apple_img[3];
+	return 0;
+}
+
 int GetFont(int num) {
 	if (num == 1)return MenuFont;
 	if (num == 2)return PauseFont;
@@ -557,3 +533,18 @@ int GetSelect(int xy) {
 bool isPause(void) {
 	return Pauseflg;
 }
+
+int GetGameStatus(void) {
+	if (0 <= g_GameState && g_GameState <= 6)return g_GameState;
+	return -1;
+}
+
+void SetGameStatus(int GameStatus) {
+	if (0 <= GameStatus && GameStatus <= 6)g_GameState = GameStatus;
+}
+
+int GetTimeLimit(void) {
+	if (0 <= TimeLimit && TimeLimit <= 99999)return TimeLimit;
+	return -1;
+}
+

@@ -8,9 +8,9 @@ void Ranking::DrawRanking(void) {
 	if (CheckSoundMem(GetSound(BGM_GameMain)) == 1)StopSoundMem(GetSound(BGM_GameMain));
 	if (CheckSoundMem(GetSound(BGM_Ranking)) == 0)PlaySoundMem(GetSound(BGM_Ranking), DX_PLAYTYPE_BACK);
 
-	if (PadInput(INPUT_B)) { PlaySoundMem(GetSound(SE_Return), DX_PLAYTYPE_BACK); g_GameState = DRAW_GAMETITLE; }
+	if (PadInput(INPUT_B)) { PlaySoundMem(GetSound(SE_Return), DX_PLAYTYPE_BACK); SetGameStatus(DRAW_GAMETITLE); }
 
-	DrawGraph(0, 0, g_RankingImage, FALSE);
+	DrawGraph(0, 0, GetImage(Image_Ranking), FALSE);
 
 	for (int i = 0; i < RANKING_DATA; i++) {
 		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff, GetFont(Font_Menu), "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
@@ -28,7 +28,7 @@ void Ranking::InputRanking(void)
 	if (CheckSoundMem(GetSound(BGM_GameMain)) == 1)StopSoundMem(GetSound(BGM_GameMain));
 	if (CheckSoundMem(GetSound(BGM_Ranking)) == 0)PlaySoundMem(GetSound(BGM_Ranking), DX_PLAYTYPE_BACK);
 	//ランキング画像表示
-	DrawGraph(0, 0, g_RankingImage, FALSE);
+	DrawGraph(0, 0, GetImage(Image_Ranking), FALSE);
 
 	static char default_char[10] = "_________";
 	static char buf[10] = "_________";
@@ -46,10 +46,10 @@ void Ranking::InputRanking(void)
 	DrawFormatStringToHandle(120, 200, 0xFFFFFF, GetFont(Font_Menu), "> ");
 	DrawBox(190, 200, 425, 250, 0x000055, TRUE);
 
-	if (errorflg == 1 && (60 > timer++)) {
+	if (errorflg == 1 && (60 > SetTimer(0))) {
 		DrawFormatStringToHandle(120, 220, 0xff1493, GetFont(Font_Menu), "名前を入力してください");
 	}
-	else if (timer > 60) { timer = 0; errorflg = 0; }
+	else if (GetTimer() > 60) { ResetTimer(); errorflg = 0; }
 
 	for (int i = 0; input_i > i; i++) { DrawFormatStringToHandle(195 + i * 25, 205, 0xFFFFFF, GetFont(Font_Menu), "%c", buf[i]); }
 	/*if(display > input_i){ DrawFormatStringToHandle(200 + input_i * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[input_i - 1]); }*/
@@ -106,7 +106,7 @@ void Ranking::InputRanking(void)
 			ranking.SaveRanking();		//ランキングデータの保存
 			input_i = 0;
 			strcpyDx(buf, default_char);
-			g_GameState = DRAW_RANKING;
+			SetGameStatus(DRAW_RANKING);
 		}
 	}
 	if (PadInput(INPUT_A) && input_i < 9) {

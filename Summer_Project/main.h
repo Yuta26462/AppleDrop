@@ -19,11 +19,12 @@
 #define INPUT_BACK								7
 #define INPUT_START								8
 
-enum { DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
-enum {BGM_Title = 1, BGM_GameMain,BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple,SE_Red_AND_Green_Apple,SE_PoisonApple};
-enum {Image_Title, Image_Stage, Image_Ranking, Image_End};
-enum {Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
-enum {Font_Menu = 1, Font_Pause};
+enum GAME_STATUS{ DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
+enum BGM{BGM_Title = 1, BGM_GameMain,BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple,SE_Red_AND_Green_Apple,SE_PoisonApple};
+enum IMAGE{Image_Title, Image_Stage, Image_Ranking, Image_End};
+enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
+enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
+enum FONT{Font_Menu = 1, Font_Pause};
 
 //サウンド用変数
 extern int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
@@ -37,26 +38,17 @@ public:
 
 extern Menu menu;
 extern Ranking ranking;
-extern PLAYER_CLASS player;
+extern PLAYER player;
 
 
-extern int g_OldKey, g_NowKey, g_KeyFlg;
-extern int g_GameState;
 extern bool StartFlg;
-extern int timer;
 extern bool AllReset;
 
 
 extern int g_Score;
-extern int g_RankingImage;
 
 extern Apple apple[APPLE_MAX];
 extern Apple AppleFunc;
-extern bool apple_flg;
-extern int apple_count[4];
-extern int apple_img[4];	//キャラ画像変数
-
-extern int g_GameState;
 
 
 //int g_Item[2];
@@ -76,14 +68,15 @@ extern int g_GameState;
 //int bikec = 0;
 
 
-
+int GetTimeLimit(void);
 void GameInit(void);
 void GameMain(void);
 
 void DrawGameTitle(void);
 void DrawEnd(void);
 void DrawHelp(void);
-
+int GetGameStatus(void);
+void SetGameStatus(int GameStatus);
 
 int SetTimer(int num);
 int GetTimer(void);
@@ -96,6 +89,7 @@ int GetFont(int num);
 int GetSelect(int xy);
 bool isPause(void);
 int GetPlayerImage(int player_status);
+int GetAppleImage(int type);
 
 //void BackScrool();
 
@@ -118,17 +112,6 @@ const int ENEMY_MAX = 8;
 const int ITEM_MAX = 3;
 
 
-struct PLAYER {
-	int flg;
-	int x, y;
-	int w, h;
-	double angle;
-	int count;
-	int speed;
-	bool Poisonflg;
-};
-extern struct PLAYER g_player;
-
 //struct ENEMY {
 //	int flg;
 //	int type;
@@ -146,7 +129,5 @@ extern struct PLAYER g_player;
 //struct ENEMY g_item[ITEM_MAX];
 //struct ENEMY g_item00 = { TRUE,0,0,0,-50,50,50,0,1 };
 
-
-int HitBoxPlayer(PLAYER* p, Apple* e);
 void ItemControl();		//	アイテム処理
 int CreateItem();		//	アイテム生成処理
