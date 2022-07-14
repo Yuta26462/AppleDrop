@@ -6,7 +6,6 @@ LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 
 
 Apple apple[APPLE_MAX];
-Apple AppleFunc;
 int g_OldKey, g_NowKey, g_KeyFlg;
 int MenuFont, PauseFont;
 int apple_img[4];
@@ -194,7 +193,7 @@ void GameInit(void) {
 
 	apple->ResetAppleCount();
 
-	AppleFunc.AppleInit();
+	apple->AppleInit();
 	player.ResetPlayer();
 
 	g_GameState = GAME_MAIN;
@@ -266,7 +265,7 @@ void GameMain(void) {
 	
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	AppleFunc.AppleControl(Pauseflg);
+	apple->AppleControl(Pauseflg);
 	player.PlayerControl(Pauseflg);
 	Sidebar();
 
@@ -546,5 +545,23 @@ void SetGameStatus(int GameStatus) {
 int GetTimeLimit(void) {
 	if (0 <= TimeLimit && TimeLimit <= 99999)return TimeLimit;
 	return -1;
+}
+
+int GetMainScore(void) {
+	if (-99999 <= g_Score && g_Score <= 99999)return g_Score;
+	return -1;
+}
+
+void SetMainScore(int score) {
+	if (-99999 <= score && score <= 99999)g_Score = score;
+}
+
+bool GetStartFlg(void) {
+	if (StartFlg == (true || false))return StartFlg;
+		return false;
+}
+void SetStartFlg(bool Flg) {
+	if (Flg == true) StartFlg = true;
+	if (Flg == false) StartFlg = false;
 }
 

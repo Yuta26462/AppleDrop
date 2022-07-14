@@ -7,6 +7,7 @@
 #include "ranking.h"
 #include "player.h"
 
+
 #define Select_X								1
 #define Select_Y								2
 #define AnalogInput_X								1
@@ -26,28 +27,14 @@ enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer
 enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
 enum FONT{Font_Menu = 1, Font_Pause};
 
-//サウンド用変数
 
-class Menu {
-public:
-	void menu(void);
-	void GameModeChange(int num);
-	int LoadImages(void);
-};
-
-extern Menu menu;
 extern Ranking ranking;
 extern PLAYER player;
 
-
-extern bool StartFlg;
 extern bool AllReset;
 
 
-extern int g_Score;
-
 extern Apple apple[APPLE_MAX];
-extern Apple AppleFunc;
 
 
 int GetTimeLimit(void);
@@ -72,7 +59,10 @@ int GetSelect(int xy);
 bool isPause(void);
 int GetPlayerImage(int player_status);
 int GetAppleImage(int type);
-
+int GetMainScore(void);
+void SetMainScore(int score);
+bool GetStartFlg(void);
+void SetStartFlg(bool Flg);
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;

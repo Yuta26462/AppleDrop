@@ -14,9 +14,9 @@ void Apple::AppleControl(bool pauseflg) {
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
 		//Å‰‚Í4ŒÂ¶¬
-		if (StartFlg == true) {
+		if (GetStartFlg() == true) {
 			CreateApple(APPLE_START);
-			StartFlg = false;
+			SetStartFlg(false);
 		}
 		else {
 			Made_apples = (APPLE_MAX - apple_quantity) / 2;
@@ -56,7 +56,7 @@ void Apple::AppleControl(bool pauseflg) {
 				apple[i].flg = false;
 				apple[i].pos = 99;
 				apple_quantity--;
-				g_Score += apple[i].score;
+				SetMainScore(GetMainScore() + apple[i].score);
 				apple_count[apple[i].type]++;
 				if (apple[i].type == BLACK_APPLE) {
 					PlaySoundMem(GetSound(SE_PoisonApple), DX_PLAYTYPE_BACK);

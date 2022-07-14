@@ -101,7 +101,7 @@ void Ranking::InputRanking(void)
 			/*strcpyDx(ranking.GetRankingName(RANKING_DATA - 1), buf_str.c_str());*/
 			strcpyDx(g_Ranking[RANKING_DATA - 1].name, buf_str.c_str());
 
-			g_Ranking[RANKING_DATA - 1].score = g_Score;	// ランキングデータの１０番目にスコアを登録
+			g_Ranking[RANKING_DATA - 1].score = GetMainScore();	// ランキングデータの１０番目にスコアを登録
 			ranking.SortRanking();		//ランキング並べ替え
 			ranking.SaveRanking();		//ランキングデータの保存
 			input_i = 0;
