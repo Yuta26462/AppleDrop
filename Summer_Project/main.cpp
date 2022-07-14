@@ -191,8 +191,6 @@ void GameInit(void) {
 	ResetTimer();
 	Pauseflg = false;
 
-	apple->ResetAppleCount();
-
 	apple->AppleInit();
 	player.ResetPlayer();
 

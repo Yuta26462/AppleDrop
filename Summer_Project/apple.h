@@ -44,7 +44,6 @@ public:
 	int GetAppleH();				//ƒŠƒ“ƒS‚‚³æ“¾ŠÖ”
 	int getpos();
 	int GetAppleCount(int type);
-	void ResetAppleCount(void);
 };
 
 

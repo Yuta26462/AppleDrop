@@ -111,6 +111,9 @@ void Apple::AppleInit() {
 			apple[i].pos = 99;
 		}
 	}
+	for (int i = 0; i < 4; i++) {
+		apple_count[i] = 0;
+	}
 }
 
 int GetAppleType() {
@@ -248,10 +251,4 @@ int Apple::GetAppleCount(int type) {
 	if (type == GOLD_APPLE) return apple_count[2];
 	if (type == BLACK_APPLE) return apple_count[3];
 	return -1;
-}
-
-void Apple::ResetAppleCount(void) {
-	for (int i = 0; i < 4; i++) {
-		apple_count[i] = 0;
-	}
 }
