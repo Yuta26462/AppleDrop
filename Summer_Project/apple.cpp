@@ -1,15 +1,17 @@
 #include "main.h"
 
 
-int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
+
 int apple_count[4];				//リンゴを取得した個数
-bool Over_flg = false;			//リンゴが重なっているかのフラグ
+
 int apple_quantity = 0;			//描画されているリンゴの個数
-int Made_apples = 0;			//生成するリンゴの個数
 
 
 
-void Apple::AppleControl(bool pauseflg) {
+
+void Apple::AppleControl() {
+	int Made_apples = 0;			//生成するリンゴの個数
+
 	//時間ごとにリンゴ出現パターンを制御する
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
@@ -39,7 +41,7 @@ void Apple::AppleControl(bool pauseflg) {
 			if (player.GetPlayerFlg() == FALSE)continue;
 
 			//まっすぐ下に移動
-			if (!pauseflg) {
+			if (!isPause()) {
 				apple[i].y += apple[i].speed;
 			}
 
@@ -74,33 +76,29 @@ void Apple::AppleControl(bool pauseflg) {
 
 }
 
-int Apple::CreateApple(int maxapple) {
-	
-	int apple_count = 0;
-	apple_count = apple_quantity;
+void Apple::CreateApple(int maxapple) {
+	int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
+	int apple_firstcnt = 0;
+	apple_firstcnt = apple_quantity;
+
 	 for (int i = 0; i < APPLE_MAX; i++) {
-		 if ((apple_quantity - apple_count) < maxapple) {
+		 if ((apple_quantity - apple_firstcnt) < maxapple) {
 			 if (apple[i].flg == false) {
 				 apple[i].flg = true;
 				 apple[i].type = GetAppleType();
 				 apple[i].img = GetAppleImage(apple[i].type);
 				 apple[i].speed = GetAppleSpeed(apple[i].type);
 				 apple[i].pos = GetApplePos(apple[i].speed, i);
-				 apple[i].x = apple[i].pos * 70 + 30;/*GetRand(6) * 70 + 30;*///
+				 apple[i].x = apple[i].pos * 70 + 30;
 				 apple[i].y = -50;
 				 apple[i].w = 50;
 				 apple[i].h = 50;
 				 apple[i].score = apple_score[apple[i].type];
 
 					 apple_quantity++;
-				 //	成功
-				 return TRUE;
 			 }
 		 }
 	}
-
-	//	失敗
-	return FALSE;
 }
 
 void Apple::AppleInit() {
@@ -130,7 +128,7 @@ int GetAppleType() {
 		return BLACK_APPLE;
 	}
 	else {
-		return NULL;
+		return -1;
 	}
 }
 
@@ -157,7 +155,8 @@ int GetAppleSpeed(int AppleType) {
 //リンゴの出現場所を決める
 int Apple::GetApplePos(int apple_speed, int num) {
 	int apple_pos = 0;
-	bool checkflg = false;
+	bool Over_flg = false;			//リンゴが重なっているかのフラグ
+	bool checkflg = false;			//重なったか調べたかのフラグ
 	int old_position[7] = { 99,99,99,99,99,99,99 };
 	int repeat_count = 0;
 	int j;
@@ -187,23 +186,30 @@ int Apple::GetApplePos(int apple_speed, int num) {
 		}
 		//位置が同じ既存のリンゴを調べる
 		if (i != num && apple_pos == apple[i].pos) {
-			CheckAppleSpeed(apple[num].speed, apple[i].speed);	
+			Over_flg = CheckAppleSpeed(apple[num].speed, apple[i].speed);	
 			if (!checkflg) {
 				checkflg = true;
 			}
 		}
 	}		
-				return apple_pos;
+	if (apple_pos < 7) {
+		return apple_pos;
+	}
+	else {
+		return -1;
+	}
+	
 	
 }
 
-void Apple::CheckAppleSpeed(int speed1, int speed2) {
+bool Apple::CheckAppleSpeed(int speed1, int speed2) {
 	if (speed1 > speed2) {
-		Over_flg = true;		//自身の速度が多い場合:重なる
+		return true;		//自身の速度が多い場合:重なる
 	}
 	else {
-		Over_flg = false;		//自身の速度が遅いか同じ場合:重ならない
+		return false;		//自身の速度が遅いか同じ場合:重ならない
 	}
+	return -1;
 }
 
 

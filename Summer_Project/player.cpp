@@ -6,7 +6,7 @@ const int PLAYER_POS_Y = SCREEN_HEIGHT - 50;
 const int PLAYER_WIDTH = 58;
 const int PLAYER_HEIGHT = 62;
 
-void PLAYER::PlayerControl(bool pauseflg) {
+void PLAYER::PlayerControl() {
 	static int checkflg = 0;
 	static int player_angle = 0;
 	static int old_player_angle = 0;
