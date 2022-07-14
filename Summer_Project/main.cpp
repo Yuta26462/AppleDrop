@@ -297,7 +297,7 @@ void GameMain(void) {
 			}
 			else {
 				g_GameState = INPUT_RANKING;
-			}x
+			}
 		}
 
 	}
