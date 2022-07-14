@@ -16,10 +16,9 @@ void Apple::AppleControl() {
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
 		//Å‰‚Í4ŒÂ¶¬
-		if (StartFlg == true) {
+		if (GetStartFlg() == true) {
 			CreateApple(APPLE_START);
-			
-			StartFlg = false;
+			SetStartFlg(false);
 		}
 		else {
 			Made_apples = (APPLE_MAX - apple_quantity) / 2;
@@ -59,17 +58,17 @@ void Apple::AppleControl() {
 				apple[i].flg = false;
 				apple[i].pos = 99;
 				apple_quantity--;
-				g_Score += apple[i].score;
+				SetMainScore(GetMainScore() + apple[i].score);
 				apple_count[apple[i].type]++;
 				if (apple[i].type == BLACK_APPLE) {
-					PlaySoundMem(PoisonApple_SE, DX_PLAYTYPE_BACK);
+					PlaySoundMem(GetSound(SE_PoisonApple), DX_PLAYTYPE_BACK);
 					player.SetStatus(Poison_ON);
 				}
 				if (apple[i].type == GOLD_APPLE) {
-					PlaySoundMem(GoldenApple_SE, DX_PLAYTYPE_BACK);
+					PlaySoundMem(GetSound(SE_GoldenApple), DX_PLAYTYPE_BACK);
 				}
 				if (apple[i].type == RED_APPLE || GREEN_APPLE) {
-					PlaySoundMem(Red_AND_Green_Apple_SE, DX_PLAYTYPE_BACK);
+					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
 				}
 			}
 		}

@@ -7,6 +7,7 @@
 #include "ranking.h"
 #include "player.h"
 
+
 #define Select_X								1
 #define Select_Y								2
 #define AnalogInput_X								1
@@ -26,46 +27,14 @@ enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer
 enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
 enum FONT{Font_Menu = 1, Font_Pause};
 
-//サウンド用変数
-extern int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
 
-class Menu {
-public:
-	void menu(void);
-	void GameModeChange(int num);
-	int LoadImages(void);
-};
-
-extern Menu menu;
 extern Ranking ranking;
 extern PLAYER player;
 
-
-extern bool StartFlg;
 extern bool AllReset;
 
 
-extern int g_Score;
-
 extern Apple apple[APPLE_MAX];
-extern Apple AppleFunc;
-
-
-//int g_Item[2];
-
-
-//int g_Mileage;	//走行距離y
-//int g_EnemyCount1, g_EnemyCount2, g_EnemyCount3;
-//int g_EnemyCount4; //	チャレンジ5
-
-
-
-
-
-
-//int spflag;		//チャレンジ4用フラグ
-//int g_Bike[1];		//チャレンジ5	バイク画像変数
-//int bikec = 0;
 
 
 int GetTimeLimit(void);
@@ -90,19 +59,10 @@ int GetSelect(int xy);
 bool isPause(void);
 int GetPlayerImage(int player_status);
 int GetAppleImage(int type);
-
-//void BackScrool();
-
-void PlayerControl(bool pauseflg);
-
+int GetMainScore(void);
+void SetMainScore(int score);
+bool GetStartFlg(void);
+void SetStartFlg(bool Flg);
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-
-
-
-
-
-
-void ItemControl();		//	アイテム処理
-int CreateItem();		//	アイテム生成処理
