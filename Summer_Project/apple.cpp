@@ -193,7 +193,7 @@ int Apple::GetApplePos(int apple_speed, int num) {
 		//ˆÊ’u‚ª“¯‚¶Šù‘¶‚ÌƒŠƒ“ƒS‚ð’²‚×‚é
 		if (i != num && apple_pos == apple[i].pos) {
 			Over_flg = CheckAppleSpeed(apple[num].speed, apple[i].speed);
-			if (apple[num].type == apple[i].type == BLACK_APPLE)Over_flg = TRUE;
+			if ((apple[num].type == apple[i].type) && BLACK_APPLE)Over_flg = TRUE;
 			if (Over_flg < 0)break;
 			if (!checkflg) {
 				checkflg = true;
