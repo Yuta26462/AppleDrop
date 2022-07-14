@@ -19,7 +19,7 @@ class PLAYER {
 	int PadSpeedTimer;
 	int player_angle;
 public:
-	void PlayerControl(bool pauseflg);
+	void PlayerControl();
 	void ResetPlayer(void);
 	int GetPlayerTransition(int xyhy);
 	void SetStatus(int status);
