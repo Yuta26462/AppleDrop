@@ -265,8 +265,8 @@ void GameMain(void) {
 	
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	apple->AppleControl(Pauseflg);
-	player.PlayerControl(Pauseflg);
+	apple->AppleControl();
+	player.PlayerControl();
 	Sidebar();
 
 	if (PadInput(INPUT_START)) {

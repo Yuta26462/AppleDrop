@@ -106,6 +106,7 @@ void Ranking::InputRanking(void)
 			ranking.SaveRanking();		//ランキングデータの保存
 			input_i = 0;
 			strcpyDx(buf, default_char);
+			AllReset = TRUE;
 			SetGameStatus(DRAW_RANKING);
 		}
 	}

@@ -23,7 +23,7 @@ void Apple::AppleControl() {
 		else {
 			Made_apples = (APPLE_MAX - apple_quantity) / 2;
 			//êÿÇËè„Ç∞
-			if (Made_apples % 2) {
+			if ((APPLE_MAX - apple_quantity) % 2) {
 				Made_apples++;
 			}
 			CreateApple(Made_apples);
@@ -89,6 +89,7 @@ void Apple::CreateApple(int maxapple) {
 				 apple[i].img = GetAppleImage(apple[i].type);
 				 apple[i].speed = GetAppleSpeed(apple[i].type);
 				 apple[i].pos = GetApplePos(apple[i].speed, i);
+				 if (apple[i].pos == -1)break;
 				 apple[i].x = apple[i].pos * 70 + 30;
 				 apple[i].y = -50;
 				 apple[i].w = 50;
