@@ -1,6 +1,10 @@
 #include "player.h"
 #include "main.h"
 
+const int PLAYER_POS_X = SCREEN_WIDTH / 2;
+const int PLAYER_POS_Y = SCREEN_HEIGHT - 50;
+const int PLAYER_WIDTH = 58;
+const int PLAYER_HEIGHT = 62;
 
 void PLAYER::PlayerControl(bool pauseflg) {
 	static int checkflg = 0;

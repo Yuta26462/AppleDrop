@@ -99,35 +99,10 @@ void PlayerControl(bool pauseflg);
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-const int PLAYER_POS_X = SCREEN_WIDTH / 2;
-const int PLAYER_POS_Y = SCREEN_HEIGHT - 50;
-const int PLAYER_WIDTH = 58;
-const int PLAYER_HEIGHT = 62;
-const int PLAYER_SPEED = 5;
-const int PLAYER_HP = 1000;
-const int PLAYER_FUEL = 20000;
-const int PLAYER_BARRIER = 3;
-const int PLAYER_BARRIERUP = 10;
-const int ENEMY_MAX = 8;
-const int ITEM_MAX = 3;
 
 
-//struct ENEMY {
-//	int flg;
-//	int type;
-//	int img;
-//	int x, y, w, h;
-//	int speed;
-//	int point;
-//};
-//struct  ENEMY g_enemy[ENEMY_MAX];
-//struct ENEMY g_enemy00 = { TRUE,0,0,0,-50,63,120,0,1 };
-//struct ENEMY g_enemyCn = { TRUE,4,0,0,-50,18,18,0,1 };
-//
-//
-//struct  ENEMY g_enemy2[ENEMY_MAX];//	チャレンジ5
-//struct ENEMY g_item[ITEM_MAX];
-//struct ENEMY g_item00 = { TRUE,0,0,0,-50,50,50,0,1 };
+
+
 
 void ItemControl();		//	アイテム処理
 int CreateItem();		//	アイテム生成処理
