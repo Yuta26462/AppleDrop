@@ -170,28 +170,31 @@
     <Image Include="images\apple.png" />
     <Image Include="images\background.png" />
     <Image Include="images\End.png" />
-    <Image Include="images\pause.png" />
+    <Image Include="images\End2.png" />
     <Image Include="images\player.png" />
-    <Image Include="images\player2.png" />
     <Image Include="images\Ranking.png" />
     <Image Include="images\Title.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Sound\BGM\Small_Happy.wav" />
-    <Media Include="Sound\BGM\Walking_Ameba.wav" />
-    <Media Include="Sound\BGM\どこまでもワンダーランド.wav" />
-    <Media Include="Sound\BGM\ねこワールド.wav" />
-    <Media Include="Sound\BGM\ほゎ.wav" />
-    <Media Include="Sound\BGM\ミニマルなマーチ.wav" />
-    <Media Include="Sound\SE\click.wav" />
-    <Media Include="Sound\SE\help.wav" />
-    <Media Include="Sound\SE\select.wav" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\jkmarugo\JK-Maru-Gothic-M.otf" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dat\rankingdata.txt" />
+    <Text Include="Sound\BGM\LICENCE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\BGM\End.wav" />
+    <Media Include="Sound\BGM\GameMain.wav" />
+    <Media Include="Sound\BGM\Ranking.wav" />
+    <Media Include="Sound\BGM\Title.wav" />
+    <Media Include="Sound\SE\count.wav" />
+    <Media Include="Sound\SE\gold_apple.wav" />
+    <Media Include="Sound\SE\Key_Remove.wav" />
+    <Media Include="Sound\SE\OK.wav" />
+    <Media Include="Sound\SE\Poison_Apple.wav" />
+    <Media Include="Sound\SE\Red&amp;Green_Apple.wav" />
+    <Media Include="Sound\SE\Return.wav" />
+    <Media Include="Sound\SE\Selecter.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
