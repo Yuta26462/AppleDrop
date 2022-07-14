@@ -31,8 +31,6 @@ enum FONT{Font_Menu = 1, Font_Pause};
 extern Ranking ranking;
 extern PLAYER player;
 
-extern bool AllReset;
-
 
 extern Apple apple[APPLE_MAX];
 
@@ -63,6 +61,8 @@ int GetMainScore(void);
 void SetMainScore(int score);
 bool GetStartFlg(void);
 void SetStartFlg(bool Flg);
+bool GetAllReset(void);
+void SetAllReset(bool Flg);
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;

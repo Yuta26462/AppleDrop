@@ -76,10 +76,10 @@ void Ranking::InputRanking(void)
 	static int selecterY = 0;
 
 	//カーソルの位置をリセット
-	if (AllReset) {
+	if (GetAllReset()) {
 		selecterX = 0;
 		selecterY = 0;
-		AllReset = false;
+		SetAllReset(false);
 	}
 
 	if (GetSelect(Select_X) == 1)if (++selecterX > 12)selecterX = 0; else if (selecterY == 0 && selecterX > 9)selecterX = 0;

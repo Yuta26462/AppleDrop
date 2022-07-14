@@ -135,9 +135,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 
-	if (AllReset) {
+	if (GetAllReset()) {
 		MenuNo = 0;
-		AllReset = false;
+		SetAllReset(false);
 	}
 
 	if (CheckSoundMem(GetSound(BGM_Ranking)) == 1)StopSoundMem(GetSound(BGM_Ranking));
@@ -565,3 +565,12 @@ void SetStartFlg(bool Flg) {
 	if (Flg == false) StartFlg = false;
 }
 
+bool GetAllReset(void) {
+	if (StartFlg == (true || false))return StartFlg;
+	return false;
+}
+
+void SetAllReset(bool Flg) {
+	if (Flg == true) StartFlg = true;
+	if (Flg == false) StartFlg = false;
+}
