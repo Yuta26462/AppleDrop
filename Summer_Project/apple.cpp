@@ -84,18 +84,19 @@ void Apple::AppleControl() {
 
 void Apple::CreateApple(int maxapple) {
 	int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
-	int apple_firstcnt = 0;
+	int made_apples = 0;
 	//apple_firstcnt = apple_quantity;
 
 	 for (int i = 0; i < APPLE_MAX; i++) {
-		 if ((apple_firstcnt) < maxapple) {
+		 if (made_apples < maxapple) {
 			 if (apple[i].flg == false) {
+				 made_apples++;
 				 apple[i].flg = true;
 				 apple[i].type = GetAppleType();
 				 apple[i].img = GetAppleImage(apple[i].type);
 				 apple[i].speed = GetAppleSpeed(apple[i].type);
 				 apple[i].y = -50;
-				 apple[i].pos = GetApplePos(apple[i].speed, i);
+				 apple[i].pos = GetApplePos(apple[i].speed, i,&made_apples);
 				 if (apple[i].pos == -1)break;
 				 apple[i].x = apple[i].pos * 70 + 30;
 				 
@@ -103,7 +104,7 @@ void Apple::CreateApple(int maxapple) {
 				 apple[i].h = 50;
 				 apple[i].score = apple_score[apple[i].type];
 
-				 apple_firstcnt++;
+				 
 				 //apple_quantity++;
 			 }
 		 }
@@ -165,7 +166,7 @@ int GetAppleSpeed(int AppleType) {
 }
 
 //リンゴの出現場所を決める
-int Apple::GetApplePos(int apple_speed, int num) {
+int Apple::GetApplePos(int apple_speed, int num ,int* made_apples) {
 	int apple_pos = 0;
 	int Over_flg = FALSE;			//リンゴが重なっているかのフラグ
 	bool checkflg = false;			//重なったか調べたかのフラグ
@@ -176,13 +177,15 @@ int Apple::GetApplePos(int apple_speed, int num) {
 	apple_pos = GetRand(6);
 	for (int i = 0; i < APPLE_MAX; i++) {
 		
+		if (apple[num].type == BLACK_APPLE && apple[i].type == BLACK_APPLE)apple[num].y -= 50;
+
 		//位置が同じ既存のリンゴを調べる
 		if (i != num && apple_pos == apple[i].pos && apple[num].speed > apple[i].speed) {
 			Over_flg = TRUE;
-			if (apple[num].type == BLACK_APPLE && apple[i].type == BLACK_APPLE)apple[num].y -= 100;
 			if (Over_flg < 0)break;
 		}if (Over_flg) {
 			apple[num].flg = false;
+			made_apples--;
 			break;
 		}
 	}		

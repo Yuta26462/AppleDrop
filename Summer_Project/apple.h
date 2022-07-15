@@ -35,7 +35,7 @@ public:
 	void CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
 	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 
-	int GetApplePos(int apple_speed,int num);
+	int GetApplePos(int apple_speed,int num,int *made_apples);
 	int CheckAppleSpeed(int speed1, int speed2);
 	bool* GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
 	int GetAppleX();				//ƒŠƒ“ƒSxÀ•Wæ“¾ŠÖ”
