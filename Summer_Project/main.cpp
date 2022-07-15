@@ -9,13 +9,14 @@ int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
+bool finishFlg = false;
 Ranking ranking;
 PLAYER player;
 Apple apple[11];
 
 int JoyPadX, JoyPadY,PadTimer;	//アナログスティック傾きXY
 int SelectX, SelectY;			//カーソル移動用XY(アナログスティック)
-int g_WaitTime = 0;				//タイマー関数用変数
+int g_WaitTime[3];				//タイマー関数用変数
 bool Pauseflg;					//ポーズ用フラグ
 bool PadType = false;			//XInputの有効性を検出
 bool AllReset = false;			//タイトル画面とランキング画面の選択位置をリセットする。(2回目対処用)
@@ -37,6 +38,7 @@ int apple_img[4];			//りんごの画像[赤りんご、緑りんご、金のりんご、毒りんご]
 //音声
 int TitleBGM, GameMainBGM, RankingBGM, EndBGM;					//BGM
 int Selecter_SE, OK_SE, Return_SE, Key_Remove_SE;				//操作音SE
+int Count_SE, Whistle_SE;										//効果音SE
 int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;		//りんご用SE
 
 
@@ -270,8 +272,10 @@ void GameMain(void) {
 	
 
 	DrawGraph(0, 0, g_StageImage, FALSE);
-	apple->AppleControl();
-	player.PlayerControl();
+	if (!finishFlg) {
+		apple->AppleControl();
+		player.PlayerControl();
+	}
 	Sidebar();
 
 	for (int i = 0; i < 11; i++) {
@@ -281,7 +285,7 @@ void GameMain(void) {
 	}
 
 	if (PadInput(INPUT_START)) {
-		if (Pauseflg == false) {
+		if (Pauseflg == false && 1<= TimeLimit) {
 			PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 			Pauseflg = true;
 		}
@@ -298,16 +302,15 @@ void GameMain(void) {
 
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
-		if (TimeLimit-- == 0) {
-			if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
-				g_GameState = DRAW_RANKING;
-			}
-			else {
-				g_GameState = INPUT_RANKING;
-			}
+		if (TimeLimit >= 10 && SetTimer(0) > 60) {
+			PlaySoundMem(Count_SE, DX_PLAYTYPE_BACK);
+			ResetTimer();
 		}
 
+		if (1 <= TimeLimit) TimeLimit--;
+		if (1 >= TimeLimit)DrawFinish();
 	}
+
 	else {
 		DrawPause();
 		StopSoundMem(GameMainBGM);
@@ -346,6 +349,8 @@ int LoadSounds(void)
 	if ((GoldenApple_SE = LoadSoundMem("Sound/SE/gold_apple.wav")) == -1) return -1;
 	if ((PoisonApple_SE = LoadSoundMem("Sound/SE/Poison_Apple.wav")) == -1) return -1;
 	if ((Red_AND_Green_Apple_SE = LoadSoundMem("Sound/SE/Red&Green_Apple.wav")) == -1) return -1;
+	if ((Count_SE = LoadSoundMem("Sound/SE/Count.wav")) == -1) return -1;
+	if ((Whistle_SE = LoadSoundMem("Sound/SE/Whistle.wav")) == -1) return -1;
 	return 0;
 }
 
@@ -355,6 +360,29 @@ void DrawPause() {
 	//DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "ぽ　ー　ず");
 	DrawStringToHandle(130, 200, "ぽ　ー　ず", 0xffffff, PauseFont, 0xff0f00);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void DrawFinish(void){
+	if (TimeLimit <= 1 && SetTimer2(0) < 181) {
+		finishFlg = true;
+		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 50);
+		DrawExtendGraph(0, 0, 640, 480, GetImage(Image_Title), FALSE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
+		PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+	}
+	if (TimeLimit <= 1 && GetTimer2() > 180) {
+		ResetTimer2();
+		finishFlg = false;
+		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
+			SetGameStatus(DRAW_RANKING);
+		}
+		else {
+			SetGameStatus(INPUT_RANKING);
+		}
+	}
 }
 
 void HelpGuide(int num) {
@@ -435,21 +463,40 @@ void Sidebar() {
 
 int SetTimer(int num) {
 	if (num == 0) {
-		++g_WaitTime;
-		return g_WaitTime;
+		++g_WaitTime[0];
+		return g_WaitTime[0];
 	}
 	else {
-		g_WaitTime = num;
+		g_WaitTime[0] = num;
 	}
-	return g_WaitTime;
+	return g_WaitTime[0];
+}
+
+int SetTimer2(int num) {
+	if (num == 0) {
+		++g_WaitTime[1];
+		return g_WaitTime[1];
+	}
+	else {
+		g_WaitTime[1] = num;
+	}
+	return g_WaitTime[1];
 }
 
 int GetTimer(void) {
-	return g_WaitTime;
+	return g_WaitTime[0];
 }
 
 void ResetTimer(void) {
-	g_WaitTime = 0;
+	g_WaitTime[0] = 0;
+}
+
+int GetTimer2(void) {
+	return g_WaitTime[1];
+}
+
+void ResetTimer2(void) {
+	g_WaitTime[1] = 0;
 }
 
 int GetAnalogInput(int xy) {
@@ -497,6 +544,8 @@ int GetSound(int sound_name) {
 	if (sound_name == SE_GoldenApple)return GoldenApple_SE;
 	if (sound_name == SE_Red_AND_Green_Apple)return Red_AND_Green_Apple_SE;
 	if (sound_name == SE_PoisonApple)return PoisonApple_SE;
+	if (sound_name == SE_Count)return Count_SE;
+	if (sound_name == SE_Whistle)return Whistle_SE;
 	return 0;
 }
 
