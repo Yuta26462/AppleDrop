@@ -11,7 +11,7 @@ int apple_quantity = 0;			//描画されているリンゴの個数
 
 void Apple::AppleControl() {
 	int Made_apples = 0;			//生成するリンゴの個数
-
+	DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
 	//時間ごとにリンゴ出現パターンを制御する
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
@@ -43,6 +43,9 @@ void Apple::AppleControl() {
 			//まっすぐ下に移動
 			if (!isPause()) {
 				apple[i].y += apple[i].speed;
+			}
+			if (apple[i].y == 0) {
+				apple_quantity++;
 			}
 
 			//画面をはみ出したら消去
@@ -82,24 +85,26 @@ void Apple::AppleControl() {
 void Apple::CreateApple(int maxapple) {
 	int apple_score[4] = { RED_SCORE,GREEN_SCORE,GOLD_SCORE,BLACK_SCORE };
 	int apple_firstcnt = 0;
-	apple_firstcnt = apple_quantity;
+	//apple_firstcnt = apple_quantity;
 
 	 for (int i = 0; i < APPLE_MAX; i++) {
-		 if ((apple_quantity - apple_firstcnt) < maxapple) {
+		 if ((apple_firstcnt) < maxapple) {
 			 if (apple[i].flg == false) {
 				 apple[i].flg = true;
 				 apple[i].type = GetAppleType();
 				 apple[i].img = GetAppleImage(apple[i].type);
 				 apple[i].speed = GetAppleSpeed(apple[i].type);
+				 apple[i].y = -50;
 				 apple[i].pos = GetApplePos(apple[i].speed, i);
 				 if (apple[i].pos == -1)break;
 				 apple[i].x = apple[i].pos * 70 + 30;
-				 apple[i].y = -50;
+				 
 				 apple[i].w = 50;
 				 apple[i].h = 50;
 				 apple[i].score = apple_score[apple[i].type];
 
-					 apple_quantity++;
+				 apple_firstcnt++;
+				 //apple_quantity++;
 			 }
 		 }
 	}
@@ -196,7 +201,7 @@ int Apple::GetApplePos(int apple_speed, int num) {
 		//位置が同じ既存のリンゴを調べる
 		if (i != num && apple_pos == apple[i].pos) {
 			Over_flg = CheckAppleSpeed(apple[num].speed, apple[i].speed);
-			if ((apple[num].type == apple[i].type) && BLACK_APPLE)Over_flg = TRUE;
+			if ((apple[num].type == apple[i].type) == BLACK_APPLE)apple[num].y -= 20;
 			if (Over_flg < 0)break;
 			if (!checkflg) {
 				checkflg = true;
