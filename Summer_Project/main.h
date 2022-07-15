@@ -21,7 +21,7 @@
 #define INPUT_START								8
 
 enum GAME_STATUS{ DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
-enum BGM{BGM_Title = 1, BGM_GameMain,BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple,SE_Red_AND_Green_Apple,SE_PoisonApple};
+enum BGM_SE { BGM_Title = 1, BGM_GameMain, BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple, SE_Red_AND_Green_Apple, SE_PoisonApple, SE_Count, SE_Whistle };
 enum IMAGE{Image_Title, Image_Stage, Image_Ranking, Image_End};
 enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
 enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
@@ -46,6 +46,9 @@ int GetGameStatus(void);				//ゲーム画面を取得する。
 void SetGameStatus(int GameStatus);		//ゲーム画面をセットする。
 
 int SetTimer(int num);					//タイマーをセットする( num = 0 で前置++でセット)
+int SetTimer2(int num);
+int GetTimer2(void);						//タイマーを取得する。
+void ResetTimer2(void);					//タイマーをリセットする。
 int GetTimer(void);						//タイマーを取得する。
 void ResetTimer(void);					//タイマーをリセットする。
 int GetAnalogInput(int xy);				//アナログスティックの入力XYを取得する。
@@ -64,6 +67,7 @@ void SetStartFlg(bool Flg);				//
 bool GetAllReset(void);					//
 void SetAllReset(bool Flg);				//
 int NewTimer(int time);				//
+void DrawFinish(void);
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
