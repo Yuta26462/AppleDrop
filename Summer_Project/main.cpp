@@ -29,7 +29,7 @@ void Sidebar();					//制限時間、スコア、りんごの取得数表示用
 /********************素材*********************/
 //フォント
 LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
-int MenuFont, PauseFont;	//フォントハンドル
+int TitleFont, MenuFont, PauseFont;	//フォントハンドル
 //画像
 int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;		//画面表示用
 int players_img[9];			//プレイヤー操作画像[左(3),右(3),前(3)]
@@ -57,6 +57,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	ChangeFont("JK丸ゴシック Medium", DX_CHARSET_DEFAULT);
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 
 	if (DxLib_Init() == -1)return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -68,9 +69,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (MessageBox(NULL, "コントローラーを接続してください。", "コントローラーが未接続です。", MB_OKCANCEL | MB_ICONWARNING) == 1)
 			return -1;
 	}
-
-	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_CHARSET_DEFAULT);
-	PauseFont = CreateFontToHandle("JK丸ゴシック Medium", 80, 1, DX_CHARSET_DEFAULT);
+	TitleFont = CreateFontToHandle("JK丸ゴシック Medium", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_FONTTYPE_ANTIALIASING_4X4);
+	PauseFont = CreateFontToHandle("JK丸ゴシック Medium", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 
 	while (ProcessMessage() == 0 && g_GameState != END) {
 
@@ -92,7 +93,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (JoyPadY > 100)SelectY = 1;
 			if (JoyPadY < -100)SelectY = -1;
 		}
-		SetJoypadDeadZone(DX_INPUT_PAD1, 0.6f);
+		SetJoypadDeadZone(DX_INPUT_PAD1, 0.3f);
 
 
 		ClearDrawScreen();
@@ -160,21 +161,21 @@ void DrawGameTitle(void) {
 	if (ani == true) {
 		static int aniy = rand() % 50;
 		/*if(++aniy > 10)*/
-		if (SetTimer(0) > 30) DrawFormatStringToHandle(200, 100 + aniy, 0x9c3e26, MenuFont, "り"); aniy = rand() % 20;
-		if (GetTimer() > 60) DrawFormatStringToHandle(250, 100 + aniy, 0x9c3e26, MenuFont, "ん"); aniy = rand() % 20;
-		if (GetTimer() > 120) DrawFormatStringToHandle(300, 100 + aniy, 0x9c3e26, MenuFont, "ご"); aniy = rand() % 20;
-		if (GetTimer() > 180) DrawFormatStringToHandle(350, 100 + aniy, 0x9c3e26, MenuFont, "お"); aniy = rand() % 20;
-		if (GetTimer() > 240) DrawFormatStringToHandle(400, 100 + aniy, 0x9c3e26, MenuFont, "と"); aniy = rand() % 20;
-		if (GetTimer() > 300) { DrawFormatStringToHandle(450, 100, 0x9c3e26, MenuFont, "し"); ani = false; ResetTimer(); }
+		if (SetTimer(0) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (GetTimer() > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (GetTimer() > 120) DrawStringToHandle(300, 100 + aniy, "ご", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (GetTimer() > 180) DrawStringToHandle(350, 100 + aniy, "お", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (GetTimer() > 240) DrawStringToHandle(400, 100 + aniy, "と", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (GetTimer() > 300) { DrawStringToHandle(450, 100 + aniy, "し", 0x9c3e26, TitleFont, 0x000000); ani = false; ResetTimer(); }
 	}
 	else if (ani == false) {
 
-		DrawFormatStringToHandle(200, 100, 0x9c3e26, MenuFont, "り");
-		DrawFormatStringToHandle(250, 100, 0x9c3e26, MenuFont, "ん");
-		DrawFormatStringToHandle(300, 100, 0x9c3e26, MenuFont, "ご");
-		DrawFormatStringToHandle(350, 100, 0x9c3e26, MenuFont, "お");
-		DrawFormatStringToHandle(400, 100, 0x9c3e26, MenuFont, "と");
-		DrawFormatStringToHandle(450, 100, 0x9c3e26, MenuFont, "し");
+		DrawStringToHandle(200, 100, "り", 0x9c3e26, TitleFont, 0xffffff);
+		DrawStringToHandle(250, 100, "ん", 0x9c3e26, TitleFont, 0xffffff);
+		DrawStringToHandle(300, 100, "ご", 0x9c3e26, TitleFont, 0xffffff);
+		DrawStringToHandle(350, 100, "お", 0x9c3e26, TitleFont, 0xffffff);
+		DrawStringToHandle(400, 100, "と", 0x9c3e26, TitleFont, 0xffffff);
+		DrawStringToHandle(450, 100, "し", 0x9c3e26, TitleFont, 0xffffff);
 	}
 
 
@@ -345,7 +346,8 @@ int LoadSounds(void)
 void DrawPause() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox(0, 0, 640, 480, 0x000000, TRUE);
-	DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "ぽ　ー　ず");
+	//DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "ぽ　ー　ず");
+	DrawStringToHandle(130, 200, "ぽ　ー　ず", 0xffffff, PauseFont, 0xff0f00);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -522,8 +524,9 @@ int GetAppleImage(int type) {
 }
 
 int GetFont(int num) {
-	if (num == 1)return MenuFont;
-	if (num == 2)return PauseFont;
+	if (num == Font_Title)return TitleFont;
+	if (num == Font_Menu)return MenuFont;
+	if (num == Font_Pause)return PauseFont;
 	return 0;
 }
 
@@ -577,4 +580,14 @@ bool GetAllReset(void) {
 void SetAllReset(bool Flg) {
 	if (Flg == true) StartFlg = true;
 	if (Flg == false) StartFlg = false;
+}
+
+int NewTimer(int time) {
+	static int BackTime = GetNowCount();
+	int Time = time;
+
+	if (GetNowCount() - BackTime++ < Time) {
+		return 1;
+	}
+	return 0;
 }

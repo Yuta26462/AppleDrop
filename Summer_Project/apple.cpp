@@ -60,15 +60,18 @@ void Apple::AppleControl() {
 				apple_quantity--;
 				SetMainScore(GetMainScore() + apple[i].score);
 				apple_count[apple[i].type]++;
-				if (apple[i].type == BLACK_APPLE) {
-					PlaySoundMem(GetSound(SE_PoisonApple), DX_PLAYTYPE_BACK);
-					player.SetStatus(Poison_ON);
+				if (apple[i].type == RED_APPLE) {
+					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
 				}
-				if (apple[i].type == GOLD_APPLE) {
+				else if (apple[i].type == GREEN_APPLE) {
+					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
+				}
+				else if (apple[i].type == GOLD_APPLE) {
 					PlaySoundMem(GetSound(SE_GoldenApple), DX_PLAYTYPE_BACK);
 				}
-				if (apple[i].type == RED_APPLE || GREEN_APPLE) {
-					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
+				else if (apple[i].type == BLACK_APPLE) {
+					PlaySoundMem(GetSound(SE_PoisonApple), DX_PLAYTYPE_BACK);
+					player.SetStatus(Poison_ON);
 				}
 			}
 		}

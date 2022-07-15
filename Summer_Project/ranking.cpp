@@ -51,9 +51,10 @@ void Ranking::InputRanking(void)
 	}
 	else if (GetTimer() > 60) { ResetTimer(); errorflg = 0; }
 
-	for (int i = 0; input_i > i; i++) { DrawFormatStringToHandle(195 + i * 25, 205, 0xFFFFFF, GetFont(Font_Menu), "%c", buf[i]); }
+	for (int i = 0; input_i > i; i++) { DrawFormatStringToHandle(195 + i * 25, 205, 0xFFFFFF, GetFont(Font_Menu), "%c", buf[i]);
+	DrawFormatString(195 + i * 40, 180, 0x000000, "%d", GetDrawStringWidthToHandle(&buf[i], strlen(&buf[i]), GetFont(Font_Menu)));
+	}
 	/*if(display > input_i){ DrawFormatStringToHandle(200 + input_i * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[input_i - 1]); }*/
-
 	if (SetTimer(0) < 30) {
 		//DrawFormatStringToHandle(200, 205, 0xFFFFFF, MenuFont, "%s", buf);
 		for (int display = 10; input_i < display; display--) {
@@ -74,6 +75,7 @@ void Ranking::InputRanking(void)
 	}
 	static int selecterX = 0;
 	static int selecterY = 0;
+	static int color = 0x696969;
 
 	//カーソルの位置をリセット
 	if (GetAllReset()) {
@@ -86,15 +88,21 @@ void Ranking::InputRanking(void)
 	if (GetSelect(Select_X) == -1)if (--selecterX < 0)selecterX = 12; if (selecterY == 0 && selecterX > 9)selecterX = 9;
 	if (GetSelect(Select_Y) == 1)if (++selecterY > 4)selecterY = 0;
 	if (GetSelect(Select_Y) == -1)if (--selecterY < 0)selecterY = 4;
-	if (PadInput(INPUT_A)) {}
+	if (PadInput(INPUT_A)) { if(GetTimer() > 20)color = 0xffffff; }
 	if (GetSelect(Select_X) == -1 || GetSelect(Select_X) == 1 || GetSelect(Select_Y) == -1 || GetSelect(Select_Y) == 1) { PlaySoundMem(GetSound(SE_Selecter), DX_PLAYTYPE_BACK); }
-	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, 0x696969, FALSE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+	DrawBox(120 + 30 * selecterX, 250 + 30 * selecterY, 150 + 30 * selecterX, 280 + 30 * selecterY, color, FALSE); 
+	if(GetTimer() < 40)color = 0x000000;
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
 
 
 	if (PadInput(INPUT_START)) {
-		PlaySoundMem(GetSound(SE_OK), DX_PLAYTYPE_BACK);
-		if (input_i <= 0) { errorflg = 1; }
+		
+		if (input_i <= 0) { errorflg = 1; PlaySoundMem(GetSound(SE_Key_Remove), DX_PLAYTYPE_BACK); StartJoypadVibration(DX_INPUT_PAD1, 600, 150, -1);
+		}
 		else {
+			PlaySoundMem(GetSound(SE_OK), DX_PLAYTYPE_BACK);
+			StartJoypadVibration(DX_INPUT_PAD1, 600, 150, -1);
 			buf[input_i] = '\0';
 			std::string buf_str = buf;
 			buf_str = buf_str.erase(input_i);
@@ -108,6 +116,7 @@ void Ranking::InputRanking(void)
 			strcpyDx(buf, default_char);
 			SetAllReset(true);
 			SetGameStatus(DRAW_RANKING);
+			//名前確定確定画面へ移行
 		}
 	}
 	if (PadInput(INPUT_A) && input_i < 9) {
