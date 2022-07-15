@@ -36,7 +36,7 @@ public:
 	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 
 	int GetApplePos(int apple_speed,int num);
-	bool CheckAppleSpeed(int speed1, int speed2);
+	int CheckAppleSpeed(int speed1, int speed2);
 	bool* GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
 	int GetAppleX();				//ƒŠƒ“ƒSxÀ•Wæ“¾ŠÖ”
 	int GetAppleY();				//ƒŠƒ“ƒSyÀ•Wæ“¾ŠÖ”
@@ -44,15 +44,12 @@ public:
 	int GetAppleH();				//ƒŠƒ“ƒS‚‚³æ“¾ŠÖ”
 	int getpos();
 	int GetAppleCount(int type);
-	void ResetAppleCount(void);
 };
 
 
 int GetAppleType();
 int GetAppleSpeed(int AppleType);
 
-extern int apple_score[4];
-extern int apple_count[4];				//ƒŠƒ“ƒS‚ğæ“¾‚µ‚½ŒÂ”
 extern bool Over_flg;			//ƒŠƒ“ƒS‚ªd‚È‚Á‚Ä‚¢‚é‚©‚Ìƒtƒ‰ƒO
 extern int apple_quantity;			//•`‰æ‚³‚ê‚Ä‚¢‚éƒŠƒ“ƒS‚ÌŒÂ”
 

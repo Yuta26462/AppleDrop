@@ -19,11 +19,11 @@ class PLAYER {
 	int PadSpeedTimer;
 	int player_angle;
 public:
-	void PlayerControl();
-	void ResetPlayer(void);
-	int GetPlayerTransition(int xyhy);
-	void SetStatus(int status);
-	int GetStatus(void);
-	int GetPlayerFlg(void);
-	int HitBoxPlayer(Apple* e);
+	void PlayerControl();				//プレイヤー操作
+	void ResetPlayer(void);				//プレイヤー初期化処理
+	int GetPlayerTransition(int xyhw);	//プレイヤーの(X,Y,H,W)座標を取得する。
+	void SetStatus(int status);			//プレイヤーの状態効果を設定する。
+	int GetStatus(void);				//プレイヤーの状態効果を取得する。
+	int GetPlayerFlg(void);				//プレイヤーの有効性を取得する。
+	int HitBoxPlayer(Apple* e);			//りんごとプレイヤーの当たり判定を計算する。
 };

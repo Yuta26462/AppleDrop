@@ -8,8 +8,8 @@ const int PLAYER_HEIGHT = 62;
 
 void PLAYER::PlayerControl() {
 	static int checkflg = 0;
-	static int player_angle = 0;
-	static int old_player_angle = 0;
+	static int player_angle = 0;		//プレイヤーの向き(左:-1 右:1)
+	static int old_player_angle = 0;	//プレイヤーの前回の向き(左:-1 右:1)
 	if (!isPause()) {
 		if (flg == TRUE) {
 			int i = 0;
@@ -94,14 +94,14 @@ void PLAYER::ResetPlayer(void) {
 	h = PLAYER_HEIGHT;
 	count = 0;
 	speed = 0;
-	Poisonflg = false;
+	Poisonflg = false;			//プレイヤーの毒状態を無効にする。
 }
 
-int PLAYER::GetPlayerTransition(int xyhy) {
-	if (xyhy == PlayerX)return x;
-	if (xyhy == PlayerY)return y;
-	if (xyhy == PlayerH)return h;
-	if (xyhy == PlayerW)return y;
+int PLAYER::GetPlayerTransition(int xyhw) {
+	if (xyhw == PlayerX)return x;
+	if (xyhw == PlayerY)return y;
+	if (xyhw == PlayerH)return h;
+	if (xyhw == PlayerW)return w;
 	return 0;
 }
 

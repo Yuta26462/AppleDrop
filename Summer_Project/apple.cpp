@@ -60,15 +60,18 @@ void Apple::AppleControl() {
 				apple_quantity--;
 				SetMainScore(GetMainScore() + apple[i].score);
 				apple_count[apple[i].type]++;
-				if (apple[i].type == BLACK_APPLE) {
-					PlaySoundMem(GetSound(SE_PoisonApple), DX_PLAYTYPE_BACK);
-					player.SetStatus(Poison_ON);
+				if (apple[i].type == RED_APPLE) {
+					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
 				}
-				if (apple[i].type == GOLD_APPLE) {
+				else if (apple[i].type == GREEN_APPLE) {
+					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
+				}
+				else if (apple[i].type == GOLD_APPLE) {
 					PlaySoundMem(GetSound(SE_GoldenApple), DX_PLAYTYPE_BACK);
 				}
-				if (apple[i].type == RED_APPLE || GREEN_APPLE) {
-					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
+				else if (apple[i].type == BLACK_APPLE) {
+					PlaySoundMem(GetSound(SE_PoisonApple), DX_PLAYTYPE_BACK);
+					player.SetStatus(Poison_ON);
 				}
 			}
 		}
@@ -110,6 +113,9 @@ void Apple::AppleInit() {
 			apple[i].flg = false;
 			apple[i].pos = 99;
 		}
+	}
+	for (int i = 0; i < 4; i++) {
+		apple_count[i] = 0;
 	}
 }
 
@@ -156,7 +162,7 @@ int GetAppleSpeed(int AppleType) {
 //リンゴの出現場所を決める
 int Apple::GetApplePos(int apple_speed, int num) {
 	int apple_pos = 0;
-	bool Over_flg = false;			//リンゴが重なっているかのフラグ
+	int Over_flg = FALSE;			//リンゴが重なっているかのフラグ
 	bool checkflg = false;			//重なったか調べたかのフラグ
 	int old_position[7] = { 99,99,99,99,99,99,99 };
 	int repeat_count = 0;
@@ -182,18 +188,22 @@ int Apple::GetApplePos(int apple_speed, int num) {
 					j++;
 				}
 			}
+			Over_flg = FALSE;
 			repeat_count++;
 			i = 0;
+		
 		}
 		//位置が同じ既存のリンゴを調べる
 		if (i != num && apple_pos == apple[i].pos) {
-			Over_flg = CheckAppleSpeed(apple[num].speed, apple[i].speed);	
+			Over_flg = CheckAppleSpeed(apple[num].speed, apple[i].speed);
+			if ((apple[num].type == apple[i].type) && BLACK_APPLE)Over_flg = TRUE;
+			if (Over_flg < 0)break;
 			if (!checkflg) {
 				checkflg = true;
 			}
 		}
 	}		
-	if (apple_pos < 7) {
+	if (apple_pos < 7 && Over_flg >= 0) {
 		return apple_pos;
 	}
 	else {
@@ -203,12 +213,12 @@ int Apple::GetApplePos(int apple_speed, int num) {
 	
 }
 
-bool Apple::CheckAppleSpeed(int speed1, int speed2) {
+int Apple::CheckAppleSpeed(int speed1, int speed2) {
 	if (speed1 > speed2) {
-		return true;		//自身の速度が多い場合:重なる
+		return TRUE;		//自身の速度が多い場合:重なる
 	}
 	else {
-		return false;		//自身の速度が遅いか同じ場合:重ならない
+		return FALSE;		//自身の速度が遅いか同じ場合:重ならない
 	}
 	return -1;
 }
@@ -244,10 +254,4 @@ int Apple::GetAppleCount(int type) {
 	if (type == GOLD_APPLE) return apple_count[2];
 	if (type == BLACK_APPLE) return apple_count[3];
 	return -1;
-}
-
-void Apple::ResetAppleCount(void) {
-	for (int i = 0; i < 4; i++) {
-		apple_count[i] = 0;
-	}
 }
