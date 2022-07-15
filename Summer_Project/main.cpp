@@ -11,7 +11,7 @@ int TimeLimit;	//制限時間用
 bool StartFlg = false;
 Ranking ranking;
 PLAYER player;
-Apple apple[APPLE_MAX];
+Apple apple[11];
 
 int JoyPadX, JoyPadY,PadTimer;	//アナログスティック傾きXY
 int SelectX, SelectY;			//カーソル移動用XY(アナログスティック)
@@ -274,10 +274,11 @@ void GameMain(void) {
 	player.PlayerControl();
 	Sidebar();
 
-	/*for (int i = 0; i < 11; i++) {
-		DrawFormatString(20 * i + 50, 200, 0x000000, "%d", apple[i].getpos());
-		DrawFormatString(20 * i + 50, 300, 0x000000, "%d", apple[i].getspeed());
-	}*/
+	for (int i = 0; i < 11; i++) {
+		DrawFormatString(20 * i + 100, 300, 0x000000, "%d", apple[i].GetAppleFlg());
+		/*DrawFormatString(20 * i + 50, 200, 0x000000, "%d", apple[i].getpos());
+		DrawFormatString(20 * i + 50, 300, 0x000000, "%d", apple[i].getspeed());*/
+	}
 
 	if (PadInput(INPUT_START)) {
 		if (Pauseflg == false) {

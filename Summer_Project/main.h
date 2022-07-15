@@ -32,7 +32,7 @@ extern Ranking ranking;
 extern PLAYER player;
 
 
-extern Apple apple[APPLE_MAX];
+extern Apple apple[11];
 
 
 int GetTimeLimit(void);

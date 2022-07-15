@@ -31,7 +31,7 @@ void Apple::AppleControl() {
 
 	}
 
-	for (int i = 0; i < APPLE_MAX; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (apple[i].flg == true)
 		{
@@ -43,10 +43,11 @@ void Apple::AppleControl() {
 			//‚Ü‚Á‚·‚®‰º‚ÉˆÚ“®
 			if (!isPause()) {
 				apple[i].y += apple[i].speed;
+				if (apple[i].y == 0) {
+					apple_quantity++;
+				}
 			}
-			if (apple[i].y == 0) {
-				apple_quantity++;
-			}
+			
 
 			//‰æ–Ê‚ð‚Í‚Ýo‚µ‚½‚çÁ‹Ž
 			if (apple[i].y > SCREEN_HEIGHT + apple[i].h) {
@@ -87,7 +88,7 @@ void Apple::CreateApple(int maxapple) {
 	int made_apples = 0;
 	//apple_firstcnt = apple_quantity;
 
-	 for (int i = 0; i < APPLE_MAX; i++) {
+	 for (int i = 0; i < 11; i++) {
 		 if (made_apples < maxapple) {
 			 if (apple[i].flg == false) {
 				 made_apples++;
@@ -114,7 +115,7 @@ void Apple::CreateApple(int maxapple) {
 void Apple::AppleInit() {
 	apple_quantity = 0;
 
-	for (int i = 0; i < APPLE_MAX; i++) {
+	for (int i = 0; i < 11; i++) {
 		if (apple[i].flg == true) {
 			apple[i].flg = false;
 			apple[i].pos = 99;
@@ -175,7 +176,7 @@ int Apple::GetApplePos(int apple_speed, int num ,int* made_apples) {
 	int j;
 
 	apple_pos = GetRand(6);
-	for (int i = 0; i < APPLE_MAX; i++) {
+	for (int i = 0; i < 11; i++) {
 		
 		if (apple[num].type == BLACK_APPLE && apple[i].type == BLACK_APPLE)apple[num].y -= 50;
 
@@ -208,8 +209,8 @@ int Apple::CheckAppleSpeed(int speed1, int speed2) {
 }
 
 
-bool* Apple::GetAppleFlg() {
-	return &flg;
+bool Apple::GetAppleFlg() {
+	return flg;
 }
 
 int Apple::GetAppleX() {
