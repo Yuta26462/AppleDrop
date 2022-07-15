@@ -278,6 +278,11 @@ void GameMain(void) {
 	}
 	Sidebar();
 
+	/*for (int i = 0; i < 11; i++) {
+		DrawFormatString(20 * i + 50, 200, 0x000000, "%d", apple[i].getpos());
+		DrawFormatString(20 * i + 50, 300, 0x000000, "%d", apple[i].getspeed());
+	}*/
+
 	if (PadInput(INPUT_START)) {
 		if (Pauseflg == false && 1<= TimeLimit) {
 			PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
