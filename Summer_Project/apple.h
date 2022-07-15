@@ -42,8 +42,9 @@ public:
 	int GetAppleY();				//リンゴy座標取得関数
 	int GetAppleW();				//リンゴ幅取得関数
 	int GetAppleH();				//リンゴ高さ取得関数
-	int getpos();
 	int GetAppleCount(int type);
+	//int getpos();					//デバッグ用
+	//int getspeed();
 };
 
 
