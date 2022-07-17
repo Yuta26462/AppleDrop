@@ -47,9 +47,9 @@ void PLAYER::PlayerControl() {
 		if (x > SCREEN_WIDTH - 170) { x = SCREEN_WIDTH - 170; speed = 0; }
 
 
-		if (Poisonflg == TRUE && GetTimer() >= 120) {
+		if (Poisonflg == TRUE && Timer(0) >= 120) {
 			Poisonflg = false;
-			ResetTimer();
+			Timer(-1);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 
@@ -58,7 +58,7 @@ void PLAYER::PlayerControl() {
 		if (player_angle == -1)DrawRotaGraph(x, y, 2.3f, 0, GetPlayerImage(Image_DASH_LeftPlayer), TRUE, FALSE);
 		if (player_angle == 1)DrawRotaGraph(x, y, 2.3f, 0, GetPlayerImage(Image_DASH_RightPlayer), TRUE, FALSE);
 	}
-	else if ((Poisonflg == TRUE && SetTimer(0) % 40 < 20) || Poisonflg == FALSE) {
+	else if ((Poisonflg == TRUE && Timer(1) % 40 < 20) || Poisonflg == FALSE) {
 		if (flg == TRUE) {
 			if(player_angle == 0){ DrawRotaGraph(x, y, 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);}
 			if (GetAnalogInput(AnalogInput_X) < -0 || player_angle == -1) {

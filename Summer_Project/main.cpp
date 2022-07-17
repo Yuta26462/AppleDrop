@@ -16,7 +16,6 @@ Apple apple[11];
 
 int JoyPadX, JoyPadY,PadTimer;	//アナログスティック傾きXY
 int SelectX, SelectY;			//カーソル移動用XY(アナログスティック)
-int g_WaitTime[3];				//タイマー関数用変数
 bool Pauseflg;					//ポーズ用フラグ
 bool PadType = false;			//XInputの有効性を検出
 bool AllReset = false;			//タイトル画面とランキング画面の選択位置をリセットする。(2回目対処用)
@@ -30,7 +29,7 @@ void Sidebar();					//制限時間、スコア、りんごの取得数表示用
 /********************素材*********************/
 //フォント
 LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
-int TitleFont, MenuFont, PauseFont;	//フォントハンドル
+int TitleFont, MenuFont, PauseFont, KeyFont;	//フォントハンドル
 //画像
 int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;		//画面表示用
 int players_img[9];			//プレイヤー操作画像[左(3),右(3),前(3)]
@@ -74,6 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	TitleFont = CreateFontToHandle("JK丸ゴシック Medium", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	MenuFont = CreateFontToHandle("JK丸ゴシック Medium", 40, 1, DX_FONTTYPE_ANTIALIASING_4X4);
 	PauseFont = CreateFontToHandle("JK丸ゴシック Medium", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	KeyFont = CreateFontToHandle("JK丸ゴシック Medium", 14, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 
 	while (ProcessMessage() == 0 && g_GameState != END) {
 
@@ -163,12 +163,12 @@ void DrawGameTitle(void) {
 	if (ani == true) {
 		static int aniy = rand() % 50;
 		/*if(++aniy > 10)*/
-		if (SetTimer(0) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (GetTimer() > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (GetTimer() > 120) DrawStringToHandle(300, 100 + aniy, "ご", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (GetTimer() > 180) DrawStringToHandle(350, 100 + aniy, "お", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (GetTimer() > 240) DrawStringToHandle(400, 100 + aniy, "と", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (GetTimer() > 300) { DrawStringToHandle(450, 100 + aniy, "し", 0x9c3e26, TitleFont, 0x000000); ani = false; ResetTimer(); }
+		if (Timer(1,0) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 120) DrawStringToHandle(300, 100 + aniy, "ご", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 180) DrawStringToHandle(350, 100 + aniy, "お", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 240) DrawStringToHandle(400, 100 + aniy, "と", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 300) { DrawStringToHandle(450, 100 + aniy, "し", 0x9c3e26, TitleFont, 0x000000); ani = false; Timer(-1); }
 	}
 	else if (ani == false) {
 
@@ -188,8 +188,6 @@ void DrawGameTitle(void) {
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
-	DrawFormatString(200, 400,0x000000, "%d", JoyPadX);
-	DrawFormatString(200, 430, 0x000000, "%d", JoyPadY);
 }
 
 void GameInit(void) {
@@ -197,7 +195,7 @@ void GameInit(void) {
 	StartFlg = true;
 	AllReset = true;
 	TimeLimit = TIMELIMIT;
-	ResetTimer();
+	Timer(-1);
 	Pauseflg = false;
 
 	apple->AppleInit();
@@ -226,10 +224,10 @@ void DrawHelp(void) {
 	DrawStringToHandle(470, 280,"ぽーず", 0xff8c00,MenuFont);
 	DrawStringToHandle(20, 330, "A", 0xff0000, MenuFont, 0);
 	DrawStringToHandle(44, 330, "ボタンをおして", 0xffffff, MenuFont, 0);
-	if (SetTimer(0) < 30) {
+	if (Timer(1) < 30) {
 		DrawStringToHandle(320, 330, "ゲームスタート", 0xffff00, MenuFont, 0);
 	}
-	else if(GetTimer() > 60){  ResetTimer(); }
+	else if(Timer(0) > 60){ Timer(-1); }
 
 }
 
@@ -242,7 +240,7 @@ void DrawEnd(void) {
 	//エンド画像表示
 	DrawExtendGraph(0, 0,640,480, g_EndImage, FALSE);
 	//エンディング表示
-	if (SetTimer(0) < 600) { g_PosY = 300 - GetTimer() / 2; }
+	if (Timer(1) < 600) { g_PosY = 300 - Timer(0) / 2; }
 
 	SetFontSize(24);
 	DrawString(140, 80 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
@@ -256,7 +254,7 @@ void DrawEnd(void) {
 	DrawString(140, 325 + g_PosY, "　SE　　　　　効果音工房", 0xFFFFFF, 0);
 
 	//タイムの加算処理＆終了
-	if (SetTimer(0) > 900) { ResetTimer(); g_GameState = END; }
+	if (Timer(1) > 900) { Timer(-1); g_GameState = END; }
 
 	DeleteFontToHandle(MenuFont);
 }
@@ -302,13 +300,13 @@ void GameMain(void) {
 
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
-		if (TimeLimit >= 10 && SetTimer(0) > 60) {
+		if (TimeLimit / 60 <= 10 &&  Timer(1,1) > 60 && TimeLimit > 0) {
 			PlaySoundMem(Count_SE, DX_PLAYTYPE_BACK);
-			ResetTimer();
+			Timer(-1,1);
 		}
 
-		if (1 <= TimeLimit) TimeLimit--;
-		if (1 >= TimeLimit)DrawFinish();
+		if (1 <= TimeLimit && TimeLimit !=0) TimeLimit--;
+		if (1 > TimeLimit)DrawFinish();
 	}
 
 	else {
@@ -363,18 +361,19 @@ void DrawPause() {
 }
 
 void DrawFinish(void){
-	if (TimeLimit <= 1 && SetTimer2(0) < 181) {
+	if (TimeLimit <= 1 && Timer(1) < 181) {
 		finishFlg = true;
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 50);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
 		DrawExtendGraph(0, 0, 640, 480, GetImage(Image_Title), FALSE);
+		DrawRotaGraph(player.GetPlayerTransition(PlayerX), player.GetPlayerTransition(PlayerY), 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
 		PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	}
-	if (TimeLimit <= 1 && GetTimer2() > 180) {
-		ResetTimer2();
+	if (TimeLimit <= 1 && Timer(0) > 180) {
+		Timer(-1);
 		finishFlg = false;
 		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
 			SetGameStatus(DRAW_RANKING);
@@ -389,26 +388,40 @@ void HelpGuide(int num) {
 	switch (num)
 	{
 	case DRAW_GAMETITLE:
+		//ジョイスティック
 		DrawOval(180, 450, 10, 5, 0x000000, 1);
 		DrawBox(177, 450, 185, 463, 0x000000, 1);
 		DrawOval(180, 463, 12, 5, 0x000000, 1);
 		DrawFormatString(200, 450, 0xFFFFFF, "移動");
-		DrawCircle(304, 457, 10, 0x000000, 1);
-		DrawFormatString(300, 450, 0xFFFFFF, "A  決定");
+
+		//A
+		DrawCircle(305, 457, 10, 0x000000, 1);
+		//DrawFormatString(300, 450, 0xFFFFFF, "A  決定");
+		DrawString(300, 450, "A", 0x00ff00);
+		DrawString(320, 450, "決定", 0xFFFFFF);
+
+		//BACK
 		DrawOval(420, 457, 28, 10, 0x000000, 1);
 		DrawFormatString(400, 450, 0xFFFFFF, "BACK   終了");
 		break;
 
 	case DRAW_RANKING:
+		//B
 		DrawCircle(304, 457, 10, 0x000000, 1);
-		DrawFormatString(300, 450, 0xFFFFFF, "B  戻る");
+		DrawString(300, 450, "B", 0xff4500);
+		DrawString(320, 450, "戻る", 0xFFFFFF);
 		break;
 
 	case DRAW_HELP:
+		//B
 		DrawCircle(204, 457, 10, 0x000000, 1);
-		DrawFormatString(200, 450, 0xFFFFFF, "B  戻る");
-		DrawCircle(354, 457, 10, 0x000000, 1);
-		DrawFormatString(350, 450, 0xFFFFFF, "A  ゲームスタート");
+		DrawString(200, 450, "B", 0xff4500);
+		DrawString(220, 450, "戻る", 0xFFFFFF);
+
+		//A
+		DrawCircle(374, 457, 10, 0x000000, 1);
+		DrawString(370, 450, "A", 0x00ff00);
+		DrawString(390, 450, "ゲームスタート", 0xFFFFFF);
 		break;
 
 	case GAME_MAIN:
@@ -417,24 +430,45 @@ void HelpGuide(int num) {
 			color = 0xFFFFFF; color2 = 0xff8c00;
 		}
 		else { color = 0x000000; color2 = 0xFFFFFF; SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);}
+
+		//ジョイスティック
 		DrawOval(180, 450, 10, 5, color, 1);
 		DrawBox(177, 450, 185, 463, color, 1);
 		DrawOval(180, 463, 12, 5, color, 1);
-		DrawFormatString(200, 450, color2, "移動");
+		DrawFormatString(200, 450, color, "移動");
+
+		//START
 		DrawOval(284, 457, 30, 10, color, 1);
-		DrawFormatString(260, 450, color2, "START ポーズ");
+		DrawFormatString(260, 450, color2, "START");
+		DrawString(320, 450, "ポーズ", color);
+
+		//BACK
 		DrawOval(404, 457, 28, 10, color, 1);
-		DrawFormatString(384, 450, color2, "BACK   終了");
+		DrawFormatString(384, 450, color2, "BACK");
+		DrawString(439, 450, "終了", color);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;
 
 	case INPUT_RANKING:
-		DrawCircle(164, 457, 10, 0x000000, 1);
-		DrawFormatString(160, 450, 0xFFFFFF, "B  1文字削除");
-		DrawCircle(304, 457, 10, 0x000000, 1);
-		DrawFormatString(300, 450, 0xFFFFFF, "A  入力");
-		DrawOval(424, 457, 30, 10, 0x000000, 1);
-		DrawFormatString(400, 450, 0xFFFFFF, "START 名前確定");
+		//X
+		DrawCircle(89, 457, 10, 0x000000, 1);
+		DrawFormatString(85, 450, 0x4169e1, "X");
+		DrawFormatString(104, 450, 0xFFFFFF, "切り替え");
+
+		//B
+		DrawCircle(214, 457, 10, 0x000000, 1);
+		DrawFormatString(210, 450, 0xff4500, "B");
+		DrawString(230, 450, "1文字削除", 0xFFFFFF);
+
+		//A
+		DrawCircle(355, 457, 10, 0x000000, 1);
+		DrawFormatString(350, 450, 0x00ff00, "A");
+		DrawString(370, 450, "入力", 0xFFFFFF);
+
+		//START
+		DrawOval(474, 457, 30, 10, 0x000000, 1);
+		DrawFormatString(450, 450, 0xFFFFFF, "START");
+		DrawString(510, 450, "名前確定", 0xFFFFFF);
 		break;
 
 	default:
@@ -443,10 +477,12 @@ void HelpGuide(int num) {
 }
 
 void Sidebar() {
+	static int TimeLimit_color = 0xff4500;
+	
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	DrawFormatString(540, 20, 0xFFFFFF, "残り時間");
 	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", TimeLimit / 60);
-	if(TimeLimit / 60 <= 10){ DrawFormatStringToHandle(545, 50, 0xff4500, MenuFont, "%2d", TimeLimit / 60); }
+	if(TimeLimit / 60 <= 10){ DrawFormatStringToHandle(545, 50, TimeLimit_color, MenuFont, "%2d", TimeLimit / 60); }
 	DrawFormatString(545, 100, 0xffff99, "SCORE");
 	DrawFormatString(550, 120, 0xffff99, "%4d", g_Score);
 	DrawFormatString(540, 160, 0xFFFFFF, "採った数");
@@ -461,42 +497,18 @@ void Sidebar() {
 	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple->GetAppleCount(BLACK_APPLE));
 }
 
-int SetTimer(int num) {
-	if (num == 0) {
-		++g_WaitTime[0];
-		return g_WaitTime[0];
+int Timer(int time, int index) {
+	const int TimerNum = 4;
+	static int g_WaitTime[TimerNum];
+
+	if (time == 1) {
+		++g_WaitTime[index];
+		return g_WaitTime[index];
 	}
-	else {
-		g_WaitTime[0] = num;
+	else if (time == -1) {
+		g_WaitTime[index] = 0;
 	}
-	return g_WaitTime[0];
-}
-
-int SetTimer2(int num) {
-	if (num == 0) {
-		++g_WaitTime[1];
-		return g_WaitTime[1];
-	}
-	else {
-		g_WaitTime[1] = num;
-	}
-	return g_WaitTime[1];
-}
-
-int GetTimer(void) {
-	return g_WaitTime[0];
-}
-
-void ResetTimer(void) {
-	g_WaitTime[0] = 0;
-}
-
-int GetTimer2(void) {
-	return g_WaitTime[1];
-}
-
-void ResetTimer2(void) {
-	g_WaitTime[1] = 0;
+	return g_WaitTime[index];
 }
 
 int GetAnalogInput(int xy) {
@@ -582,6 +594,7 @@ int GetFont(int num) {
 	if (num == Font_Title)return TitleFont;
 	if (num == Font_Menu)return MenuFont;
 	if (num == Font_Pause)return PauseFont;
+	if (num == Font_Key)return KeyFont;
 	return 0;
 }
 

@@ -51,7 +51,4 @@ public:
 int GetAppleType();
 int GetAppleSpeed(int AppleType);
 
-extern bool Over_flg;			//ƒŠƒ“ƒS‚ªd‚È‚Á‚Ä‚¢‚é‚©‚Ìƒtƒ‰ƒO
-extern int apple_quantity;			//•`‰æ‚³‚ê‚Ä‚¢‚éƒŠƒ“ƒS‚ÌŒÂ”
-
 

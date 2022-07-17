@@ -25,7 +25,7 @@ enum BGM_SE { BGM_Title = 1, BGM_GameMain, BGM_Ranking, BGM_END, SE_Selecter, SE
 enum IMAGE{Image_Title, Image_Stage, Image_Ranking, Image_End};
 enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
 enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
-enum FONT{Font_Title = 1, Font_Menu, Font_Pause};
+enum FONT{Font_Title = 1, Font_Menu, Font_Pause,Font_Key};
 
 
 extern Ranking ranking;
@@ -45,12 +45,7 @@ void DrawHelp(void);					//へるぷ画面んを描画する。
 int GetGameStatus(void);				//ゲーム画面を取得する。
 void SetGameStatus(int GameStatus);		//ゲーム画面をセットする。
 
-int SetTimer(int num);					//タイマーをセットする( num = 0 で前置++でセット)
-int SetTimer2(int num);
-int GetTimer2(void);						//タイマーを取得する。
-void ResetTimer2(void);					//タイマーをリセットする。
-int GetTimer(void);						//タイマーを取得する。
-void ResetTimer(void);					//タイマーをリセットする。
+int Timer(int time, int index = 0);		//タイマーをセット・ゲット・リセットする(time = (1:Set, 0:Get. -1:Reset))
 int GetAnalogInput(int xy);				//アナログスティックの入力XYを取得する。
 bool PadInput(int Key);					//コントローラーの入力状態を確認する。
 int GetSound(int sound_name);			//音声データを取得する。
