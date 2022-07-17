@@ -163,28 +163,28 @@ void DrawGameTitle(void) {
 	if (ani == true) {
 		static int aniy = rand() % 50;
 		/*if(++aniy > 10)*/
-		if (Timer(1,0) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 120) DrawStringToHandle(300, 100 + aniy, "ご", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 180) DrawStringToHandle(350, 100 + aniy, "お", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 240) DrawStringToHandle(400, 100 + aniy, "と", 0x9c3e26, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 300) { DrawStringToHandle(450, 100 + aniy, "し", 0x9c3e26, TitleFont, 0x000000); ani = false; Timer(-1); }
+		if (Timer(1,0) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 120) DrawStringToHandle(300, 100 + aniy, "ご", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 180) DrawStringToHandle(350, 100 + aniy, "お", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 240) DrawStringToHandle(400, 100 + aniy, "と", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 0) > 300) { DrawStringToHandle(450, 100 + aniy, "し", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1); }
 	}
 	else if (ani == false) {
 
-		DrawStringToHandle(200, 100, "り", 0x9c3e26, TitleFont, 0xffffff);
-		DrawStringToHandle(250, 100, "ん", 0x9c3e26, TitleFont, 0xffffff);
-		DrawStringToHandle(300, 100, "ご", 0x9c3e26, TitleFont, 0xffffff);
-		DrawStringToHandle(350, 100, "お", 0x9c3e26, TitleFont, 0xffffff);
-		DrawStringToHandle(400, 100, "と", 0x9c3e26, TitleFont, 0xffffff);
-		DrawStringToHandle(450, 100, "し", 0x9c3e26, TitleFont, 0xffffff);
+		DrawStringToHandle(200, 100, "り", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(250, 100, "ん", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(300, 100, "ご", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(350, 100, "お", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(400, 100, "と", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(450, 100, "し", 0xff4000, TitleFont, 0xffffff);
 	}
 
 
-	DrawFormatStringToHandle(420, 280, 0x9c3e26, MenuFont, "すたーと");
-	DrawFormatStringToHandle(420, 320, 0x9c3e26, MenuFont, "らんきんぐ");
-	DrawFormatStringToHandle(420, 360, 0x9c3e26, MenuFont, "へるぷ");
-	DrawFormatStringToHandle(420, 400, 0x9c3e26, MenuFont, "えんど");
+	DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと");
+	DrawFormatStringToHandle(420, 320, 0xff4000, MenuFont, "らんきんぐ");
+	DrawFormatStringToHandle(420, 360, 0xff4000, MenuFont, "へるぷ");
+	DrawFormatStringToHandle(420, 400, 0xff4000, MenuFont, "えんど");
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
@@ -222,10 +222,12 @@ void DrawHelp(void) {
 	DrawOval(390, 300, 70, 27, 0x000000, 1);
 	DrawStringToHandle(330, 280, "START", 0xffffff, MenuFont);
 	DrawStringToHandle(470, 280,"ぽーず", 0xff8c00,MenuFont);
-	DrawStringToHandle(20, 330, "A", 0xff0000, MenuFont, 0);
-	DrawStringToHandle(44, 330, "ボタンをおして", 0xffffff, MenuFont, 0);
+
+	DrawCircle(194, 350, 20, 0x000000, 1);
+	DrawStringToHandle(182, 330, "A", 0x00ff00,MenuFont);
+	DrawStringToHandle(220, 330, "で", 0xffffff, MenuFont, 0);
 	if (Timer(1) < 30) {
-		DrawStringToHandle(320, 330, "ゲームスタート", 0xffff00, MenuFont, 0);
+		DrawStringToHandle(260, 330, "ゲームスタート", 0xffff00, MenuFont, 0);
 	}
 	else if(Timer(0) > 60){ Timer(-1); }
 
@@ -396,7 +398,6 @@ void HelpGuide(int num) {
 
 		//A
 		DrawCircle(305, 457, 10, 0x000000, 1);
-		//DrawFormatString(300, 450, 0xFFFFFF, "A  決定");
 		DrawString(300, 450, "A", 0x00ff00);
 		DrawString(320, 450, "決定", 0xFFFFFF);
 
@@ -478,11 +479,16 @@ void HelpGuide(int num) {
 
 void Sidebar() {
 	static int TimeLimit_color = 0xff4500;
+	//static int TimeLimit_color = RGB(255,69,0);
 	
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
 	DrawFormatString(540, 20, 0xFFFFFF, "残り時間");
 	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", TimeLimit / 60);
-	if(TimeLimit / 60 <= 10){ DrawFormatStringToHandle(545, 50, TimeLimit_color, MenuFont, "%2d", TimeLimit / 60); }
+	if(TimeLimit / 60 <= 10){ 
+		if (TimeLimit / 60 == 10)TimeLimit_color = 0xff4500;
+		DrawFormatStringToHandle(545, 50, TimeLimit_color, MenuFont, "%2d", TimeLimit / 60); 
+		if (Timer(0, 1) > 60 && TimeLimit > 0)TimeLimit_color -= RGB(50, 7, 0);
+	}
 	DrawFormatString(545, 100, 0xffff99, "SCORE");
 	DrawFormatString(550, 120, 0xffff99, "%4d", g_Score);
 	DrawFormatString(540, 160, 0xFFFFFF, "採った数");

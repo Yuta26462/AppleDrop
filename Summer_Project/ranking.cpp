@@ -142,7 +142,6 @@ void Ranking::InputRanking(void)
 		if (selecterY == 2 && selecterX > 8)selecterX = 8;
 		if (selecterY == 3 && selecterX > 6)selecterX = 6;
 		if (selecterY > 3)selecterY = 3;	//Ø‚è‘Ö‚¦ŽžŒ©Ž¸‚¢–hŽ~
-		DrawFormatString(60, 90, 0x000000, "%d:%d", selecterY, selecterX);
 	}
 	if (PadInput(INPUT_A)) { if(Timer(0) > 20)color = 0xffffff; }
 	if (GetSelect(Select_X) == -1 || GetSelect(Select_X) == 1 || GetSelect(Select_Y) == -1 || GetSelect(Select_Y) == 1) { PlaySoundMem(GetSound(SE_Selecter), DX_PLAYTYPE_BACK); }
