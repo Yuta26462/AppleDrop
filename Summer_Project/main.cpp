@@ -210,24 +210,24 @@ void DrawHelp(void) {
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
-	DrawStringToHandle(260, 40, "へるぷ", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(260, 40, "へるぷ", 0x777777, MenuFont, 0);
 
-	DrawStringToHandle(20, 120, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
-	DrawStringToHandle(20, 180, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
-	DrawStringToHandle(270, 220, "操作方法", 0xffffff, MenuFont, 0);
-	DrawOval(180, 290, 18, 10, 0x000000, 1);
-	DrawBox(175, 290, 187, 313, 0x000000, 1);
-	DrawOval(180, 313, 22, 8, 0x000000, 1);
-	DrawStringToHandle(215, 280, "移動", 0x0000ff, MenuFont, 0);
+	DrawStringToHandle(20, 100, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(20, 160, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(250, 220, "操作方法", 0x777777, MenuFont, 0);
+	DrawOval(150, 290, 18, 10, 0x000000, 1);
+	DrawBox(145, 290, 157, 313, 0x000000, 1);
+	DrawOval(150, 313, 22, 8, 0x000000, 1);
+	DrawStringToHandle(185, 280, "移動", 0x0000ff, MenuFont, 0);
 	DrawOval(390, 300, 70, 27, 0x000000, 1);
 	DrawStringToHandle(330, 280, "START", 0xffffff, MenuFont);
 	DrawStringToHandle(470, 280,"ぽーず", 0xff8c00,MenuFont);
 
-	DrawCircle(194, 350, 20, 0x000000, 1);
-	DrawStringToHandle(182, 330, "A", 0x00ff00,MenuFont);
-	DrawStringToHandle(220, 330, "で", 0xffffff, MenuFont, 0);
+	DrawCircle(195, 380, 20, 0x000000, 1);
+	DrawStringToHandle(182, 360, "A", 0x00ff00,MenuFont);
+	DrawStringToHandle(220, 360, "で", 0xffffff, MenuFont, 0);
 	if (Timer(1) < 30) {
-		DrawStringToHandle(260, 330, "ゲームスタート", 0xffff00, MenuFont, 0);
+		DrawStringToHandle(260, 360, "ゲームスタート", 0xffff00, MenuFont, 0);
 	}
 	else if(Timer(0) > 60){ Timer(-1); }
 
@@ -245,7 +245,7 @@ void DrawEnd(void) {
 	if (Timer(1) < 600) { g_PosY = 300 - Timer(0) / 2; }
 
 	SetFontSize(24);
-	DrawString(140, 80 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
+	DrawString(140, 80 + g_PosY, "タイトル　　　りんごおとし", 0xFFFFFF, 0);
 	DrawString(140, 110 + g_PosY, "バージョン　　1.0", 0xFFFFFF, 0);
 	DrawString(140, 140 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF, 0);
 	DrawString(140, 170 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF, 0);
@@ -408,19 +408,19 @@ void HelpGuide(int num) {
 
 	case DRAW_RANKING:
 		//B
-		DrawCircle(304, 457, 10, 0x000000, 1);
+		DrawCircle(305, 457, 10, 0x000000, 1);
 		DrawString(300, 450, "B", 0xff4500);
 		DrawString(320, 450, "戻る", 0xFFFFFF);
 		break;
 
 	case DRAW_HELP:
 		//B
-		DrawCircle(204, 457, 10, 0x000000, 1);
+		DrawCircle(205, 457, 10, 0x000000, 1);
 		DrawString(200, 450, "B", 0xff4500);
 		DrawString(220, 450, "戻る", 0xFFFFFF);
 
 		//A
-		DrawCircle(374, 457, 10, 0x000000, 1);
+		DrawCircle(375, 457, 10, 0x000000, 1);
 		DrawString(370, 450, "A", 0x00ff00);
 		DrawString(390, 450, "ゲームスタート", 0xFFFFFF);
 		break;
@@ -457,7 +457,7 @@ void HelpGuide(int num) {
 		DrawFormatString(104, 450, 0xFFFFFF, "切り替え");
 
 		//B
-		DrawCircle(214, 457, 10, 0x000000, 1);
+		DrawCircle(215, 457, 10, 0x000000, 1);
 		DrawFormatString(210, 450, 0xff4500, "B");
 		DrawString(230, 450, "1文字削除", 0xFFFFFF);
 
