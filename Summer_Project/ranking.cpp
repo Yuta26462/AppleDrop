@@ -86,11 +86,11 @@ void Ranking::InputRanking(void)
 	}
 	if (KeyMap == 1) {
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
-		DrawBox(160, 260, 460, 380, 0XFFD700,TRUE);
-		DrawBox(160, 260, 460, 380, 0x808000, FALSE);
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+		//DrawBox(160, 260, 460, 380, 0XFFD700,TRUE);
+		//DrawBox(160, 260, 460, 380, 0x808000, FALSE);
 		//DrawFillBox(160, 230, 450, 420, 0x000000);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawCircle(214, 397, 10, 0x000000, 1);
 		DrawString(210, 390, "Y", 0xffff00);
 		DrawString(234, 390, "ëÂï∂éöÅ^è¨ï∂éöêÿÇËë÷Ç¶",0xFFFFFF);
