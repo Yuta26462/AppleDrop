@@ -11,13 +11,21 @@ void Ranking::DrawRanking(void) {
 	if (PadInput(INPUT_B)) { PlaySoundMem(GetSound(SE_Return), DX_PLAYTYPE_BACK); SetGameStatus(DRAW_GAMETITLE); }
 
 	DrawGraph(0, 0, GetImage(Image_Ranking), FALSE);
+	DrawStringToHandle(170, 40, "ランキング", 0xFFFF33, GetFont(Font_Title),0xFFFFFF);
+	DrawLineBox(65, 110, 575, 400, 0xFFFFFFF);	//外枠
+	DrawLineAA(65, 160, 575, 160, 0xFFFFFF, 2.0F); //横見出し列
+	DrawLineAA(110, 110, 110, 400, 0xFFFFFF,2.0F);	//1列目
+	DrawLineAA(450, 110, 450, 400, 0xFFFFFF, 2.0F);	//3列目
 
+	DrawStringToHandle(62, 113, "No", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
+	DrawStringToHandle(240, 113, "名前", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
+	DrawStringToHandle(450, 113, "スコア", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
 	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(50, 120 + i * 50, 0xffffff, GetFont(Font_Menu), "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
-		DrawFormatStringToHandle(380, 120 + i * 50, 0xffffff, GetFont(Font_Menu), "%5d", g_Ranking[i].score);
+		DrawFormatStringToHandle(65, 160 + i * 50, 0xffffff, GetFont(Font_Menu), "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
+		DrawFormatStringToHandle(450, 160 + i * 50, 0xffffff, GetFont(Font_Menu), "%5d", g_Ranking[i].score);
 
 		if (Timer(1) < 120) {
-			DrawString(150, 390, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
+			DrawString(150, 410, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
 		}
 		else if (Timer(0) > 360) { Timer(-1); }
 	}
@@ -261,7 +269,7 @@ int Ranking::ReadRanking(void)
 	//ランキングデータ配分列データを読み込む
 	for (int i = 0; i < RANKING_DATA; i++) {
 
-		fscanf_s(fp, "%2d %10s %5d", &g_Ranking[i].no, &g_Ranking[i].name, 9, &g_Ranking[i].score);
+		fscanf_s(fp, "%2d %10s %5d\n", &g_Ranking[i].no, &g_Ranking[i].name, 9, &g_Ranking[i].score);
 	}
 
 	//ファイルクローズ

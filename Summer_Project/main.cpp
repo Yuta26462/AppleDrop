@@ -260,15 +260,15 @@ void DrawHelp(void) {
 	DrawStringToHandle(20, 100, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
 	DrawStringToHandle(20, 160, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
 	DrawStringToHandle(250, 220, "操作方法", 0xffffff, MenuFont, 0);
-	DrawOval(150, 290, 18, 10, 0x000000, 1);
-	DrawBox(145, 290, 157, 313, 0x000000, 1);
-	DrawOval(150, 313, 22, 8, 0x000000, 1);
+	DrawOvalAA(150, 290, 18, 10,20, 0x000000, 1);
+	DrawBoxAA(145, 290, 157, 313, 0x000000, 1);
+	DrawOvalAA(150, 313, 22, 8,20, 0x000000, 1);
 	DrawStringToHandle(185, 280, "移動", 0x0000ff, MenuFont, 0);
-	DrawOval(390, 300, 70, 27, 0x000000, 1);
+	DrawOvalAA(390, 300, 70, 27,40, 0x000000, 1);
 	DrawStringToHandle(330, 280, "START", 0xffffff, MenuFont);
 	DrawStringToHandle(470, 280,"ぽーず", 0xff8c00,MenuFont);
 
-	DrawCircle(195, 380, 20, 0x000000, 1);
+	DrawCircleAA(195, 380, 20,20, 0x000000, 1);
 	DrawStringToHandle(182, 360, "A", 0x00ff00,MenuFont);
 	DrawStringToHandle(220, 360, "で", 0xffffff, MenuFont, 0);
 	if (Timer(1) < 30) {
@@ -355,7 +355,7 @@ void GameMain(void) {
 		}
 
 		if (1 <= TimeLimit && TimeLimit !=0) TimeLimit--;
-		if (1 > TimeLimit)DrawFinish();
+		if (1 >= TimeLimit)Timer(-1, 1); DrawFinish();
 	}
 
 	else {
@@ -438,36 +438,36 @@ void HelpGuide(int num) {
 	{
 	case DRAW_GAMETITLE:
 		//ジョイスティック
-		DrawOval(180, 450, 10, 5, 0x000000, 1);
-		DrawBox(177, 450, 185, 463, 0x000000, 1);
-		DrawOval(180, 463, 12, 5, 0x000000, 1);
+		DrawOvalAA(180, 450, 10, 5,20, 0x000000, 1);
+		DrawBoxAA(177, 450, 185, 463, 0x000000, 1);
+		DrawOvalAA(180, 463, 12, 5,20, 0x000000, 1);
 		DrawFormatString(200, 450, 0xFFFFFF, "移動");
 
 		//A
-		DrawCircle(305, 457, 10, 0x000000, 1);
+		DrawCircleAA(305, 457, 10,20, 0x000000, 1);
 		DrawString(300, 450, "A", 0x00ff00);
 		DrawString(320, 450, "決定", 0xFFFFFF);
 
 		//BACK
-		DrawOval(420, 457, 28, 10, 0x000000, 1);
+		DrawOvalAA(420, 457, 28, 10,20, 0x000000, 1);
 		DrawFormatString(400, 450, 0xFFFFFF, "BACK   終了");
 		break;
 
 	case DRAW_RANKING:
 		//B
-		DrawCircle(305, 457, 10, 0x000000, 1);
+		DrawCircleAA(305, 457, 10,20, 0x000000, 1);
 		DrawString(300, 450, "B", 0xff4500);
 		DrawString(320, 450, "戻る", 0xFFFFFF);
 		break;
 
 	case DRAW_HELP:
 		//B
-		DrawCircle(205, 457, 10, 0x000000, 1);
+		DrawCircleAA(205, 457, 10,20, 0x000000, 1);
 		DrawString(200, 450, "B", 0xff4500);
 		DrawString(220, 450, "戻る", 0xFFFFFF);
 
 		//A
-		DrawCircle(375, 457, 10, 0x000000, 1);
+		DrawCircleAA(375, 457, 10,20, 0x000000, 1);
 		DrawString(370, 450, "A", 0x00ff00);
 		DrawString(390, 450, "ゲームスタート", 0xFFFFFF);
 		break;
@@ -480,18 +480,19 @@ void HelpGuide(int num) {
 		else { color = 0x000000; color2 = 0xFFFFFF; SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);}
 
 		//ジョイスティック
-		DrawOval(180, 450, 10, 5, color, 1);
-		DrawBox(177, 450, 185, 463, color, 1);
-		DrawOval(180, 463, 12, 5, color, 1);
+		DrawOvalAA(180, 450, 10, 5,20, color, 1);
+		DrawBoxAA(177, 450, 185, 463, color, 1);
+		DrawOvalAA(180, 463, 12, 5,20, color, 1);
 		DrawFormatString(200, 450, color, "移動");
 
 		//START
-		DrawOval(284, 457, 30, 10, color, 1);
+		DrawOvalAA(284, 457, 30, 10,20, color, 1);
 		DrawFormatString(260, 450, color2, "START");
-		DrawString(320, 450, "ポーズ", color);
+		if(Pauseflg == false)DrawString(320, 450, "ポーズ", color);
+		else if(Pauseflg == true)DrawString(320, 450, "ゲームに戻る", color);
 
 		//BACK
-		DrawOval(404, 457, 28, 10, color, 1);
+		DrawOvalAA(404, 457, 28, 10,20, color, 1);
 		DrawFormatString(384, 450, color2, "BACK");
 		DrawString(439, 450, "終了", color);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -499,22 +500,22 @@ void HelpGuide(int num) {
 
 	case INPUT_RANKING:
 		//X
-		DrawCircle(89, 457, 10, 0x000000, 1);
+		DrawCircleAA(89, 457, 10,20, 0x000000, 1);
 		DrawFormatString(85, 450, 0x4169e1, "X");
 		DrawFormatString(104, 450, 0xFFFFFF, "切り替え");
 
 		//B
-		DrawCircle(215, 457, 10, 0x000000, 1);
+		DrawCircleAA(215, 457, 10,20, 0x000000, 1);
 		DrawFormatString(210, 450, 0xff4500, "B");
 		DrawString(230, 450, "1文字削除", 0xFFFFFF);
 
 		//A
-		DrawCircle(355, 457, 10, 0x000000, 1);
+		DrawCircleAA(355, 457, 10,20, 0x000000, 1);
 		DrawFormatString(350, 450, 0x00ff00, "A");
 		DrawString(370, 450, "入力", 0xFFFFFF);
 
 		//START
-		DrawOval(474, 457, 30, 10, 0x000000, 1);
+		DrawOvalAA(474, 457, 30, 10,20, 0x000000, 1);
 		DrawFormatString(450, 450, 0xFFFFFF, "START");
 		DrawString(510, 450, "名前確定", 0xFFFFFF);
 		break;
@@ -537,7 +538,7 @@ void Sidebar() {
 		if (Timer(0, 1) > 60 && TimeLimit > 0)TimeLimit_color -= RGB(50, 7, 0);
 	}
 	DrawFormatString(545, 110, 0xffff99, "SCORE");
-	DrawFormatString(550, 130, 0xffff99, "%4d", g_Score);
+	DrawFormatStringToHandle(520, 130, 0xffff99,MenuFont, "%4.0d", g_Score);
 	DrawFormatString(540, 190, 0xFFFFFF, "採った数");
 	DrawRotaGraph(550, 250, 1.0f, 0, apple_img[0], TRUE, FALSE);
 	DrawRotaGraph(550, 310, 1.0f, 0, apple_img[1], TRUE, FALSE);
