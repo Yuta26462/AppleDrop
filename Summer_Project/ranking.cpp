@@ -85,6 +85,12 @@ void Ranking::InputRanking(void)
 		}
 	}
 	if (KeyMap == 1) {
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+		DrawBox(160, 260, 460, 380, 0XFFD700,TRUE);
+		DrawBox(160, 260, 460, 380, 0x808000, FALSE);
+		//DrawFillBox(160, 230, 450, 420, 0x000000);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawCircle(214, 397, 10, 0x000000, 1);
 		DrawString(210, 390, "Y", 0xffff00);
 		DrawString(234, 390, "ëÂï∂éöÅ^è¨ï∂éöêÿÇËë÷Ç¶",0xFFFFFF);
@@ -126,6 +132,7 @@ void Ranking::InputRanking(void)
 		if (GetSelect(Select_X) == -1)if (--selecterX < 0)selecterX = 12; 
 		if (GetSelect(Select_Y) == 1)if (++selecterY > 4)selecterY = 0;  else if (selecterY == 2 && selecterX > 9)selecterX = 0;
 		if (GetSelect(Select_Y) == -1)if (--selecterY < 0)selecterY = 4;
+		if (selecterY == 0 && selecterX > 9)selecterX = 9;
 	}
 	else if (KeyMap == 1) {
 		KeyBoard_X = KEYBORA_X + 40;
@@ -143,11 +150,14 @@ void Ranking::InputRanking(void)
 		if (selecterY == 3 && selecterX > 6)selecterX = 6;
 		if (selecterY > 3)selecterY = 3;	//êÿÇËë÷Ç¶éûå©é∏Ç¢ñhé~
 	}
-	if (PadInput(INPUT_A)) { if(Timer(0) > 20)color = 0xffffff; }
+	//ï∂éöì¸óÕéûÇÃêFïœçX
+	if (Timer(1, 1) && PadInput(INPUT_A) && input_i < 9) { Timer(-1, 1); color = 0xffffff; }
+	else if (Timer(0, 1) > 15) { color = 0x000000; Timer(-1, 1); }
+
 	if (GetSelect(Select_X) == -1 || GetSelect(Select_X) == 1 || GetSelect(Select_Y) == -1 || GetSelect(Select_Y) == 1) { PlaySoundMem(GetSound(SE_Selecter), DX_PLAYTYPE_BACK); }
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox((KeyBoard_X + KeyBoard_XMrgin - 10) + Selecter_BOXSIZE * selecterX, (KEYBORA_Y  - 10) + Selecter_BOXSIZE * selecterY, (KeyBoard_X + KeyBoard_XMrgin + 20) + Selecter_BOXSIZE * selecterX, (KEYBORA_Y + 20) + Selecter_BOXSIZE * selecterY, color, FALSE);
-	if(Timer(0) < 40)color = 0x000000;
+	
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
 
 	if (PadInput(INPUT_X)) {

@@ -5,7 +5,8 @@
 
 int g_OldKey, g_NowKey, g_KeyFlg;
 
-int g_GameState = DRAW_GAMETITLE;
+const float Version = VERSION;
+int g_GameState = INPUT_RANKING;
 int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
@@ -143,32 +144,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
+	static bool StartMoveflg = false;
 
 	if (GetAllReset()) {
 		MenuNo = 0;
+		StartMoveflg = false;
 		SetAllReset(false);
+		Timer(-1, 1);
 	}
 
 	if (CheckSoundMem(GetSound(BGM_Ranking)) == 1)StopSoundMem(GetSound(BGM_Ranking));
 	if (CheckSoundMem(GetSound(BGM_Title)) == 0)PlaySoundMem(GetSound(BGM_Title), DX_PLAYTYPE_BACK);
 
-	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; }
-	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; }
-	if (PadInput(INPUT_A)) {PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK); g_GameState = MenuNo + 1;}
+	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; StartMoveflg = true; }
+	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; StartMoveflg = true;}
+	if (Timer(1, 1) && PadInput(INPUT_A)) {
+		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
+		Timer(-1, 1);
+		if(MenuNo != 0) { g_GameState = MenuNo + 1; }
+	}
+	else if((Timer(0, 1) > 160)){
+		if (MenuNo == 0) {
+			if (Timer(0, 1) > 160)DrawRotaGraph(400 - (Timer(0, 1) * 3), 300, 1.0f, 0, players_img[7], TRUE);
+			if (Timer(0, 1) > 360) { Timer(-1, 1); g_GameState = 1; }
+		}
+	}
+
 	int change = 0; if (PadInput(INPUT_Y)) { int change = 1;; ChangeVolumeSoundMem(0, GameMainBGM); }
 	else if (change == 0) { change = 1; ChangeVolumeSoundMem(255, GameMainBGM); }
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	static bool ani = true;
 	if (ani == true) {
-		static int aniy = rand() % 50;
+		static int aniy = GetRand(20);
 		/*if(++aniy > 10)*/
-		if (Timer(1,0) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 120) DrawStringToHandle(300, 100 + aniy, "ご", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 180) DrawStringToHandle(350, 100 + aniy, "お", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 240) DrawStringToHandle(400, 100 + aniy, "と", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 0) > 300) { DrawStringToHandle(450, 100 + aniy, "し", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1); }
+		if (Timer(1,2) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 90) DrawStringToHandle(300, 100 + aniy, "ご", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 120) DrawStringToHandle(350, 100 + aniy, "お", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 150) DrawStringToHandle(400, 100 + aniy, "と", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 180) { DrawStringToHandle(450, 100 + aniy, "し", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1,2); }
 	}
 	else if (ani == false) {
 
@@ -180,14 +195,41 @@ void DrawGameTitle(void) {
 		DrawStringToHandle(450, 100, "し", 0xff4000, TitleFont, 0xffffff);
 	}
 
+	static int Menu_Animation = GetRand(8);
+	static bool Menu_AniFlg = false;
 
-	DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと");
-	DrawFormatStringToHandle(420, 320, 0xff4000, MenuFont, "らんきんぐ");
-	DrawFormatStringToHandle(420, 360, 0xff4000, MenuFont, "へるぷ");
-	DrawFormatStringToHandle(420, 400, 0xff4000, MenuFont, "えんど");
+	if (StartMoveflg == true && MenuNo == 0 && Menu_AniFlg == false) {
+		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 280 + Menu_Animation, 0xff4000, MenuFont, "すたーと"); Menu_Animation = GetRand(8); 
+		} else { DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); }
+	}else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); Timer(-1); }
+
+	if (MenuNo == 1 && Menu_AniFlg == false) {
+		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 320 + Menu_Animation, 0xff4000, MenuFont, "らんきんぐ"); Menu_Animation = GetRand(8); 
+		}else{ Timer(-1); }
+	}else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 320, 0xff4000, MenuFont, "らんきんぐ"); }
+
+	if (MenuNo == 2 && Menu_AniFlg == false) {
+		if (Timer(1) < 20) {
+			Menu_AniFlg = true; DrawFormatStringToHandle(420, 360 + Menu_Animation, 0xff4000, MenuFont, "へるぷ"); Menu_Animation = GetRand(8);
+		}
+		else { Timer(-1); }
+	}
+	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 360, 0xff4000, MenuFont, "へるぷ"); }
+
+	if (MenuNo == 3 && Menu_AniFlg == false) {
+		if (Timer(1) < 20) {
+			Menu_AniFlg = true; DrawFormatStringToHandle(420, 400 + Menu_Animation, 0xff4000, MenuFont, "えんど"); Menu_Animation = GetRand(8);
+		}
+		else { Timer(-1); }
+	}
+	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 400, 0xff4000, MenuFont, "えんど"); }
+
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
+	DrawFormatString(20, 450, 0xFFFFFF, "Ver.%.2f", Version);
+
+	DrawFormatString(200, 350, 0xff4000, "%d", Timer(0, 1));
 }
 
 void GameInit(void) {
@@ -245,8 +287,9 @@ void DrawEnd(void) {
 	if (Timer(1) < 600) { g_PosY = 300 - Timer(0) / 2; }
 
 	SetFontSize(24);
-	DrawString(140, 80 + g_PosY, "タイトル　　　りんごのもり", 0xFFFFFF, 0);
-	DrawString(140, 110 + g_PosY, "バージョン　　1.0", 0xFFFFFF, 0);
+	DrawString(140, 80 + g_PosY, "タイトル　　　りんごおとし", 0xFFFFFF, 0);
+	DrawString(140, 110 + g_PosY, "バージョン　　", 0xFFFFFF, 0);
+	DrawFormatString(308, 110 + g_PosY, 0xFFFFFF, "%.2f", Version);
 	DrawString(140, 140 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF, 0);
 	DrawString(140, 170 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF, 0);
 	DrawString(140, 200 + g_PosY, "　　　　　　　しょうご,しき", 0xFFFFFF, 0);

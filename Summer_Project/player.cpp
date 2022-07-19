@@ -14,7 +14,7 @@ void PLAYER::PlayerControl() {
 		if (flg == TRUE) {
 			int i = 0;
 			PadSpeedTimer++;
-			if (PadSpeedTimer > 20 - i) {
+			if (PadSpeedTimer > 10 - i) {
 				PadSpeedTimer = 0;
 				if (speed < 6 && speed > -6) {
 					/*++speed; i += 4;*/ old_player_angle = player_angle; checkflg = 0;
