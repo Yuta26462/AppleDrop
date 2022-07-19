@@ -181,21 +181,21 @@ void DrawGameTitle(void) {
 	if (ani == true) {
 		static int aniy = GetRand(20);
 		/*if(++aniy > 10)*/
-		if (Timer(1,2) > 30) DrawStringToHandle(200, 100 + aniy, "り", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 60) DrawStringToHandle(250, 100 + aniy, "ん", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 90) DrawStringToHandle(300, 100 + aniy, "ご", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 120) DrawStringToHandle(350, 100 + aniy, "お", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 150) DrawStringToHandle(400, 100 + aniy, "と", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 180) { DrawStringToHandle(450, 100 + aniy, "し", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1,2); }
+		if (Timer(1,2) > 30) DrawStringToHandle(180, 100 + aniy, "り", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 60) DrawStringToHandle(230, 100 + aniy, "ん", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 90) DrawStringToHandle(280, 100 + aniy, "ご", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 120) DrawStringToHandle(330, 100 + aniy, "お", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 150) DrawStringToHandle(380, 100 + aniy, "と", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 180) { DrawStringToHandle(430, 100 + aniy, "し", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1,2); }
 	}
 	else if (ani == false) {
 
-		DrawStringToHandle(200, 100, "り", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(250, 100, "ん", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(300, 100, "ご", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(350, 100, "お", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(400, 100, "と", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(450, 100, "し", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(180, 100, "り", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(230, 100, "ん", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(280, 100, "ご", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(330, 100, "お", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(380, 100, "と", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(430, 100, "し", 0xff4000, TitleFont, 0xffffff);
 	}
 
 	static int Menu_Animation = GetRand(8);
@@ -232,7 +232,7 @@ void DrawGameTitle(void) {
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
 	DrawFormatString(20, 450, 0xFFFFFF, "Ver.%.2f", Version);
 
-	DrawFormatString(200, 350, 0xff4000, "%d", Timer(0, 1));
+	//DrawFormatString(200, 350, 0xff4000, "%d", Timer(0, 1));		デバッグ用
 }
 
 void GameInit(void) {
@@ -255,11 +255,11 @@ void DrawHelp(void) {
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
-	DrawStringToHandle(260, 40, "へるぷ", 0x777777, MenuFont, 0);
+	DrawStringToHandle(260, 40, "へるぷ", 0xffffff, MenuFont, 0);
 
 	DrawStringToHandle(20, 100, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
 	DrawStringToHandle(20, 160, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
-	DrawStringToHandle(250, 220, "操作方法", 0x777777, MenuFont, 0);
+	DrawStringToHandle(250, 220, "操作方法", 0xffffff, MenuFont, 0);
 	DrawOval(150, 290, 18, 10, 0x000000, 1);
 	DrawBox(145, 290, 157, 313, 0x000000, 1);
 	DrawOval(150, 313, 22, 8, 0x000000, 1);
@@ -413,12 +413,12 @@ void DrawFinish(void){
 	if (TimeLimit <= 1 && Timer(1) < 181) {
 		finishFlg = true;
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
 		DrawExtendGraph(0, 0, 640, 480, GetImage(Image_Title), FALSE);
 		DrawRotaGraph(player.GetPlayerTransition(PlayerX), player.GetPlayerTransition(PlayerY), 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
-		if(CheckSoundMem(Whistle_SE) == 0) PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
+		PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	}
 	if (TimeLimit <= 1 && Timer(0) > 180) {
