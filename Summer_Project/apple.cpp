@@ -11,7 +11,7 @@ int apple_quantity = 0;			//•`‰æ‚³‚ê‚Ä‚¢‚éƒŠƒ“ƒS‚ÌŒÂ”
 
 void Apple::AppleControl() {
 	int Made_apples = 0;			//¶¬‚·‚éƒŠƒ“ƒS‚ÌŒÂ”
-	DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
+	//DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
 	//ŠÔ‚²‚Æ‚ÉƒŠƒ“ƒSoŒ»ƒpƒ^[ƒ“‚ğ§Œä‚·‚é
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
@@ -178,7 +178,7 @@ int Apple::GetApplePos(int apple_speed, int num ,int* made_apples) {
 	apple_pos = GetRand(6);
 	for (int i = 0; i < 11; i++) {
 		
-		if (apple[num].type == BLACK_APPLE && apple[i].type == BLACK_APPLE)apple[num].y -= 50;
+		if (apple[num].type == BLACK_APPLE && apple[i].type == BLACK_APPLE)apple[num].y -= 100;
 
 		//ˆÊ’u‚ª“¯‚¶Šù‘¶‚ÌƒŠƒ“ƒS‚ğ’²‚×‚é
 		if (i != num && apple_pos == apple[i].pos && apple[num].speed > apple[i].speed) {
