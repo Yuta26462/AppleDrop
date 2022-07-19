@@ -261,6 +261,7 @@ void DrawHelp(void) {
 	
 	DrawStringToHandle(260, 40, "へるぷ", 0xffffff, MenuFont, 0);
 
+
 	DrawStringToHandle(20, 100, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
 	DrawStringToHandle(20, 160, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
 	DrawStringToHandle(250, 220, "操作方法", 0xffffff, MenuFont, 0);
@@ -269,6 +270,14 @@ void DrawHelp(void) {
 	DrawOvalAA(150, 313, 22, 8,20, 0x000000, 1);
 	DrawStringToHandle(185, 280, "移動", 0x0000ff, MenuFont, 0);
 	DrawOvalAA(390, 300, 70, 27,40, 0x000000, 1);
+	DrawStringToHandle(20, 100, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(20, 160, "おおくのりんごをとるゲームです。", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(250, 220, "操作方法", 0xffffff, MenuFont, 0);
+	DrawOval(150, 290, 18, 10, 0x000000, 1);
+	DrawBox(145, 290, 157, 313, 0x000000, 1);
+	DrawOval(150, 313, 22, 8, 0x000000, 1);
+	DrawStringToHandle(185, 280, "移動", 0x0000ff, MenuFont, 0);
+	DrawOval(390, 300, 70, 27, 0x000000, 1);
 	DrawStringToHandle(330, 280, "START", 0xffffff, MenuFont);
 	DrawStringToHandle(470, 280,"ぽーず", 0xff8c00,MenuFont);
 
@@ -490,7 +499,6 @@ void HelpGuide(int num) {
 			color = 0xFFFFFF; color2 = 0xff8c00;
 		}
 		else { color = 0x000000; color2 = 0xFFFFFF; SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);}
-
 		//ジョイスティック
 		DrawOvalAA(180, 450, 10, 5,20, color, 1);
 		DrawBoxAA(177, 450, 185, 463, color, 1);
@@ -501,7 +509,7 @@ void HelpGuide(int num) {
 		DrawOvalAA(284, 457, 30, 10,20, color, 1);
 		DrawFormatString(260, 450, color2, "START");
 		if(Pauseflg == false)DrawString(320, 450, "ポーズ", color);
-		else if(Pauseflg == true)DrawString(320, 450, "ゲームに戻る", color);
+		else if(Pauseflg == true)DrawString(320, 450, "戻る", color);
 
 		//BACK
 		DrawOvalAA(404, 457, 28, 10,20, color, 1);
@@ -551,6 +559,7 @@ void Sidebar() {
 	}
 	DrawFormatString(545, 110, 0xffff99, "SCORE");
 	DrawFormatStringToHandle(520, 130, 0xffff99,MenuFont, "%4.0d", g_Score);
+	DrawFormatString(550, 130, 0xffff99, "%4d", g_Score);
 	DrawFormatString(540, 190, 0xFFFFFF, "採った数");
 	DrawRotaGraph(550, 250, 1.0f, 0, apple_img[0], TRUE, FALSE);
 	DrawRotaGraph(550, 310, 1.0f, 0, apple_img[1], TRUE, FALSE);
