@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define TIMELIMIT 1800 + 60
+#define TIMELIMIT 60 + 60
 
 
 int g_OldKey, g_NowKey, g_KeyFlg;
@@ -13,6 +13,7 @@ int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
 bool finishFlg = false;
+bool whistle_flg = true;
 Ranking ranking;
 PLAYER player;
 Apple apple[11];
@@ -148,6 +149,8 @@ void DrawGameTitle(void) {
 	static int MenuNo = 0;
 	static bool StartMoveflg = false;
 
+	if (CheckSoundMem(Whistle_SE) == 1)StopSoundMem(Whistle_SE);
+
 	if (GetAllReset()) {
 		MenuNo = 0;
 		StartMoveflg = false;
@@ -203,8 +206,8 @@ void DrawGameTitle(void) {
 
 	if (StartMoveflg == true && MenuNo == 0 && Menu_AniFlg == false) {
 		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 280 + Menu_Animation, 0xff4000, MenuFont, "すたーと"); Menu_Animation = GetRand(8); 
-		} else { DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); }
-	}else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); Timer(-1); }
+		} else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); }
+	}else {  DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); Timer(-1); }
 
 	if (MenuNo == 1 && Menu_AniFlg == false) {
 		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 320 + Menu_Animation, 0xff4000, MenuFont, "らんきんぐ"); Menu_Animation = GetRand(8); 
@@ -242,6 +245,7 @@ void GameInit(void) {
 	TimeLimit = TIMELIMIT;
 	Timer(-1);
 	Pauseflg = false;
+	whistle_flg = true;
 
 	apple->AppleInit();
 	player.ResetPlayer();
@@ -314,7 +318,7 @@ void GameMain(void) {
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, TRUE);
 	}
 	else {
-		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
+		//if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
 	}
 	
 
@@ -356,6 +360,9 @@ void GameMain(void) {
 
 		if (1 <= TimeLimit && TimeLimit !=0) TimeLimit--;
 		if (1 > TimeLimit)DrawFinish();
+		DrawFormatString(280, 250, 0x000000, "TimeLimit:%d", TimeLimit);
+		DrawFormatString(280, 280, 0x000000, "Timer(1)%d", Timer(0,1));
+		DrawFormatString(280, 310, 0x000000, "Timer(0)%d", Timer(0));
 	}
 
 	else {
@@ -412,16 +419,23 @@ void DrawPause() {
 void DrawFinish(void){
 	if (TimeLimit <= 1 && Timer(1) < 181) {
 		finishFlg = true;
+		 
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
 		DrawExtendGraph(0, 0, 640, 480, GetImage(Image_Title), FALSE);
 		DrawRotaGraph(player.GetPlayerTransition(PlayerX), player.GetPlayerTransition(PlayerY), 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
-		if(CheckSoundMem(Whistle_SE) == 0) PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
+		DrawFormatString(100, 400, 0x000000, "Whistle:%d", whistle_flg);
+		
+			if (CheckSoundMem(Whistle_SE) == 0 && whistle_flg == true){
+				  PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, TRUE);
+			      whistle_flg = false;
+			}
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	}
 	if (TimeLimit <= 1 && Timer(0) > 180) {
+		//StopSoundMem(Whistle_SE);
 		Timer(-1);
 		finishFlg = false;
 		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
