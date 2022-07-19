@@ -358,7 +358,7 @@ void DrawPause() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox(0, 0, 640, 480, 0x000000, TRUE);
 	//DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "ぽ　ー　ず");
-	DrawStringToHandle(130, 200, "ぽ　ー　ず", 0xffffff, PauseFont, 0xff0f00);
+	DrawStringToHandle(110, 180, "ぽ　ー　ず", 0xffffff, PauseFont, 0xff0f00);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
