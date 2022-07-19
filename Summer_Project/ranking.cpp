@@ -52,7 +52,7 @@ void Ranking::InputRanking(void)
 	else if (GetTimer() > 60) { ResetTimer(); errorflg = 0; }
 
 	for (int i = 0; input_i > i; i++) { DrawFormatStringToHandle(195 + i * 25, 205, 0xFFFFFF, GetFont(Font_Menu), "%c", buf[i]);
-	DrawFormatString(195 + i * 40, 180, 0x000000, "%d", GetDrawStringWidthToHandle(&buf[i], strlen(&buf[i]), GetFont(Font_Menu)));
+	//DrawFormatString(195 + i * 40, 180, 0x000000, "%d", GetDrawStringWidthToHandle(&buf[i], strlen(&buf[i]), GetFont(Font_Menu)));
 	}
 	/*if(display > input_i){ DrawFormatStringToHandle(200 + input_i * 25, 205, 0xFFFFFF, MenuFont, "%c", buf[input_i - 1]); }*/
 	if (SetTimer(0) < 30) {

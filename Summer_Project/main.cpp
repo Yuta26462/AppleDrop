@@ -188,8 +188,8 @@ void DrawGameTitle(void) {
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
-	DrawFormatString(200, 400,0x000000, "%d", JoyPadX);
-	DrawFormatString(200, 430, 0x000000, "%d", JoyPadY);
+	/*DrawFormatString(200, 400,0x000000, "%d", JoyPadX);
+	DrawFormatString(200, 430, 0x000000, "%d", JoyPadY);*/
 }
 
 void GameInit(void) {
@@ -279,7 +279,7 @@ void GameMain(void) {
 	Sidebar();
 
 	for (int i = 0; i < 11; i++) {
-		DrawFormatString(20 * i + 100, 300, 0x000000, "%d", apple[i].GetAppleFlg());
+		//DrawFormatString(20 * i + 100, 300, 0x000000, "%d", apple[i].GetAppleFlg());
 		/*DrawFormatString(20 * i + 50, 200, 0x000000, "%d", apple[i].getpos());
 		DrawFormatString(20 * i + 50, 300, 0x000000, "%d", apple[i].getspeed());*/
 	}
@@ -302,9 +302,9 @@ void GameMain(void) {
 
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK,FALSE);
 
-		if (TimeLimit >= 10 && SetTimer(0) > 60) {
+		if (TimeLimit <= 720 && SetTimer2(0) > 60 && !finishFlg) {
 			PlaySoundMem(Count_SE, DX_PLAYTYPE_BACK);
-			ResetTimer();
+			ResetTimer2();
 		}
 
 		if (1 <= TimeLimit) TimeLimit--;
@@ -370,10 +370,11 @@ void DrawFinish(void){
 		DrawExtendGraph(0, 0, 640, 480, GetImage(Image_Title), FALSE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
-		PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
+		if(CheckSoundMem(Whistle_SE) == 0) PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	}
 	if (TimeLimit <= 1 && GetTimer2() > 180) {
+		//StopSoundMem(Whistle_SE);
 		ResetTimer2();
 		finishFlg = false;
 		if (g_Ranking[RANKING_DATA - 1].score >= g_Score) {
