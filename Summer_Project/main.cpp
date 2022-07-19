@@ -1,4 +1,4 @@
-#include "main.h"
+Ôªø#include "main.h"
 
 #define TIMELIMIT 1800 + 60
 
@@ -10,57 +10,58 @@ const char Last_Updated[14] = LAST_UPDATED;
 
 int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
-int TimeLimit;	//êßå¿éûä‘óp
+int TimeLimit;	//Âà∂ÈôêÊôÇÈñìÁî®
 bool StartFlg = false;
 bool finishFlg = false;
+bool whistle_flg = true;
 Ranking ranking;
 PLAYER player;
 Apple apple[11];
 
-int JoyPadX, JoyPadY,PadTimer;	//ÉAÉiÉçÉOÉXÉeÉBÉbÉNåXÇ´XY
-int SelectX, SelectY;			//ÉJÅ[É\Éãà⁄ìÆópXY(ÉAÉiÉçÉOÉXÉeÉBÉbÉN)
-bool Pauseflg;					//É|Å[ÉYópÉtÉâÉO
-bool PadType = false;			//XInputÇÃóLå¯ê´Çåüèo
-bool AllReset = false;			//É^ÉCÉgÉãâÊñ Ç∆ÉâÉìÉLÉìÉOâÊñ ÇÃëIëà íuÇÉäÉZÉbÉgÇ∑ÇÈÅB(2âÒñ⁄ëŒèàóp)
+int JoyPadX, JoyPadY,PadTimer;	//„Ç¢„Éä„É≠„Ç∞„Çπ„ÉÜ„Ç£„ÉÉ„ÇØÂÇæ„ÅçXY
+int SelectX, SelectY;			//„Ç´„Éº„ÇΩ„É´ÁßªÂãïÁî®XY(„Ç¢„Éä„É≠„Ç∞„Çπ„ÉÜ„Ç£„ÉÉ„ÇØ)
+bool Pauseflg;					//„Éù„Éº„Ç∫Áî®„Éï„É©„Ç∞
+bool PadType = false;			//XInput„ÅÆÊúâÂäπÊÄß„ÇíÊ§úÂá∫
+bool AllReset = false;			//„Çø„Ç§„Éà„É´ÁîªÈù¢„Å®„É©„É≥„Ç≠„É≥„Ç∞ÁîªÈù¢„ÅÆÈÅ∏Êäû‰ΩçÁΩÆ„Çí„É™„Çª„ÉÉ„Éà„Åô„Çã„ÄÇ(2ÂõûÁõÆÂØæÂá¶Áî®)
 
-int LoadImages();				//âÊëúÉfÅ[É^ì«Ç›çûÇ›
-int LoadSounds();				//âπê∫ÉfÅ[É^ì«Ç›çûÇ›
-void DrawPause();				//É|Å[ÉYóp
-void HelpGuide(int num);		//ëÄçÏê‡ñæ
-void Sidebar();					//êßå¿éûä‘ÅAÉXÉRÉAÅAÇËÇÒÇ≤ÇÃéÊìæêîï\é¶óp
+int LoadImages();				//ÁîªÂÉè„Éá„Éº„ÇøË™≠„ÅøËæº„Åø
+int LoadSounds();				//Èü≥Â£∞„Éá„Éº„ÇøË™≠„ÅøËæº„Åø
+void DrawPause();				//„Éù„Éº„Ç∫Áî®
+void HelpGuide(int num);		//Êìç‰ΩúË™¨Êòé
+void Sidebar();					//Âà∂ÈôêÊôÇÈñì„ÄÅ„Çπ„Ç≥„Ç¢„ÄÅ„Çä„Çì„Åî„ÅÆÂèñÂæóÊï∞Ë°®Á§∫Áî®
 
-/********************ëfçﬁ*********************/
-//ÉtÉHÉìÉg
+/********************Á¥†Êùê*********************/
+//„Éï„Ç©„É≥„Éà
 LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
-int TitleFont, MenuFont, PauseFont, KeyFont;	//ÉtÉHÉìÉgÉnÉìÉhÉã
-//âÊëú
-int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;		//âÊñ ï\é¶óp
-int players_img[9];			//ÉvÉåÉCÉÑÅ[ëÄçÏâÊëú[ç∂(3),âE(3),ëO(3)]
-int apple_img[4];			//ÇËÇÒÇ≤ÇÃâÊëú[ê‘ÇËÇÒÇ≤ÅAóŒÇËÇÒÇ≤ÅAã‡ÇÃÇËÇÒÇ≤ÅAì≈ÇËÇÒÇ≤]
-//âπê∫
+int TitleFont, MenuFont, PauseFont, KeyFont;	//„Éï„Ç©„É≥„Éà„Éè„É≥„Éâ„É´
+//ÁîªÂÉè
+int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;		//ÁîªÈù¢Ë°®Á§∫Áî®
+int players_img[9];			//„Éó„É¨„Ç§„É§„ÉºÊìç‰ΩúÁîªÂÉè[Â∑¶(3),Âè≥(3),Ââç(3)]
+int apple_img[4];			//„Çä„Çì„Åî„ÅÆÁîªÂÉè[Ëµ§„Çä„Çì„Åî„ÄÅÁ∑ë„Çä„Çì„Åî„ÄÅÈáë„ÅÆ„Çä„Çì„Åî„ÄÅÊØí„Çä„Çì„Åî]
+//Èü≥Â£∞
 int TitleBGM, GameMainBGM, RankingBGM, EndBGM;					//BGM
-int Selecter_SE, OK_SE, Return_SE, Key_Remove_SE;				//ëÄçÏâπSE
-int Count_SE, Whistle_SE;										//å¯â âπSE
-int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;		//ÇËÇÒÇ≤ópSE
+int Selecter_SE, OK_SE, Return_SE, Key_Remove_SE;				//Êìç‰ΩúÈü≥SE
+int Count_SE, Whistle_SE;										//ÂäπÊûúÈü≥SE
+int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;		//„Çä„Çì„ÅîÁî®SE
 
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
-	SetMainWindowText("ÇËÇÒÇ≤Ç®Ç∆Çµ");
+	SetMainWindowText("„Çä„Çì„Åî„Åä„Å®„Åó");
 	ChangeWindowMode(TRUE);
 
 	double dNextTime = GetNowCount();
 
-	// ÉtÉHÉìÉgì«Ç›çûÇ›
+	// „Éï„Ç©„É≥„ÉàË™≠„ÅøËæº„Åø
 	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
 	}
 	else {
-		// ÉtÉHÉìÉgì«çûÉGÉâÅ[èàóù
-		MessageBox(NULL, "ÉtÉHÉìÉgì«çûé∏îs", "ÉtÉHÉìÉgì«Ç›çûÇ›ÉGÉâÅ[", MB_OK | MB_ICONERROR);
+		// „Éï„Ç©„É≥„ÉàË™≠Ëæº„Ç®„É©„ÉºÂá¶ÁêÜ
+		MessageBox(NULL, "„Éï„Ç©„É≥„ÉàË™≠ËæºÂ§±Êïó", "„Éï„Ç©„É≥„ÉàË™≠„ÅøËæº„Åø„Ç®„É©„Éº", MB_OK | MB_ICONERROR);
 	}
 
-	ChangeFont("JKä€ÉSÉVÉbÉN Medium", DX_CHARSET_DEFAULT);
+	ChangeFont("JK‰∏∏„Ç¥„Ç∑„ÉÉ„ÇØ Medium", DX_CHARSET_DEFAULT);
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 
 	if (DxLib_Init() == -1)return -1;
@@ -70,13 +71,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (ranking.ReadRanking() == -1)return -1;
 
 	if (GetJoypadNum() == 0) {
-		if (MessageBox(NULL, "ÉRÉìÉgÉçÅ[ÉâÅ[Çê⁄ë±ÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB", "ÉRÉìÉgÉçÅ[ÉâÅ[Ç™ñ¢ê⁄ë±Ç≈Ç∑ÅB", MB_OKCANCEL | MB_ICONWARNING) == 1)
+		if (MessageBox(NULL, "„Ç≥„É≥„Éà„É≠„Éº„É©„Éº„ÇíÊé•Á∂ö„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ", "„Ç≥„É≥„Éà„É≠„Éº„É©„Éº„ÅåÊú™Êé•Á∂ö„Åß„Åô„ÄÇ", MB_OKCANCEL | MB_ICONWARNING) == 1)
 			return -1;
 	}
-	TitleFont = CreateFontToHandle("JKä€ÉSÉVÉbÉN Medium", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
-	MenuFont = CreateFontToHandle("JKä€ÉSÉVÉbÉN Medium", 40, 1, DX_FONTTYPE_ANTIALIASING_4X4);
-	PauseFont = CreateFontToHandle("JKä€ÉSÉVÉbÉN Medium", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
-	KeyFont = CreateFontToHandle("JKä€ÉSÉVÉbÉN Medium", 14, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	TitleFont = CreateFontToHandle("JK‰∏∏„Ç¥„Ç∑„ÉÉ„ÇØ Medium", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	MenuFont = CreateFontToHandle("JK‰∏∏„Ç¥„Ç∑„ÉÉ„ÇØ Medium", 40, 1, DX_FONTTYPE_ANTIALIASING_4X4);
+	PauseFont = CreateFontToHandle("JK‰∏∏„Ç¥„Ç∑„ÉÉ„ÇØ Medium", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	KeyFont = CreateFontToHandle("JK‰∏∏„Ç¥„Ç∑„ÉÉ„ÇØ Medium", 14, 1, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 
 	while (ProcessMessage() == 0 && g_GameState != END) {
 
@@ -148,6 +149,8 @@ void DrawGameTitle(void) {
 	static int MenuNo = 0;
 	static bool StartMoveflg = false;
 
+	if (CheckSoundMem(Whistle_SE) == 1)StopSoundMem(Whistle_SE);
+
 	if (GetAllReset()) {
 		MenuNo = 0;
 		StartMoveflg = false;
@@ -164,7 +167,7 @@ void DrawGameTitle(void) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		Timer(-1, 1);
 		if(MenuNo != 0) { g_GameState = MenuNo + 1; }
-		g_GameState = MenuNo + 1;		//ÉfÉoÉbÉOàÍéû
+		g_GameState = MenuNo + 1;		//„Éá„Éê„ÉÉ„Ç∞‰∏ÄÊôÇ
 	}
 	else if((Timer(0, 1) > 160)){
 		if (MenuNo == 0) {
@@ -181,58 +184,58 @@ void DrawGameTitle(void) {
 	if (ani == true) {
 		static int aniy = GetRand(20);
 		/*if(++aniy > 10)*/
-		if (Timer(1,2) > 30) DrawStringToHandle(180, 100 + aniy, "ÇË", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 60) DrawStringToHandle(230, 100 + aniy, "ÇÒ", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 90) DrawStringToHandle(280, 100 + aniy, "Ç≤", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 120) DrawStringToHandle(330, 100 + aniy, "Ç®", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 150) DrawStringToHandle(380, 100 + aniy, "Ç∆", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
-		if (Timer(0, 2) > 180) { DrawStringToHandle(430, 100 + aniy, "Çµ", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1,2); }
+		if (Timer(1,2) > 30) DrawStringToHandle(180, 100 + aniy, "„Çä", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 60) DrawStringToHandle(230, 100 + aniy, "„Çì", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 90) DrawStringToHandle(280, 100 + aniy, "„Åî", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 120) DrawStringToHandle(330, 100 + aniy, "„Åä", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 150) DrawStringToHandle(380, 100 + aniy, "„Å®", 0xff4000, TitleFont, 0x000000); aniy = rand() % 20;
+		if (Timer(0, 2) > 180) { DrawStringToHandle(430, 100 + aniy, "„Åó", 0xff4000, TitleFont, 0x000000); ani = false; Timer(-1,2); }
 	}
 	else if (ani == false) {
 
-		DrawStringToHandle(180, 100, "ÇË", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(230, 100, "ÇÒ", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(280, 100, "Ç≤", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(330, 100, "Ç®", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(380, 100, "Ç∆", 0xff4000, TitleFont, 0xffffff);
-		DrawStringToHandle(430, 100, "Çµ", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(180, 100, "„Çä", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(230, 100, "„Çì", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(280, 100, "„Åî", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(330, 100, "„Åä", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(380, 100, "„Å®", 0xff4000, TitleFont, 0xffffff);
+		DrawStringToHandle(430, 100, "„Åó", 0xff4000, TitleFont, 0xffffff);
 	}
 
 	static int Menu_Animation = GetRand(8);
 	static bool Menu_AniFlg = false;
 
 	if (StartMoveflg == true && MenuNo == 0 && Menu_AniFlg == false) {
-		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 280 + Menu_Animation, 0xff4000, MenuFont, "Ç∑ÇΩÅ[Ç∆"); Menu_Animation = GetRand(8); 
-		} else { DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "Ç∑ÇΩÅ[Ç∆"); }
-	}else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "Ç∑ÇΩÅ[Ç∆"); Timer(-1); }
+		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 280 + Menu_Animation, 0xff4000, MenuFont, "„Åô„Åü„Éº„Å®"); Menu_Animation = GetRand(8); 
+		} else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "„Åô„Åü„Éº„Å®"); }
+	}else {  DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "„Åô„Åü„Éº„Å®"); Timer(-1); }
 
 	if (MenuNo == 1 && Menu_AniFlg == false) {
-		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 320 + Menu_Animation, 0xff4000, MenuFont, "ÇÁÇÒÇ´ÇÒÇÆ"); Menu_Animation = GetRand(8); 
+		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 320 + Menu_Animation, 0xff4000, MenuFont, "„Çâ„Çì„Åç„Çì„Åê"); Menu_Animation = GetRand(8); 
 		}else{ Timer(-1); }
-	}else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 320, 0xff4000, MenuFont, "ÇÁÇÒÇ´ÇÒÇÆ"); }
+	}else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 320, 0xff4000, MenuFont, "„Çâ„Çì„Åç„Çì„Åê"); }
 
 	if (MenuNo == 2 && Menu_AniFlg == false) {
 		if (Timer(1) < 20) {
-			Menu_AniFlg = true; DrawFormatStringToHandle(420, 360 + Menu_Animation, 0xff4000, MenuFont, "Ç÷ÇÈÇ’"); Menu_Animation = GetRand(8);
+			Menu_AniFlg = true; DrawFormatStringToHandle(420, 360 + Menu_Animation, 0xff4000, MenuFont, "„Å∏„Çã„Å∑"); Menu_Animation = GetRand(8);
 		}
 		else { Timer(-1); }
 	}
-	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 360, 0xff4000, MenuFont, "Ç÷ÇÈÇ’"); }
+	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 360, 0xff4000, MenuFont, "„Å∏„Çã„Å∑"); }
 
 	if (MenuNo == 3 && Menu_AniFlg == false) {
 		if (Timer(1) < 20) {
-			Menu_AniFlg = true; DrawFormatStringToHandle(420, 400 + Menu_Animation, 0xff4000, MenuFont, "Ç¶ÇÒÇ«"); Menu_Animation = GetRand(8);
+			Menu_AniFlg = true; DrawFormatStringToHandle(420, 400 + Menu_Animation, 0xff4000, MenuFont, "„Åà„Çì„Å©"); Menu_Animation = GetRand(8);
 		}
 		else { Timer(-1); }
 	}
-	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 400, 0xff4000, MenuFont, "Ç¶ÇÒÇ«"); }
+	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 400, 0xff4000, MenuFont, "„Åà„Çì„Å©"); }
 
 
 	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
 	DrawFormatString(20, 450, 0xFFFFFF, "Ver.%.2f", Version);
 
-	//DrawFormatString(200, 350, 0xff4000, "%d", Timer(0, 1));		ÉfÉoÉbÉOóp
+	//DrawFormatString(200, 350, 0xff4000, "%d", Timer(0, 1));		„Éá„Éê„ÉÉ„Ç∞Áî®
 }
 
 void GameInit(void) {
@@ -242,6 +245,7 @@ void GameInit(void) {
 	TimeLimit = TIMELIMIT;
 	Timer(-1);
 	Pauseflg = false;
+	whistle_flg = true;
 
 	apple->AppleInit();
 	player.ResetPlayer();
@@ -255,24 +259,24 @@ void DrawHelp(void) {
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
-	DrawStringToHandle(260, 40, "Ç÷ÇÈÇ’", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(260, 40, "„Å∏„Çã„Å∑", 0xffffff, MenuFont, 0);
 
-	DrawStringToHandle(20, 100, "Ç±ÇÃÉQÅ[ÉÄÇÕêßå¿éûä‘ÅFÇRÇOïbÇ≈", 0xffffff, MenuFont, 0);
-	DrawStringToHandle(20, 160, "Ç®Ç®Ç≠ÇÃÇËÇÒÇ≤ÇÇ∆ÇÈÉQÅ[ÉÄÇ≈Ç∑ÅB", 0xffffff, MenuFont, 0);
-	DrawStringToHandle(250, 220, "ëÄçÏï˚ñ@", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(20, 100, "„Åì„ÅÆ„Ç≤„Éº„É†„ÅØÂà∂ÈôêÊôÇÈñìÔºöÔºìÔºêÁßí„Åß", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(20, 160, "„Åä„Åä„Åè„ÅÆ„Çä„Çì„Åî„Çí„Å®„Çã„Ç≤„Éº„É†„Åß„Åô„ÄÇ", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(250, 220, "Êìç‰ΩúÊñπÊ≥ï", 0xffffff, MenuFont, 0);
 	DrawOvalAA(150, 290, 18, 10,20, 0x000000, 1);
 	DrawBoxAA(145, 290, 157, 313, 0x000000, 1);
 	DrawOvalAA(150, 313, 22, 8,20, 0x000000, 1);
-	DrawStringToHandle(185, 280, "à⁄ìÆ", 0x0000ff, MenuFont, 0);
+	DrawStringToHandle(185, 280, "ÁßªÂãï", 0x0000ff, MenuFont, 0);
 	DrawOvalAA(390, 300, 70, 27,40, 0x000000, 1);
 	DrawStringToHandle(330, 280, "START", 0xffffff, MenuFont);
-	DrawStringToHandle(470, 280,"Ç€Å[Ç∏", 0xff8c00,MenuFont);
+	DrawStringToHandle(470, 280,"„ÅΩ„Éº„Åö", 0xff8c00,MenuFont);
 
 	DrawCircleAA(195, 380, 20,20, 0x000000, 1);
 	DrawStringToHandle(182, 360, "A", 0x00ff00,MenuFont);
-	DrawStringToHandle(220, 360, "Ç≈", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(220, 360, "„Åß", 0xffffff, MenuFont, 0);
 	if (Timer(1) < 30) {
-		DrawStringToHandle(260, 360, "ÉQÅ[ÉÄÉXÉ^Å[Ég", 0xffff00, MenuFont, 0);
+		DrawStringToHandle(260, 360, "„Ç≤„Éº„É†„Çπ„Çø„Éº„Éà", 0xffff00, MenuFont, 0);
 	}
 	else if(Timer(0) > 60){ Timer(-1); }
 
@@ -284,25 +288,27 @@ void DrawEnd(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (CheckSoundMem(EndBGM) == 0)PlaySoundMem(EndBGM, DX_PLAYTYPE_BACK);
 
-	//ÉGÉìÉhâÊëúï\é¶
+	//„Ç®„É≥„ÉâÁîªÂÉèË°®Á§∫
 	DrawExtendGraph(0, 0,640,480, g_EndImage, FALSE);
-	//ÉGÉìÉfÉBÉìÉOï\é¶
+	//„Ç®„É≥„Éá„Ç£„É≥„Ç∞Ë°®Á§∫
 	if (Timer(1) < 600) { g_PosY = 300 - Timer(0) / 2; }
 
 	SetFontSize(24);
-	DrawString(140, 80 + g_PosY, "É^ÉCÉgÉãÅ@Å@Å@ÇËÇÒÇ≤Ç®Ç∆Çµ", 0xFFFFFF, 0);
-	DrawString(140, 110 + g_PosY, "ÉoÅ[ÉWÉáÉìÅ@Å@", 0xFFFFFF, 0);
+	DrawString(140, 80 + g_PosY, "„Çø„Ç§„Éà„É´„ÄÄ„ÄÄ„ÄÄ„Çä„Çì„Åî„Åä„Å®„Åó", 0xFFFFFF, 0);
+	DrawString(140, 110 + g_PosY, "„Éê„Éº„Ç∏„Éß„É≥„ÄÄ„ÄÄ", 0xFFFFFF, 0);
 	DrawFormatString(308, 110 + g_PosY, 0xFFFFFF, "%.2f", Version);
-	DrawString(140, 140 + g_PosY, "ç≈èIçXêVì˙", 0xFFFFFF, 0);
+	DrawString(140, 140 + g_PosY, "ÊúÄÁµÇÊõ¥Êñ∞Êó•", 0xFFFFFF, 0);
 	DrawFormatString(308, 140 + g_PosY, 0xFFFFFF, "%s", Last_Updated);
-	DrawString(140, 170 + g_PosY, "êßçÏé“Å@Å@Å@Å@ÇÌÇÒ,Ç‰Ç§ÇΩ", 0xFFFFFF, 0);
-	DrawString(140, 200 + g_PosY, "Å@Å@Å@Å@Å@Å@Å@ÇµÇÂÇ§Ç≤,ÇµÇ´", 0xFFFFFF, 0);
-	DrawString(140, 240 + g_PosY, "ëfçﬁ", 0xFFFFFF);
-	DrawString(140, 270 + g_PosY, "Å@âÊëúÅ@Å@Å@Å@Ç¢ÇÁÇ∑Ç∆âÆ", 0xFFFFFF);
-	DrawString(140, 300 + g_PosY, "Å@BGMÅ@Å@Å@Å@ DOVA-SYNDROME", 0xFFFFFF, 0);
-	DrawString(140, 325 + g_PosY, "Å@SEÅ@Å@Å@Å@Å@å¯â âπçHñ[", 0xFFFFFF, 0);
+	DrawString(140, 170 + g_PosY, "Âà∂‰ΩúËÄÖ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„Çè„Çì,„ÇÜ„ÅÜ„Åü", 0xFFFFFF, 0);
+	DrawString(140, 200 + g_PosY, "„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„Åó„Çá„ÅÜ„Åî,„Åó„Åç", 0xFFFFFF, 0);
+	DrawString(140, 240 + g_PosY, "Á¥†Êùê", 0xFFFFFF);
+	DrawString(140, 270 + g_PosY, "„ÄÄÁîªÂÉè„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÅÑ„Çâ„Åô„Å®Â±ã,„Å¥„ÅΩ„ÇÑÂÄâÂ∫´", 0xFFFFFF);
+	DrawString(140, 300 + g_PosY, "„ÄÄBGM„ÄÄ„ÄÄ„ÄÄ„ÄÄ DOVA-SYNDROME", 0xFFFFFF, 0);
+	DrawString(140, 330 + g_PosY, "„ÄÄSE„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÂäπÊûúÈü≥„É©„Éú,ÂäπÊûúÈü≥Â∑•Êàø", 0xFFFFFF, 0);
+	DrawString(140, 360 + g_PosY, "„ÄÄ„ÄÄ„ÄÄ  „ÄÄ„ÄÄ„ÄÄ  È≠îÁéãÈ≠Ç,OtoLogic", 0xFFFFFF, 0);
+	DrawString(140, 390 + g_PosY, "„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ On-JinÔΩûÈü≥‰∫∫ÔΩû", 0xFFFFFF, 0);
 
-	//É^ÉCÉÄÇÃâ¡éZèàóùÅïèIóπ
+	//„Çø„Ç§„É†„ÅÆÂä†ÁÆóÂá¶ÁêÜÔºÜÁµÇ‰∫Ü
 	if (Timer(1) > 900) { Timer(-1); g_GameState = END; }
 
 	DeleteFontToHandle(MenuFont);
@@ -314,7 +320,7 @@ void GameMain(void) {
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, TRUE);
 	}
 	else {
-		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
+		//if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
 	}
 	
 
@@ -373,7 +379,7 @@ void GameMain(void) {
 int LoadImages() {
 	if ((g_TitleImage = LoadGraph("images/Title.png")) == -1)return-1;
 	if ((g_EndImage = LoadGraph("images/End.png")) == -1)return-1;
-	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//ÉäÉìÉS
+	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//„É™„É≥„Ç¥
 	if ((g_StageImage = LoadGraph("images/background.png")) == -1)return-1;
 	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
 	if (LoadDivGraph("images/player.png", 9, 3, 3, 32, 32, players_img) == -1)return -1;
@@ -404,21 +410,27 @@ int LoadSounds(void)
 void DrawPause() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox(0, 0, 640, 480, 0x000000, TRUE);
-	//DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "Ç€Å@Å[Å@Ç∏");
-	DrawStringToHandle(110, 180, "Ç€Å@Å[Å@Ç∏", 0xffffff, PauseFont, 0xff0f00);
+	//DrawFormatStringToHandle(130, 200, 0xffffff, PauseFont, "„ÅΩ„ÄÄ„Éº„ÄÄ„Åö");
+	DrawStringToHandle(110, 180, "„ÅΩ„ÄÄ„Éº„ÄÄ„Åö", 0xffffff, PauseFont, 0xff0f00);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void DrawFinish(void){
 	if (TimeLimit <= 1 && Timer(1) < 181) {
 		finishFlg = true;
+		 
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
 		DrawExtendGraph(0, 0, 640, 480, GetImage(Image_Title), FALSE);
 		DrawRotaGraph(player.GetPlayerTransition(PlayerX), player.GetPlayerTransition(PlayerY), 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
-		PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, FALSE);
+		DrawFormatString(100, 400, 0x000000, "Whistle:%d", whistle_flg);
+		
+			if (CheckSoundMem(Whistle_SE) == 0 && whistle_flg == true){
+				  PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, TRUE);
+			      whistle_flg = false;
+			}
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	}
 	if (TimeLimit <= 1 && Timer(0) > 180) {
@@ -437,39 +449,39 @@ void HelpGuide(int num) {
 	switch (num)
 	{
 	case DRAW_GAMETITLE:
-		//ÉWÉáÉCÉXÉeÉBÉbÉN
+		//„Ç∏„Éß„Ç§„Çπ„ÉÜ„Ç£„ÉÉ„ÇØ
 		DrawOvalAA(180, 450, 10, 5,20, 0x000000, 1);
 		DrawBoxAA(177, 450, 185, 463, 0x000000, 1);
 		DrawOvalAA(180, 463, 12, 5,20, 0x000000, 1);
-		DrawFormatString(200, 450, 0xFFFFFF, "à⁄ìÆ");
+		DrawFormatString(200, 450, 0xFFFFFF, "ÁßªÂãï");
 
 		//A
 		DrawCircleAA(305, 457, 10,20, 0x000000, 1);
 		DrawString(300, 450, "A", 0x00ff00);
-		DrawString(320, 450, "åàíË", 0xFFFFFF);
+		DrawString(320, 450, "Ê±∫ÂÆö", 0xFFFFFF);
 
 		//BACK
 		DrawOvalAA(420, 457, 28, 10,20, 0x000000, 1);
-		DrawFormatString(400, 450, 0xFFFFFF, "BACK   èIóπ");
+		DrawFormatString(400, 450, 0xFFFFFF, "BACK   ÁµÇ‰∫Ü");
 		break;
 
 	case DRAW_RANKING:
 		//B
 		DrawCircleAA(305, 457, 10,20, 0x000000, 1);
 		DrawString(300, 450, "B", 0xff4500);
-		DrawString(320, 450, "ñﬂÇÈ", 0xFFFFFF);
+		DrawString(320, 450, "Êàª„Çã", 0xFFFFFF);
 		break;
 
 	case DRAW_HELP:
 		//B
 		DrawCircleAA(205, 457, 10,20, 0x000000, 1);
 		DrawString(200, 450, "B", 0xff4500);
-		DrawString(220, 450, "ñﬂÇÈ", 0xFFFFFF);
+		DrawString(220, 450, "Êàª„Çã", 0xFFFFFF);
 
 		//A
 		DrawCircleAA(375, 457, 10,20, 0x000000, 1);
 		DrawString(370, 450, "A", 0x00ff00);
-		DrawString(390, 450, "ÉQÅ[ÉÄÉXÉ^Å[Ég", 0xFFFFFF);
+		DrawString(390, 450, "„Ç≤„Éº„É†„Çπ„Çø„Éº„Éà", 0xFFFFFF);
 		break;
 
 	case GAME_MAIN:
@@ -479,22 +491,22 @@ void HelpGuide(int num) {
 		}
 		else { color = 0x000000; color2 = 0xFFFFFF; SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);}
 
-		//ÉWÉáÉCÉXÉeÉBÉbÉN
+		//„Ç∏„Éß„Ç§„Çπ„ÉÜ„Ç£„ÉÉ„ÇØ
 		DrawOvalAA(180, 450, 10, 5,20, color, 1);
 		DrawBoxAA(177, 450, 185, 463, color, 1);
 		DrawOvalAA(180, 463, 12, 5,20, color, 1);
-		DrawFormatString(200, 450, color, "à⁄ìÆ");
+		DrawFormatString(200, 450, color, "ÁßªÂãï");
 
 		//START
 		DrawOvalAA(284, 457, 30, 10,20, color, 1);
 		DrawFormatString(260, 450, color2, "START");
-		if(Pauseflg == false)DrawString(320, 450, "É|Å[ÉY", color);
-		else if(Pauseflg == true)DrawString(320, 450, "ÉQÅ[ÉÄÇ…ñﬂÇÈ", color);
+		if(Pauseflg == false)DrawString(320, 450, "„Éù„Éº„Ç∫", color);
+		else if(Pauseflg == true)DrawString(320, 450, "„Ç≤„Éº„É†„Å´Êàª„Çã", color);
 
 		//BACK
 		DrawOvalAA(404, 457, 28, 10,20, color, 1);
 		DrawFormatString(384, 450, color2, "BACK");
-		DrawString(439, 450, "èIóπ", color);
+		DrawString(439, 450, "ÁµÇ‰∫Ü", color);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;
 
@@ -502,22 +514,22 @@ void HelpGuide(int num) {
 		//X
 		DrawCircleAA(89, 457, 10,20, 0x000000, 1);
 		DrawFormatString(85, 450, 0x4169e1, "X");
-		DrawFormatString(104, 450, 0xFFFFFF, "êÿÇËë÷Ç¶");
+		DrawFormatString(104, 450, 0xFFFFFF, "Âàá„ÇäÊõø„Åà");
 
 		//B
 		DrawCircleAA(215, 457, 10,20, 0x000000, 1);
 		DrawFormatString(210, 450, 0xff4500, "B");
-		DrawString(230, 450, "1ï∂éöçÌèú", 0xFFFFFF);
+		DrawString(230, 450, "1ÊñáÂ≠óÂâäÈô§", 0xFFFFFF);
 
 		//A
 		DrawCircleAA(355, 457, 10,20, 0x000000, 1);
 		DrawFormatString(350, 450, 0x00ff00, "A");
-		DrawString(370, 450, "ì¸óÕ", 0xFFFFFF);
+		DrawString(370, 450, "ÂÖ•Âäõ", 0xFFFFFF);
 
 		//START
 		DrawOvalAA(474, 457, 30, 10,20, 0x000000, 1);
 		DrawFormatString(450, 450, 0xFFFFFF, "START");
-		DrawString(510, 450, "ñºëOämíË", 0xFFFFFF);
+		DrawString(510, 450, "ÂêçÂâçÁ¢∫ÂÆö", 0xFFFFFF);
 		break;
 
 	default:
@@ -530,7 +542,7 @@ void Sidebar() {
 	//static int TimeLimit_color = RGB(255,69,0);
 	
 	DrawBox(500, 0, 640, 480, 0x009900, TRUE);
-	DrawFormatString(540, 20, 0xFFFFFF, "écÇËéûä‘");
+	DrawFormatString(540, 20, 0xFFFFFF, "ÊÆã„ÇäÊôÇÈñì");
 	DrawFormatStringToHandle(545, 50, 0xffff00,MenuFont, "%2d", TimeLimit / 60);
 	if(TimeLimit / 60 <= 10){ 
 		if (TimeLimit / 60 == 10)TimeLimit_color = 0xff4500;
@@ -539,7 +551,7 @@ void Sidebar() {
 	}
 	DrawFormatString(545, 110, 0xffff99, "SCORE");
 	DrawFormatStringToHandle(520, 130, 0xffff99,MenuFont, "%4.0d", g_Score);
-	DrawFormatString(540, 190, 0xFFFFFF, "çÃÇ¡ÇΩêî");
+	DrawFormatString(540, 190, 0xFFFFFF, "Êé°„Å£„ÅüÊï∞");
 	DrawRotaGraph(550, 250, 1.0f, 0, apple_img[0], TRUE, FALSE);
 	DrawRotaGraph(550, 310, 1.0f, 0, apple_img[1], TRUE, FALSE);
 	DrawRotaGraph(550, 370, 1.0f, 0, apple_img[2], TRUE, FALSE);
