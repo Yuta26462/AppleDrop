@@ -1,6 +1,13 @@
 #pragma once
-#define RANKING_DATA 5
 #include <string>	//ranking‚ÅŽg—p
+
+#define RANKING_DATA			5
+#define KEYBORA_X				100
+#define KEYBORA_Y				260
+#define KEYBORA_XMARGIN			30
+#define KEYBORA_YMARGIN			30
+#define Selecter_BOXSIZE		30
+
 extern struct RankingData g_Ranking[RANKING_DATA];
 
 struct	RankingData {
