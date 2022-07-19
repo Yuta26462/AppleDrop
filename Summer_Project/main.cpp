@@ -489,18 +489,18 @@ void Sidebar() {
 		DrawFormatStringToHandle(545, 50, TimeLimit_color, MenuFont, "%2d", TimeLimit / 60); 
 		if (Timer(0, 1) > 60 && TimeLimit > 0)TimeLimit_color -= RGB(50, 7, 0);
 	}
-	DrawFormatString(545, 100, 0xffff99, "SCORE");
-	DrawFormatString(550, 120, 0xffff99, "%4d", g_Score);
-	DrawFormatString(540, 160, 0xFFFFFF, "Ì‚Á‚½”");
-	DrawRotaGraph(550, 220, 1.0f, 0, apple_img[0], TRUE, FALSE);
-	DrawRotaGraph(550, 280, 1.0f, 0, apple_img[1], TRUE, FALSE);
-	DrawRotaGraph(550, 340, 1.0f, 0, apple_img[2], TRUE, FALSE);
-	DrawRotaGraph(550, 400, 1.0f, 0, apple_img[3], TRUE, FALSE);
+	DrawFormatString(545, 110, 0xffff99, "SCORE");
+	DrawFormatString(550, 130, 0xffff99, "%4d", g_Score);
+	DrawFormatString(540, 190, 0xFFFFFF, "Ì‚Á‚½”");
+	DrawRotaGraph(550, 250, 1.0f, 0, apple_img[0], TRUE, FALSE);
+	DrawRotaGraph(550, 310, 1.0f, 0, apple_img[1], TRUE, FALSE);
+	DrawRotaGraph(550, 370, 1.0f, 0, apple_img[2], TRUE, FALSE);
+	DrawRotaGraph(550, 430, 1.0f, 0, apple_img[3], TRUE, FALSE);
 
-	DrawFormatString(600, 215, 0xFFFFFF, "%d", apple->GetAppleCount(RED_APPLE));
-	DrawFormatString(600, 275, 0xFFFFFF, "%d", apple->GetAppleCount(GREEN_APPLE));
-	DrawFormatString(600, 335, 0xFFFFFF, "%d", apple->GetAppleCount(GOLD_APPLE));
-	DrawFormatString(600, 395, 0xFFFFFF, "%d", apple->GetAppleCount(BLACK_APPLE));
+	DrawFormatString(600, 245, 0xFFFFFF, "%d", apple->GetAppleCount(RED_APPLE));
+	DrawFormatString(600, 305, 0xFFFFFF, "%d", apple->GetAppleCount(GREEN_APPLE));
+	DrawFormatString(600, 365, 0xFFFFFF, "%d", apple->GetAppleCount(GOLD_APPLE));
+	DrawFormatString(600, 425, 0xFFFFFF, "%d", apple->GetAppleCount(BLACK_APPLE));
 }
 
 int Timer(int time, int index) {
