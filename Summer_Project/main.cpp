@@ -164,11 +164,12 @@ void DrawGameTitle(void) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
 		Timer(-1, 1);
 		if(MenuNo != 0) { g_GameState = MenuNo + 1; }
+		g_GameState = MenuNo + 1;		//デバッグ一時
 	}
 	else if((Timer(0, 1) > 160)){
 		if (MenuNo == 0) {
-			if (Timer(0, 1) > 160)DrawRotaGraph(400 - (Timer(0, 1) * 3), 300, 1.0f, 0, players_img[7], TRUE);
-			if (Timer(0, 1) > 360) { Timer(-1, 1); g_GameState = 1; }
+			/*if (Timer(0, 1) > 160)DrawRotaGraph(400 - (Timer(0, 1) * 3), 300, 1.0f, 0, players_img[7], TRUE);
+			if (Timer(0, 1) > 360) { Timer(-1, 1); g_GameState = 1; }*/
 		}
 	}
 
