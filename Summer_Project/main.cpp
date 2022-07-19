@@ -6,7 +6,9 @@
 int g_OldKey, g_NowKey, g_KeyFlg;
 
 const float Version = VERSION;
-int g_GameState = INPUT_RANKING;
+const char Last_Updated[14] = LAST_UPDATED;
+
+int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
@@ -290,7 +292,8 @@ void DrawEnd(void) {
 	DrawString(140, 80 + g_PosY, "タイトル　　　りんごおとし", 0xFFFFFF, 0);
 	DrawString(140, 110 + g_PosY, "バージョン　　", 0xFFFFFF, 0);
 	DrawFormatString(308, 110 + g_PosY, 0xFFFFFF, "%.2f", Version);
-	DrawString(140, 140 + g_PosY, "最終更新日　　2022年6月28日", 0xFFFFFF, 0);
+	DrawString(140, 140 + g_PosY, "最終更新日", 0xFFFFFF, 0);
+	DrawFormatString(308, 140 + g_PosY, 0xFFFFFF, "%s", Last_Updated);
 	DrawString(140, 170 + g_PosY, "制作者　　　　わん,ゆうた", 0xFFFFFF, 0);
 	DrawString(140, 200 + g_PosY, "　　　　　　　しょうご,しき", 0xFFFFFF, 0);
 	DrawString(140, 240 + g_PosY, "素材", 0xFFFFFF);

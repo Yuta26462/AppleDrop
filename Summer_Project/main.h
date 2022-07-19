@@ -7,6 +7,7 @@
 #include "ranking.h"
 #include "player.h"
 #define	VERSION									(float)2.35
+#define LAST_UPDATED							"2022”N7ŒŽ19“ú"
 
 #define Select_X								1
 #define Select_Y								2
