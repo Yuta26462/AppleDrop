@@ -1,0 +1,11 @@
+SE
+
+Count        　 OtoLogic　　 カウントダウン04
+GoldApple    　　魔王魂　　システム46
+KeyRemove    　効果音工房　ッテ(キャンセル音)
+OK           　　魔王魂　　システム49
+PoisonApple  　くらげ工匠　ボタン011
+RedGreenApple　くらげ工匠　ボタン070
+Return       　効果音ラボ　キャンセル5
+Selecter     　効果音工房　カーソル移動-11
+Whistle      　　On-Jin　　ホイッスル・連続
