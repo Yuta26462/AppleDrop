@@ -8,7 +8,7 @@ int g_OldKey, g_NowKey, g_KeyFlg;
 const float Version = VERSION;
 const char Last_Updated[14] = LAST_UPDATED;
 
-int g_GameState = DRAW_RANKING;
+int g_GameState = DRAW_GAMETITLE;
 int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
@@ -148,7 +148,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 	static bool StartMoveflg = false;
-
+	static bool TimerFlg;		//タイトルアニメーション用タイマーフラグ
+	static float CharaSize, CharaSpeed;
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 
 	if (CheckSoundMem(Whistle_SE) == 1)StopSoundMem(Whistle_SE);
@@ -156,6 +157,9 @@ void DrawGameTitle(void) {
 	if (GetAllReset()) {
 		MenuNo = 0;
 		StartMoveflg = false;
+		TimerFlg = false;
+		CharaSize = 0;
+		CharaSpeed = 0;
 		SetAllReset(false);
 		Timer(-1, 1);
 	}
@@ -166,7 +170,7 @@ void DrawGameTitle(void) {
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; StartMoveflg = true; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; StartMoveflg = true;}
 
-	static bool TimerFlg;
+	
 	if (TimerFlg == true)Timer(1, 1);
 	if (PadInput(INPUT_A)) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
@@ -175,7 +179,7 @@ void DrawGameTitle(void) {
 			TimerFlg = true;
 		}
 	}
-	static float CharaSize, CharaSpeed;
+	//static float CharaSize, CharaSpeed;
 		if (Timer(0, 1) < 260 && TimerFlg == true) { 
 			if(CharaSize < 8.0)CharaSize += 0.1;
 			if (CharaSpeed < 120)CharaSpeed++;
@@ -334,9 +338,6 @@ void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (StartFlg == TRUE) {
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, TRUE);
-	}
-	else {
-		//if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
 	}
 	
 
@@ -583,7 +584,7 @@ int Timer(int time, int index) {
 	const int TimerNum = 4;
 	static int g_WaitTime[TimerNum];
 
-	if (time == 1) {
+	if (time == 1 ) {
 		++g_WaitTime[index];
 		return g_WaitTime[index];
 	}
