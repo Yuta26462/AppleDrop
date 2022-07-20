@@ -10,19 +10,33 @@ void Ranking::DrawRanking(void) {
 
 	if (PadInput(INPUT_B)) { PlaySoundMem(GetSound(SE_Return), DX_PLAYTYPE_BACK); SetGameStatus(DRAW_GAMETITLE); }
 
-	DrawGraph(0, 0, GetImage(Image_Ranking), FALSE);
+	//DrawGraph(0, 0, GetImage(Image_Ranking), FALSE);
+	DrawRotaGraph(320, 260, 0.7f, 0, GetImage(Image_Ranking), FALSE);
+	DrawExtendGraph(55, 110, 585, 400, GetImage(Image_RankingInside), FALSE);
 	DrawStringToHandle(170, 40, "ランキング", 0xFFFF33, GetFont(Font_Title),0xFFFFFF);
-	DrawLineBox(65, 110, 575, 400, 0xFFFFFFF);	//外枠
-	DrawLineAA(65, 160, 575, 160, 0xFFFFFF, 2.0F); //横見出し列
-	DrawLineAA(110, 110, 110, 400, 0xFFFFFF,2.0F);	//1列目
-	DrawLineAA(450, 110, 450, 400, 0xFFFFFF, 2.0F);	//3列目
+	//DrawBoxAA(55, 110, 585, 400, 0x74F634, TRUE, 0.0F);	//外枠背景
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+	DrawBoxAA(55, 110, 585, 400, 0xbdff3d, FALSE, 5.0F);	//外枠
+	DrawLineAA(55, 160, 585, 160, 0xbdff3d, 5.0F); //横見出し列
+	DrawLineAA(110, 110, 110, 400, 0xbdff3d,2.0F);	//1列目
+	DrawLineAA(450, 110, 450, 400, 0xbdff3d, 2.0F);	//3列目
+	for(int i= 1; i < 5; i++){DrawLineAA(55, 155 + i * 50, 585, 155 + i * 50, 0xbdff3d, 2.0F);}//中間線
 
-	DrawStringToHandle(62, 113, "No", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	DrawStringToHandle(58, 113, "No", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
 	DrawStringToHandle(240, 113, "名前", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
-	DrawStringToHandle(450, 113, "スコア", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
+	DrawStringToHandle(455, 113, "スコア", 0xFFFFFF, GetFont(Font_Menu), 0x000000);
 	for (int i = 0; i < RANKING_DATA; i++) {
-		DrawFormatStringToHandle(65, 160 + i * 50, 0xffffff, GetFont(Font_Menu), "%2d  %-10s", g_Ranking[i].no, g_Ranking[i].name);
-		DrawFormatStringToHandle(450, 160 + i * 50, 0xffffff, GetFont(Font_Menu), "%5d", g_Ranking[i].score);
+		static int color = 0xFFFFFF;
+		if (i == 0) { color = 0xfffd3d; }
+		else if(i == 1){ color = 0xffbc3d; }
+		else if (i == 2) { color = 0xc9c9c9; }
+		else { color = 0xFFFFFF; }
+
+		DrawFormatStringToHandle(60, 160 + i * 50, color, GetFont(Font_Menu), "%2d", g_Ranking[i].no);
+		DrawFormatStringToHandle(120, 160 + i * 50, color, GetFont(Font_Menu), "%9s", g_Ranking[i].name);
+		DrawFormatStringToHandle(455, 160 + i * 50, color, GetFont(Font_Menu), "%5d", g_Ranking[i].score);
 
 		if (Timer(1) < 120) {
 			DrawString(150, 410, "---- Bボタンーをおしてタイトルへもどる ----", 0xffffff, 0);
@@ -45,8 +59,8 @@ void Ranking::InputRanking(void)
 	static char KeyMap_Qwerty[3][12] = { "QWERTYUIOP","ASDFGHJKL","ZXCVBNM" };
 	
 	// 名前入力指示文字列の描画
-	DrawFormatStringToHandle(120, 100, 0xFFFFFF, GetFont(Font_Menu), "ランキングに登録します");
-	DrawFormatStringToHandle(65, 150, 0xFFFFFF, GetFont(Font_Menu), "名前を英字で入力してください");
+	DrawFormatStringToHandle(120, 60, 0xFFFFFF, GetFont(Font_Menu), "ランキングに登録します");
+	DrawFormatStringToHandle(65, 110, 0xFFFFFF, GetFont(Font_Menu), "名前を英字で入力してください");
 	if (Timer(0) < 30) {
 		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xffffff, 0);
 	}
@@ -212,9 +226,8 @@ void Ranking::InputRanking(void)
 			if (selecterY == 1 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = KeyMap_Qwerty[selecterY - 1][selecterX] + (Uplow == 1 ? 0 : (char)32); }
 			if (selecterY == 2 && selecterX >= 0 && selecterX <= 9) { buf[input_i++] = KeyMap_Qwerty[selecterY - 1][selecterX] + (Uplow == 1 ? 0 : (char)32); }
 			if (selecterY == 3 && selecterX >= 0 && selecterX <= 7) { buf[input_i++] = KeyMap_Qwerty[selecterY - 1][selecterX] + (Uplow == 1 ? 0 : (char)32); }
-
 		}
-		if (!isalnum(buf[input_i - 1])) { buf[--input_i] = '_'; }
+		if (input_i > 0 && !isalnum(buf[input_i - 1])) { buf[--input_i] = '_'; }
 	}
 	if (PadInput(INPUT_B)) {
 		PlaySoundMem(GetSound(SE_Key_Remove), DX_PLAYTYPE_BACK);
@@ -269,7 +282,7 @@ int Ranking::ReadRanking(void)
 	//ランキングデータ配分列データを読み込む
 	for (int i = 0; i < RANKING_DATA; i++) {
 
-		fscanf_s(fp, "%2d %10s %5d\n", &g_Ranking[i].no, &g_Ranking[i].name, 9, &g_Ranking[i].score);
+		fscanf_s(fp, "%2d %9s %5d\n", &g_Ranking[i].no, &g_Ranking[i].name, 10, &g_Ranking[i].score);
 	}
 
 	//ファイルクローズ
@@ -293,7 +306,7 @@ int  Ranking::SaveRanking(void)
 
 	// ランキングデータ分配列データを書き込む
 	for (int i = 0; i < RANKING_DATA; i++) {
-		fprintf(fp, "%2d %10s %5d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
+		fprintf(fp, "%2d %9s %5d\n", g_Ranking[i].no, g_Ranking[i].name, g_Ranking[i].score);
 	}
 
 	//ファイルクローズ

@@ -23,7 +23,7 @@
 
 enum GAME_STATUS{ DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
 enum BGM_SE { BGM_Title = 1, BGM_GameMain, BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple, SE_Red_AND_Green_Apple, SE_PoisonApple, SE_Count, SE_Whistle };
-enum IMAGE{Image_Title, Image_Stage, Image_Ranking, Image_End};
+enum IMAGE{Image_Title, Image_Stage, Image_Ranking,Image_RankingInside, Image_End};
 enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
 enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
 enum FONT{Font_Title = 1, Font_Menu, Font_Pause,Font_Key};
@@ -62,8 +62,8 @@ bool GetStartFlg(void);					//
 void SetStartFlg(bool Flg);				//
 bool GetAllReset(void);					//
 void SetAllReset(bool Flg);				//
-int NewTimer(int time);				//
-void DrawFinish(void);
+int NewTimer(int time);					//
+void DrawFinish(void);					//ゲーム終了時のアニメーション
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
