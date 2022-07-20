@@ -7,11 +7,14 @@ int apple_count[4];				//リンゴを取得した個数
 int apple_quantity = 0;			//描画されているリンゴの個数
 
 
-
-
 void Apple::AppleControl() {
 	int Made_apples = 0;			//生成するリンゴの個数
-	//DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
+	static bool hitflg = false;
+	static int apple_score = 0;
+	static int apple_type = 0;
+	DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
+	DrawFormatString(100, 350, 0x000000, "timelimit:%d", GetTimeLimit());
+	
 	//時間ごとにリンゴ出現パターンを制御する
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
 	{
@@ -37,7 +40,7 @@ void Apple::AppleControl() {
 		{
 			//敵の表示
 			DrawRotaGraph(apple[i].x, apple[i].y, 1.0f, 0, apple[i].img, TRUE, FALSE);
-
+			
 			if (player.GetPlayerFlg() == FALSE)continue;
 
 			//まっすぐ下に移動
@@ -59,13 +62,19 @@ void Apple::AppleControl() {
 			//当たり判定
 			if (player.HitBoxPlayer(&apple[i]) == TRUE && (player.GetStatus() == Poison_OFF))
 			{
+				DrawFormatString(180, 400, 0x000000, "apple[i]:%d", apple[i].type);
 				apple[i].flg = false;
 				apple[i].pos = 99;
 				apple_quantity--;
+				hitflg = true;
+				apple_score = apple[i].score;
+				apple_type = apple[i].type;
+			
 				SetMainScore(GetMainScore() + apple[i].score);
 				apple_count[apple[i].type]++;
 				if (apple[i].type == RED_APPLE) {
 					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
+
 				}
 				else if (apple[i].type == GREEN_APPLE) {
 					PlaySoundMem(GetSound(SE_Red_AND_Green_Apple), DX_PLAYTYPE_BACK);
@@ -78,6 +87,22 @@ void Apple::AppleControl() {
 					player.SetStatus(Poison_ON);
 				}
 			}
+			if (hitflg) {
+				if (Timer(1, 3) < 180) {
+					if (apple_type == BLACK_APPLE) {
+						DrawFormatString(player.GetPlayerTransition(PlayerX) - 25, player.GetPlayerTransition(PlayerY) - 50, 0xff0000, "%d", apple_score);
+					}
+					else{
+						DrawFormatString(player.GetPlayerTransition(PlayerX) - 25, player.GetPlayerTransition(PlayerY) - 50, 0xfffd3d, "+%d", apple_score);
+					}
+				}
+				else {
+					Timer(-1, 3);
+					//apple_score = 0;
+					hitflg = false;
+				}
+			}
+			
 		}
 	}
 
@@ -173,7 +198,6 @@ int Apple::GetApplePos(int apple_speed, int num ,int* made_apples) {
 	bool checkflg = false;			//重なったか調べたかのフラグ
 	int old_position[7] = { 99,99,99,99,99,99,99 };
 	int repeat_count = 0;
-	int j;
 
 	apple_pos = GetRand(6);
 	for (int i = 0; i < 11; i++) {
