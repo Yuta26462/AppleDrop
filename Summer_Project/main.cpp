@@ -175,9 +175,10 @@ void DrawGameTitle(void) {
 			TimerFlg = true;
 		}
 	}
-	static float CharaSize, CharaSpeed;
+	static float CharaSize;
+	static int CharaSpeed;
 		if (Timer(0, 1) < 260 && TimerFlg == true) { 
-			if(CharaSize < 8.0)CharaSize += 0.1;
+			if(CharaSize < 8.0)CharaSize += 0.1f;
 			if (CharaSpeed < 120)CharaSpeed++;
 			DrawRotaGraph(400 - CharaSpeed, 300, CharaSize, 0, players_img[7], TRUE);
 		}
@@ -514,15 +515,14 @@ void HelpGuide(int num) {
 		DrawFormatString(200, 450, color, "移動");
 
 		//START
-		DrawOvalAA(284, 457, 30, 10,20, color, 1);
-		DrawFormatString(260, 450, color2, "START");
-		if(Pauseflg == false)DrawString(320, 450, "ポーズ", color);
-		else if(Pauseflg == true)DrawString(320, 450, "戻る", color);
+		DrawOvalAA(Pauseflg ? 279 : 284, 457, 30, 10,20, color, 1);
+		DrawFormatString(Pauseflg ? 255 : 260, 450, color2, "START");
+		DrawString(Pauseflg ? 315 : 320, 450, Pauseflg ? "ゲームに戻る" : "ポーズ", color);
 
 		//BACK
-		DrawOvalAA(404, 457, 28, 10,20, color, 1);
-		DrawFormatString(384, 450, color2, "BACK");
-		DrawString(439, 450, "終了", color);
+		DrawOvalAA(Pauseflg ? 450 : 420, 457, 28, 10,20, color, 1);
+		DrawFormatString(Pauseflg ? 430 :400, 450, color2, "BACK");
+		DrawString(Pauseflg ? 480 :455, 450, "終了", color);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;
 
@@ -573,10 +573,10 @@ void Sidebar() {
 	DrawRotaGraph(550, 370, 1.0f, 0, apple_img[2], TRUE, FALSE);
 	DrawRotaGraph(550, 430, 1.0f, 0, apple_img[3], TRUE, FALSE);
 
-	DrawFormatString(600, 245, 0xFFFFFF, "%d", apple->GetAppleCount(RED_APPLE));
-	DrawFormatString(600, 305, 0xFFFFFF, "%d", apple->GetAppleCount(GREEN_APPLE));
-	DrawFormatString(600, 365, 0xFFFFFF, "%d", apple->GetAppleCount(GOLD_APPLE));
-	DrawFormatString(600, 425, 0xFFFFFF, "%d", apple->GetAppleCount(BLACK_APPLE));
+	DrawFormatStringToHandle(575, 232, 0xFFFFFF, MenuFont, "%2.0d",  apple->GetAppleCount(RED_APPLE));
+	DrawFormatStringToHandle(575, 292, 0xFFFFFF, MenuFont, "%2.0d",  apple->GetAppleCount(GREEN_APPLE));
+	DrawFormatStringToHandle(575, 352, 0xFFFFFF, MenuFont, "%2.0d",  apple->GetAppleCount(GOLD_APPLE));
+	DrawFormatStringToHandle(575, 412, 0xFFFFFF, MenuFont, "%2.0d",  apple->GetAppleCount(BLACK_APPLE));
 }
 
 int Timer(int time, int index) {
