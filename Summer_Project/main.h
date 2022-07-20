@@ -2,145 +2,68 @@
 #include "DxLib.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
-#define RANKING_DATA 5
 
 #include "apple.h"
+#include "ranking.h"
+#include "player.h"
+#define	VERSION									(float)2.35
+#define LAST_UPDATED							"2022年7月19日"
 
-#define XINPUT_A								16
-#define XINPUT_B								32
-#define XINPUT_X								64
-#define XINPUT_Y								128
-#define XINPUT_START							2048
-#define XINPUT_BACK								1024
-#define DINPUT_A								32
-#define DINPUT_B								64
-#define DINPUT_X								16
-#define DINPUT_Y								128
-#define DINPUT_START							8192
-#define DINPUT_BACK								4096
+#define Select_X								1
+#define Select_Y								2
+#define AnalogInput_X								1
+#define AnalogInput_Y								2
 
-//サウンド用変数
-extern int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;
+#define INPUT_A									1
+#define INPUT_B									2
+#define INPUT_X									3
+#define INPUT_Y									4
+#define INPUT_BACK								7
+#define INPUT_START								8
 
-class Menu {
-public:
-	void menu(void);
-	void GameModeChange(int num);
-	int LoadImages(void);
-};
-
-extern Menu menu;
+enum GAME_STATUS{ DRAW_GAMETITLE, GAME_INIT, DRAW_RANKING, DRAW_HELP, DRAW_END, GAME_MAIN, INPUT_RANKING, END = 99 };
+enum BGM_SE { BGM_Title = 1, BGM_GameMain, BGM_Ranking, BGM_END, SE_Selecter, SE_OK, SE_Return, SE_Key_Remove, SE_GoldenApple, SE_Red_AND_Green_Apple, SE_PoisonApple, SE_Count, SE_Whistle };
+enum IMAGE{Image_Title, Image_Stage, Image_Ranking,Image_RankingInside, Image_End};
+enum PLAYER_IMAGE{Image_LeftPlayer, Image_IDOL_LeftPlayer, Image_DASH_LeftPlayer, Image_DASH_RightPlayer, Image_IDOL_RightPlayer, Image_RightPlayer, Image_TOP_Player, Image_TOP_IDOLPlayer, Image_TOP_Player2};
+enum APPLE_IMAGE{Image_RedApple, Image_GreenApple, Image_GoldenApple, Image_PoisonApple};
+enum FONT{Font_Title = 1, Font_Menu, Font_Pause,Font_Key};
 
 
-extern int g_OldKey, g_NowKey, g_KeyFlg;
-extern int g_GameState;
-extern bool StartFlg;
-extern int timer;
+extern Ranking ranking;
+extern PLAYER player;
 
 
-extern int g_Score;
-extern int g_RankingImage;
-extern int invincibletime;			//無敵判定時間
-
-extern Apple apple[APPLE_MAX];
-extern Apple AppleFunc;
-extern bool apple_flg;
-extern int apple_count[4];
-extern int apple_img[4];	//キャラ画像変数
+extern Apple apple[11];
 
 
-//int g_Item[2];
-
-
-//int g_Mileage;	//走行距離y
-//int g_EnemyCount1, g_EnemyCount2, g_EnemyCount3;
-//int g_EnemyCount4; //	チャレンジ5
-
-
-
-
-
-
-//int spflag;		//チャレンジ4用フラグ
-//int g_Bike[1];		//チャレンジ5	バイク画像変数
-//int bikec = 0;
-
-
-
+int GetTimeLimit(void);
 void GameInit(void);
 void GameMain(void);
 
 void DrawGameTitle(void);
-void DrawEnd(void);
-void DrawHelp(void);
+void DrawEnd(void);						//エンド画面を描画する。
+void DrawHelp(void);					//へるぷ画面んを描画する。
+int GetGameStatus(void);				//ゲーム画面を取得する。
+void SetGameStatus(int GameStatus);		//ゲーム画面をセットする。
 
-void DrawRanking(void);
-void InputRanking(void);
-
-void SortRanking(void);
-int SaveRanking(void);
-int ReadRanking(void);
-
-//void BackScrool();
-
-void PlayerControl(bool pauseflg);
-
-//void EnemyControl();
-//void BikeControl();		//チャレンジ5用
-//int CreateEnemy();
-//int CreateBike();		//チャレンジ5用
+int Timer(int time, int index = 0);		//タイマーをセット・ゲット・リセットする(time = (1:Set, 0:Get. -1:Reset))
+int GetAnalogInput(int xy);				//アナログスティックの入力XYを取得する。
+bool PadInput(int Key);					//コントローラーの入力状態を確認する。
+int GetSound(int sound_name);			//音声データを取得する。
+int GetImage(int imagename);			//画像データを取得する。
+int GetFont(int num);					//フォントデータを取得する。
+int GetSelect(int xy);					//アナログスティックの静的入力XYを取得する。
+bool isPause(void);						//ポーズ状態を取得する。
+int GetPlayerImage(int player_status);	//プレイヤー画像を取得する。
+int GetAppleImage(int type);			//りんごの種類別画像を取得する。
+int GetMainScore(void);					//ゲームメインのスコアを取得する。
+void SetMainScore(int score);			//ゲームメインのスコアをセットする。
+bool GetStartFlg(void);					//
+void SetStartFlg(bool Flg);				//
+bool GetAllReset(void);					//
+void SetAllReset(bool Flg);				//
+int NewTimer(int time);					//
+void DrawFinish(void);					//ゲーム終了時のアニメーション
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-
-const int PLAYER_POS_X = SCREEN_WIDTH / 2;
-const int PLAYER_POS_Y = SCREEN_HEIGHT - 50;
-const int PLAYER_WIDTH = 58;
-const int PLAYER_HEIGHT = 62;
-const int PLAYER_SPEED = 5;
-const int PLAYER_HP = 1000;
-const int PLAYER_FUEL = 20000;
-const int PLAYER_BARRIER = 3;
-const int PLAYER_BARRIERUP = 10;
-const int ENEMY_MAX = 8;
-const int ITEM_MAX = 3;
-
-
-struct PLAYER {
-	int flg;
-	int x, y;
-	int w, h;
-	double angle;
-	int count;
-	int speed;
-	bool Poisonflg;
-};
-extern struct PLAYER g_player;
-
-//struct ENEMY {
-//	int flg;
-//	int type;
-//	int img;
-//	int x, y, w, h;
-//	int speed;
-//	int point;
-//};
-//struct  ENEMY g_enemy[ENEMY_MAX];
-//struct ENEMY g_enemy00 = { TRUE,0,0,0,-50,63,120,0,1 };
-//struct ENEMY g_enemyCn = { TRUE,4,0,0,-50,18,18,0,1 };
-//
-//
-//struct  ENEMY g_enemy2[ENEMY_MAX];//	チャレンジ5
-//struct ENEMY g_item[ITEM_MAX];
-//struct ENEMY g_item00 = { TRUE,0,0,0,-50,50,50,0,1 };
-
-struct	RankingData {
-	int no;
-	char name[11];
-	long score;
-};
-extern struct RankingData g_Ranking[RANKING_DATA];
-
-int HitBoxPlayer(PLAYER* p, Apple* e);
-void ItemControl();		//	アイテム処理
-int CreateItem();		//	アイテム生成処理

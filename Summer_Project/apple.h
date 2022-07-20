@@ -31,24 +31,25 @@ private:
 	int speed;
 	int score;
 public:
-	void AppleControl(bool pauseflg);			//ƒŠƒ“ƒS—‰ºˆ—ŠÖ”
-	int CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
+	void AppleControl();			//ƒŠƒ“ƒS—‰ºˆ—ŠÖ”
+	void CreateApple(int maxapple);	//ƒŠƒ“ƒSì¬ŠÖ”
 	void AppleInit();				//ƒŠƒ“ƒS‰Šú‰»ŠÖ”
 
-	int GetApplePos(int apple_speed,int num);
-	void CheckAppleSpeed(int speed1, int speed2);
-	bool* GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
+	int GetApplePos(int apple_speed,int num,int *made_apples);
+	int CheckAppleSpeed(int speed1, int speed2);
+	bool GetAppleFlg();			//ƒŠƒ“ƒSflgæ“¾ŠÖ”
 	int GetAppleX();				//ƒŠƒ“ƒSxÀ•Wæ“¾ŠÖ”
 	int GetAppleY();				//ƒŠƒ“ƒSyÀ•Wæ“¾ŠÖ”
 	int GetAppleW();				//ƒŠƒ“ƒS•æ“¾ŠÖ”
 	int GetAppleH();				//ƒŠƒ“ƒS‚‚³æ“¾ŠÖ”
-	int getpos();
+	int GetAppleCount(int type);
+	//int getpos();					//ƒfƒoƒbƒO—p
+	//int getspeed();
 };
 
 
 int GetAppleType();
 int GetAppleSpeed(int AppleType);
-
 
 
 

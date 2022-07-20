@@ -57,13 +57,7 @@
     <Image Include="images\End.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="images\pause.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
     <Image Include="images\player.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\player2.png">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="images\Ranking.png">
@@ -72,40 +66,53 @@
     <Image Include="images\Title.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Sound\BGM\Small_Happy.wav">
+    <Image Include="images\End2.png">
       <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\BGM\Walking_Ameba.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\BGM\どこまでもワンダーランド.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\BGM\ねこワールド.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\BGM\ほゎ.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\BGM\ミニマルなマーチ.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\SE\click.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\SE\help.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="Sound\SE\select.wav">
-      <Filter>リソース ファイル</Filter>
-    </Media>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\jkmarugo\JK-Maru-Gothic-M.otf" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dat\rankingdata.txt" />
+    <Text Include="Sound\BGM\LICENCE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\SE\count.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\gold_apple.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\Key_Remove.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\OK.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\Poison_Apple.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\Red&amp;Green_Apple.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\Return.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\SE\Selecter.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\End.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\GameMain.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\Ranking.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Sound\BGM\Title.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
   </ItemGroup>
 </Project>
