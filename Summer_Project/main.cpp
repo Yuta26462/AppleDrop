@@ -166,7 +166,7 @@ void DrawGameTitle(void) {
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; StartMoveflg = true; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; StartMoveflg = true;}
 
-	static bool TimerFlg;
+	
 	if (TimerFlg == true)Timer(1, 1);
 	if (PadInput(INPUT_A)) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
@@ -335,9 +335,6 @@ void GameMain(void) {
 	if (CheckSoundMem(TitleBGM) == 1)StopSoundMem(TitleBGM);
 	if (StartFlg == TRUE) {
 		if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, TRUE);
-	}
-	else {
-		//if (CheckSoundMem(GameMainBGM) == 0)PlaySoundMem(GameMainBGM, DX_PLAYTYPE_BACK, FALSE);
 	}
 	
 
@@ -583,7 +580,7 @@ int Timer(int time, int index) {
 	const int TimerNum = 4;
 	static int g_WaitTime[TimerNum];
 
-	if (time == 1) {
+	if (time == 1 ) {
 		++g_WaitTime[index];
 		return g_WaitTime[index];
 	}

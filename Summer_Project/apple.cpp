@@ -10,8 +10,9 @@ int apple_quantity = 0;			//描画されているリンゴの個数
 void Apple::AppleControl() {
 	int Made_apples = 0;			//生成するリンゴの個数
 	static bool hitflg = false;
-	static int apple_score = 0;
-	static int apple_type = 0;
+	static int apple_score = 0;		//あたったリンゴのスコアを格納する
+	static int apple_type = 0;		//あたったリンゴの種類を格納する
+	static int score_timer = 0;		//スコア表示用タイマー
 	DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
 	DrawFormatString(100, 350, 0x000000, "timelimit:%d", GetTimeLimit());
 	
@@ -88,9 +89,10 @@ void Apple::AppleControl() {
 				}
 			}
 			if (hitflg) {
-				if (Timer(1, 3) < 180) {
+				if(!isPause())score_timer = Timer(1, 3);
+				if (score_timer < 180) {
 					if (apple_type == BLACK_APPLE) {
-						DrawFormatString(player.GetPlayerTransition(PlayerX) - 25, player.GetPlayerTransition(PlayerY) - 50, 0xff0000, "%d", apple_score);
+						DrawFormatString(player.GetPlayerTransition(PlayerX) - 25, player.GetPlayerTransition(PlayerY) - 50, 0xff4000, "%d", apple_score);
 					}
 					else{
 						DrawFormatString(player.GetPlayerTransition(PlayerX) - 25, player.GetPlayerTransition(PlayerY) - 50, 0xfffd3d, "+%d", apple_score);
@@ -98,7 +100,7 @@ void Apple::AppleControl() {
 				}
 				else {
 					Timer(-1, 3);
-					//apple_score = 0;
+					score_timer = 0;
 					hitflg = false;
 				}
 			}
