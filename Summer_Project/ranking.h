@@ -12,7 +12,7 @@ extern struct RankingData g_Ranking[RANKING_DATA];
 
 struct	RankingData {
 	int no;
-	char name[11];
+	char name[10];
 	long score;
 };
 

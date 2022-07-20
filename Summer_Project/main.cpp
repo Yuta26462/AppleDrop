@@ -8,7 +8,7 @@ int g_OldKey, g_NowKey, g_KeyFlg;
 const float Version = VERSION;
 const char Last_Updated[14] = LAST_UPDATED;
 
-int g_GameState = DRAW_GAMETITLE;
+int g_GameState = DRAW_RANKING;
 int g_Score = 0;
 int TimeLimit;	//制限時間用
 bool StartFlg = false;
@@ -35,7 +35,7 @@ void Sidebar();					//制限時間、スコア、りんごの取得数表示用
 LPCSTR font_path = "./Fonts/jkmarugo/JK-Maru-Gothic-M.otf";
 int TitleFont, MenuFont, PauseFont, KeyFont;	//フォントハンドル
 //画像
-int g_TitleImage, g_StageImage, g_RankingImage, g_EndImage;		//画面表示用
+int g_TitleImage, g_StageImage, g_RankingImage, Ranking_InsideImage, g_EndImage;		//画面表示用
 int players_img[9];			//プレイヤー操作画像[左(3),右(3),前(3)]
 int apple_img[4];			//りんごの画像[赤りんご、緑りんご、金のりんご、毒りんご]
 //音声
@@ -149,6 +149,8 @@ void DrawGameTitle(void) {
 	static int MenuNo = 0;
 	static bool StartMoveflg = false;
 
+	DrawGraph(0, 0, g_TitleImage, FALSE);
+
 	if (CheckSoundMem(Whistle_SE) == 1)StopSoundMem(Whistle_SE);
 
 	if (GetAllReset()) {
@@ -163,23 +165,29 @@ void DrawGameTitle(void) {
 
 	if (SelectY == 1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (++MenuNo > 3)MenuNo = 0; StartMoveflg = true; }
 	if (SelectY == -1) { PlaySoundMem(Selecter_SE, DX_PLAYTYPE_BACK); if (--MenuNo < 0)MenuNo = 3; StartMoveflg = true;}
-	if (Timer(1, 1) && PadInput(INPUT_A)) {
+
+	static bool TimerFlg;
+	if (TimerFlg == true)Timer(1, 1);
+	if (PadInput(INPUT_A)) {
 		PlaySoundMem(OK_SE, DX_PLAYTYPE_BACK);
-		Timer(-1, 1);
-		if(MenuNo != 0) { g_GameState = MenuNo + 1; }
-		g_GameState = MenuNo + 1;		//デバッグ一時
-	}
-	else if((Timer(0, 1) > 160)){
+		if (MenuNo != 0) { g_GameState = MenuNo + 1; }
 		if (MenuNo == 0) {
-			/*if (Timer(0, 1) > 160)DrawRotaGraph(400 - (Timer(0, 1) * 3), 300, 1.0f, 0, players_img[7], TRUE);
-			if (Timer(0, 1) > 360) { Timer(-1, 1); g_GameState = 1; }*/
+			TimerFlg = true;
 		}
 	}
+	static float CharaSize, CharaSpeed;
+		if (Timer(0, 1) < 260 && TimerFlg == true) { 
+			if(CharaSize < 8.0)CharaSize += 0.1;
+			if (CharaSpeed < 120)CharaSpeed++;
+			DrawRotaGraph(400 - CharaSpeed, 300, CharaSize, 0, players_img[7], TRUE);
+		}
+			if (Timer(0, 1) > 160 && TimerFlg == true) { CharaSpeed += 20; }
+		if (Timer(0, 1) > 200 && TimerFlg == true) { Timer(-1, 1); TimerFlg = false; g_GameState = 1; }
 
 	int change = 0; if (PadInput(INPUT_Y)) { int change = 1;; ChangeVolumeSoundMem(0, GameMainBGM); }
 	else if (change == 0) { change = 1; ChangeVolumeSoundMem(255, GameMainBGM); }
 
-	DrawGraph(0, 0, g_TitleImage, FALSE);
+
 	static bool ani = true;
 	if (ani == true) {
 		static int aniy = GetRand(20);
@@ -231,11 +239,9 @@ void DrawGameTitle(void) {
 	else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 400, 0xff4000, MenuFont, "えんど"); }
 
 
-	DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
+	if(TimerFlg == false)DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, 0, players_img[7], TRUE);
 	//DrawRotaGraph(400, 300 + MenuNo * 40, 1.0f, M_PI / 2, SelecterImage, TRUE);
-	DrawFormatString(20, 450, 0xFFFFFF, "Ver.%.2f", Version);
-
-	//DrawFormatString(200, 350, 0xff4000, "%d", Timer(0, 1));		デバッグ用
+	DrawFormatString(20, 450, 0xFFFFFF, "Ver.%.2f", Version);	//バージョン表記
 }
 
 void GameInit(void) {
@@ -259,7 +265,7 @@ void DrawHelp(void) {
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 	
-	DrawStringToHandle(260, 40, "へるぷ", 0xffffff, MenuFont, 0);
+	DrawStringToHandle(230, 25, "へるぷ", 0xFCB13A, TitleFont, 0xFFFFFF);
 
 
 	DrawStringToHandle(20, 100, "このゲームは制限時間：３０秒で", 0xffffff, MenuFont, 0);
@@ -300,8 +306,9 @@ void DrawEnd(void) {
 	//エンド画像表示
 	DrawExtendGraph(0, 0,640,480, g_EndImage, FALSE);
 	//エンディング表示
-	if (Timer(1) < 600) { g_PosY = 300 - Timer(0) / 2; }
-
+	static int EndTime = 600;
+	if (Timer(1) < EndTime) { g_PosY = 300 - Timer(0) / 2; }
+	if (PadInput(INPUT_A))EndTime = -1;
 	SetFontSize(24);
 	DrawString(140, 80 + g_PosY, "タイトル　　　りんごおとし", 0xFFFFFF, 0);
 	DrawString(140, 110 + g_PosY, "バージョン　　", 0xFFFFFF, 0);
@@ -391,6 +398,7 @@ int LoadImages() {
 	if (LoadDivGraph("images/apple.png", 4, 4, 1, 50, 50, apple_img) == -1)return -1;	//リンゴ
 	if ((g_StageImage = LoadGraph("images/background.png")) == -1)return-1;
 	if ((g_RankingImage = LoadGraph("images/Ranking.png")) == -1)return-1;
+	if ((Ranking_InsideImage = LoadGraph("images/Ranking_Inside.png")) == -1)return-1;
 	if (LoadDivGraph("images/player.png", 9, 3, 3, 32, 32, players_img) == -1)return -1;
 	return 0;
 }
@@ -559,7 +567,6 @@ void Sidebar() {
 	}
 	DrawFormatString(545, 110, 0xffff99, "SCORE");
 	DrawFormatStringToHandle(520, 130, 0xffff99,MenuFont, "%4.0d", g_Score);
-	DrawFormatString(550, 130, 0xffff99, "%4d", g_Score);
 	DrawFormatString(540, 190, 0xFFFFFF, "採った数");
 	DrawRotaGraph(550, 250, 1.0f, 0, apple_img[0], TRUE, FALSE);
 	DrawRotaGraph(550, 310, 1.0f, 0, apple_img[1], TRUE, FALSE);
@@ -640,6 +647,7 @@ int GetImage(int imagename){
 	if (imagename == Image_Title)return g_TitleImage;
 	if (imagename == Image_Stage)return g_StageImage;
 	if (imagename == Image_Ranking)return g_RankingImage;
+	if (imagename == Image_RankingInside)return Ranking_InsideImage;
 	if (imagename == Image_End)return g_EndImage;
 	return 0;
 }
