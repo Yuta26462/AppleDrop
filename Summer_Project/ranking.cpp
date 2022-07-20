@@ -86,10 +86,15 @@ void Ranking::InputRanking(void)
 	}
 	else if (Timer(0) > 60) { Timer(-1); }
 
+
+	static int selecterX = 0;
+	static int selecterY = 0;
+	static int color = 0x696969;	//カーソル色
+
 	static int KeyBoard_X = KEYBORA_X;
 	static int KeyBoard_XMrgin = KEYBORA_XMARGIN;
-	static int KeyMap = 0;
-	static int Uplow = 0;
+	static int KeyMap = 0;	//初期：アルファベット順
+	static int Uplow = 0;	//初期：小文字
 	if (PadInput(INPUT_Y) && KeyMap == 1) {
 		PlaySoundMem(GetSound(SE_OK), DX_PLAYTYPE_BACK);
 		if (Uplow == 0) { Uplow = 1; } else if (Uplow == 1)Uplow = 0; }
@@ -99,7 +104,9 @@ void Ranking::InputRanking(void)
 		for (int j = 0; j < 5; j++) {
 			for (int i = 1; i < 14; i++) {
 				if (input_char < '{' || input_char < '[') {
-					DrawFormatString(i * KeyBoard_XMrgin + KeyBoard_X, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", input_char++);
+					
+					if (selecterX + 1 == i && selecterY == j) { DrawFormatString(i * KeyBoard_XMrgin + KeyBoard_X, KEYBORA_Y + KEYBORA_YMARGIN * j, 0xff4000, "%c", input_char++); }
+					else{ DrawFormatString(i * KeyBoard_XMrgin + KeyBoard_X, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", input_char++); }
 				}
 				if (input_char == ':') { input_char = 'a'; j = 1; i = 0; }
 				if (input_char == '{') { input_char = 'A'; j = 3; i = 0; }
@@ -120,10 +127,19 @@ void Ranking::InputRanking(void)
 		for (int j = 0; j < 4; j++) {
 			for (int i = 1; i < 14; i++) {
 				if (input_char < '{' || input_char < '[') {
-					if (j == 0)DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", input_char++);
+					if (j == 0) { 
+						if (selecterX + 1 == i && selecterY == j)DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0xff4000, "%c", input_char++);
+						else{ DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", input_char++); }
+					}
 					if (j > 0) {
 						input_char = KeyMap_Qwerty[0][0];
-						DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", KeyMap_Qwerty[j - 1][i - 1] + (Uplow == 1 ? 0 : (char)32));
+						
+						if (selecterX + 1 == i && selecterY == j)DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0xff4000, "%c", KeyMap_Qwerty[j - 1][i - 1] + (Uplow == 1 ? 0 : (char)32));
+						else{ DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", KeyMap_Qwerty[j - 1][i - 1] + (Uplow == 1 ? 0 : (char)32));
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+						DrawBoxAA((i * KEYBORA_XMARGIN + KeyBoard_X + i_space) - 5,(KEYBORA_Y + KEYBORA_YMARGIN * j)-5, (i * KEYBORA_XMARGIN + KeyBoard_X + i_space) + 20, (KEYBORA_Y + KEYBORA_YMARGIN * j) + 20, color, TRUE);
+						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+						}
 						if (j == 1 && i == 10) { i_space = 15; break; }
 						if (j == 2 && i == 9) { i_space = 30; break; }
 						if (j == 3 && i == 7)break;
@@ -135,9 +151,7 @@ void Ranking::InputRanking(void)
 			}
 		}
 	}
-	static int selecterX = 0;
-	static int selecterY = 0;
-	static int color = 0x696969;
+
 
 	//カーソルの位置をリセット
 	if (GetAllReset()) {
@@ -173,12 +187,13 @@ void Ranking::InputRanking(void)
 		if (selecterY > 3)selecterY = 3;	//切り替え時見失い防止
 	}
 	//文字入力時の色変更
-	if (Timer(1, 1) && PadInput(INPUT_A) && input_i < 9) { Timer(-1, 1); color = 0xffffff; }
+	if (Timer(1, 1) && PadInput(INPUT_A) && input_i < 9) { Timer(-1, 1); color = 0xFAEC30; }
 	else if (Timer(0, 1) > 15) { color = 0x000000; Timer(-1, 1); }
 
 	if (GetSelect(Select_X) == -1 || GetSelect(Select_X) == 1 || GetSelect(Select_Y) == -1 || GetSelect(Select_Y) == 1) { PlaySoundMem(GetSound(SE_Selecter), DX_PLAYTYPE_BACK); }
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-	DrawBox((KeyBoard_X + KeyBoard_XMrgin - 10) + Selecter_BOXSIZE * selecterX, (KEYBORA_Y  - 10) + Selecter_BOXSIZE * selecterY, (KeyBoard_X + KeyBoard_XMrgin + 20) + Selecter_BOXSIZE * selecterX, (KEYBORA_Y + 20) + Selecter_BOXSIZE * selecterY, color, FALSE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	DrawBoxAA((KeyBoard_X + KeyBoard_XMrgin - 10) + Selecter_BOXSIZE * selecterX, (KEYBORA_Y  - 10) + Selecter_BOXSIZE * selecterY, (KeyBoard_X + KeyBoard_XMrgin + 20) + Selecter_BOXSIZE * selecterX, (KEYBORA_Y + 20) + Selecter_BOXSIZE * selecterY, color, TRUE);
+	//DrawCircleAA((KeyBoard_X + KeyBoard_XMrgin - 10) + Selecter_BOXSIZE * selecterX + 15, (KEYBORA_Y - 10) + Selecter_BOXSIZE * selecterY + 16, 13.0f, 20, color, TRUE);
 	
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
 
