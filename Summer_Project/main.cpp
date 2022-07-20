@@ -148,6 +148,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void DrawGameTitle(void) {
 	static int MenuNo = 0;
 	static bool StartMoveflg = false;
+	static bool TimerFlg=false;
 
 	DrawGraph(0, 0, g_TitleImage, FALSE);
 

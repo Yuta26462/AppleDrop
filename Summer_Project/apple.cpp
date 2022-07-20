@@ -13,8 +13,6 @@ void Apple::AppleControl() {
 	static int apple_score = 0;		//あたったリンゴのスコアを格納する
 	static int apple_type = 0;		//あたったリンゴの種類を格納する
 	static int score_timer = 0;		//スコア表示用タイマー
-	DrawFormatString(100, 400, 0x000000, "appleq:%d", apple_quantity);
-	DrawFormatString(100, 350, 0x000000, "timelimit:%d", GetTimeLimit());
 	
 	//時間ごとにリンゴ出現パターンを制御する
 	if (GetTimeLimit() % 25 == 0 && apple_quantity <= APPLE_MAX)
