@@ -61,7 +61,6 @@ void Apple::AppleControl() {
 			//“–‚½‚è”»’è
 			if (player.HitBoxPlayer(&apple[i]) == TRUE && (player.GetStatus() == Poison_OFF))
 			{
-				DrawFormatString(180, 400, 0x000000, "apple[i]:%d", apple[i].type);
 				apple[i].flg = false;
 				apple[i].pos = 99;
 				apple_quantity--;

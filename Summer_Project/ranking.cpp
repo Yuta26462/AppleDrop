@@ -62,7 +62,7 @@ void Ranking::InputRanking(void)
 	DrawFormatStringToHandle(120, 60, 0xFFFFFF, GetFont(Font_Menu), "ランキングに登録します");
 	DrawFormatStringToHandle(65, 110, 0xFFFFFF, GetFont(Font_Menu), "名前を英字で入力してください");
 	if (Timer(0) < 30) {
-		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xfffd3d, 0);
+		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xFFD700, 0);
 	}
 	else if (Timer(0) > 60) { Timer(-1); }
 	// 名前の入力
@@ -122,7 +122,7 @@ void Ranking::InputRanking(void)
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawCircle(214, 397, 10, 0x000000, 1);
 		DrawString(210, 390, "Y", 0xffff00);
-		DrawString(234, 390, "大文字／小文字切り替え",0xFFFFFF);
+		DrawString(234, 390, "大文字／小文字切り替え",0xFF4500);
 		int i_space = 0;
 		for (int j = 0; j < 4; j++) {
 			for (int i = 1; i < 14; i++) {

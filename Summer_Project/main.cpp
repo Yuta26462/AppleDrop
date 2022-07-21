@@ -215,7 +215,7 @@ void DrawGameTitle(void) {
 	static bool Menu_AniFlg = false;
 
 	if (StartMoveflg == true && MenuNo == 0 && Menu_AniFlg == false) {
-		if (Timer(1) < 20) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 280 + Menu_Animation, 0xff4000, MenuFont, "すたーと"); Menu_Animation = GetRand(8); 
+		if (Timer(1) < 360) { Menu_AniFlg = true; DrawFormatStringToHandle(420, 280 + Menu_Animation, 0xff4000, MenuFont, "すたーと"); Menu_Animation = GetRand(8); 
 		} else { Menu_AniFlg = false; DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); }
 	}else {  DrawFormatStringToHandle(420, 280, 0xff4000, MenuFont, "すたーと"); Timer(-1); }
 
@@ -441,7 +441,7 @@ void DrawFinish(void){
 		DrawRotaGraph(player.GetPlayerTransition(PlayerX), player.GetPlayerTransition(PlayerY), 2.3f, 0, GetPlayerImage(Image_TOP_IDOLPlayer), TRUE, FALSE);
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawStringToHandle(205, 200, "FINISH", 0xffff33, PauseFont, 0xffffff);
-		DrawFormatString(100, 400, 0x000000, "Whistle:%d", whistle_flg);
+		//DrawFormatString(100, 400, 0x000000, "Whistle:%d", whistle_flg);
 		
 			if (CheckSoundMem(Whistle_SE) == 0 && whistle_flg == true){
 				  PlaySoundMem(Whistle_SE, DX_PLAYTYPE_BACK, TRUE);
