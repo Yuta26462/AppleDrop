@@ -62,7 +62,7 @@ void Ranking::InputRanking(void)
 	DrawFormatStringToHandle(120, 60, 0xFFFFFF, GetFont(Font_Menu), "ランキングに登録します");
 	DrawFormatStringToHandle(65, 110, 0xFFFFFF, GetFont(Font_Menu), "名前を英字で入力してください");
 	if (Timer(0) < 30) {
-		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xffffff, 0);
+		DrawString(180, 420, "---- STARTボタンをおして名前決定！ ----", 0xfffd3d, 0);
 	}
 	else if (Timer(0) > 60) { Timer(-1); }
 	// 名前の入力
@@ -136,9 +136,9 @@ void Ranking::InputRanking(void)
 						
 						if (selecterX + 1 == i && selecterY == j)DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0xff4000, "%c", KeyMap_Qwerty[j - 1][i - 1] + (Uplow == 1 ? 0 : (char)32));
 						else{ DrawFormatString(i * KEYBORA_XMARGIN + KeyBoard_X + i_space, KEYBORA_Y + KEYBORA_YMARGIN * j, 0x000000, "%c", KeyMap_Qwerty[j - 1][i - 1] + (Uplow == 1 ? 0 : (char)32));
-						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
-						DrawBoxAA((i * KEYBORA_XMARGIN + KeyBoard_X + i_space) - 5,(KEYBORA_Y + KEYBORA_YMARGIN * j)-5, (i * KEYBORA_XMARGIN + KeyBoard_X + i_space) + 20, (KEYBORA_Y + KEYBORA_YMARGIN * j) + 20, color, TRUE);
-						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+						//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+						//DrawBoxAA((i * KEYBORA_XMARGIN + KeyBoard_X + i_space) - 5,(KEYBORA_Y + KEYBORA_YMARGIN * j)-5, (i * KEYBORA_XMARGIN + KeyBoard_X + i_space) + 20, (KEYBORA_Y + KEYBORA_YMARGIN * j) + 20, color, TRUE);
+						//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 						}
 						if (j == 1 && i == 10) { i_space = 15; break; }
 						if (j == 2 && i == 9) { i_space = 30; break; }
