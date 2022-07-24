@@ -49,6 +49,7 @@ int GoldenApple_SE, Red_AND_Green_Apple_SE, PoisonApple_SE;		//りんご用SE
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
 	SetMainWindowText("りんごおとし");
+	SetWindowIconID(01);
 	ChangeWindowMode(TRUE);
 
 	double dNextTime = GetNowCount();
